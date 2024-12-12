@@ -1,13 +1,16 @@
-# backend/Dockerfile
-FROM python:3.9
+FROM python:3.9-slim
 
-ENV PYTHONUNBUFFERED 1
+
+RUN apt-get update && apt-get install -y \
+    default-libmysqlclient-dev \
+    build-essential \
+    iputils-ping
 
 WORKDIR /app
 
-COPY requirements.txt /app/
+COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-COPY . /app/
+COPY . .
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "GIMAO.wsgi:application"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

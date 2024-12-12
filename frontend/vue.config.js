@@ -1,10 +1,13 @@
-const { defineConfig } = require('@vue/cli-service')
-module.exports = defineConfig({
-  transpileDependencies: true,
-
-  pluginOptions: {
-    vuetify: {
-			// https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vuetify-loader
-		}
-  }
-})
+module.exports = {
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://backend:8000',
+        changeOrigin: true
+      }
+    }
+  },
+  transpileDependencies: [
+    'vuetify'
+  ]
+}
