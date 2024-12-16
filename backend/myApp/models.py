@@ -1,4 +1,14 @@
 from django.db import models
+from django.core.validators import RegexValidator, EmailValidator
+
+# Validateur pour les numéros de téléphone
+phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Numéro de téléphone non valide")
+
+#Valideur pour le champ 'niveau' dans la table 'Defaillance'.
+def validate_niveau_de_defaillance(value):
+    valid_niveaux = ["Critique", "Majeur", "Mineur"]
+    if value not in valid_niveaux:
+        raise ValidationError(f"Le niveau de défaillance doit être l'une des valeurs suivantes: {', '.join(valid_niveaux)}.")
 
 class Role(models.Model):
     nomRole = models.CharField(max_length=50)
@@ -9,8 +19,8 @@ class Role(models.Model):
 class Utilisateur(models.Model):
     nomUtilisateur = models.CharField(max_length=50)
     motDePasse = models.CharField(max_length=100)
-    mailUtilisateur = models.CharField(max_length=50, null=True, blank=True)
-    numTelephoneUtilisateur = models.SmallIntegerField(null=True, blank=True)
+    mailUtilisateur = models.EmailField(max_length=50, validators=[EmailValidator()])
+    numTelephoneUtilisateur = models.CharField(max_length=15, null=True, blank=True, validators=[phone_regex])
     actif = models.BooleanField()
 
     def __str__(self):
@@ -23,8 +33,8 @@ class Avoir(models.Model):
 class Fabricant(models.Model):
     nomFabricant = models.CharField(max_length=50)
     paysFabricant = models.CharField(max_length=50)
-    mailFabricant = models.CharField(max_length=50, null=True, blank=True)
-    numTelephoneFabricant = models.SmallIntegerField(null=True, blank=True)
+    mailFabricant = models.EmailField(max_length=50, null=True, blank=True, validators=[EmailValidator()])
+    numTelephoneFabricant = models.CharField(max_length=15, null=True, blank=True, validators=[phone_regex])
     serviceApresVente = models.BooleanField()
 
     def __str__(self):
@@ -32,13 +42,13 @@ class Fabricant(models.Model):
 
 class Fournisseur(models.Model):
     nomFournisseur = models.CharField(max_length=50)
-    numRue = models.TinyIntegerField()
+    numRue = models.SmallIntegerField()
     nomRue = models.CharField(max_length=50)
     codePostal = models.CharField(max_length=50)
     ville = models.CharField(max_length=50)
     paysFournisseur = models.CharField(max_length=50)
-    mailFournisseur = models.CharField(max_length=50, null=True, blank=True)
-    numTelephoneFournisseur = models.SmallIntegerField(null=True, blank=True)
+    mailFournisseur = models.EmailField(max_length=50, null=True, blank=True, validators=[EmailValidator()])
+    numTelephoneFournisseur = models.CharField(max_length=15, null=True, blank=True, validators=[phone_regex])
     serviceApresVente = models.BooleanField()
 
     def __str__(self):
@@ -46,7 +56,7 @@ class Fournisseur(models.Model):
 
 class Consommable(models.Model):
     designation = models.CharField(max_length=50)
-    lienImageConsommable = models.CharField(max_length=100, null=True, blank=True)
+    lienImageConsommable = models.URLField(max_length=100, null=True, blank=True)
     idFabricant = models.ForeignKey(Fabricant, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -84,7 +94,7 @@ class Equipement(models.Model):
     designation = models.CharField(max_length=50, null=True, blank=True)
     dateMiseEnService = models.DateField()
     prixAchat = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    lienImageEquipement = models.CharField(max_length=100, null=True, blank=True)
+    lienImageEquipement = models.URLField(max_length=100, null=True, blank=True)
     statutEquipement = models.CharField(max_length=50, null=True, blank=True)
     idCreateurEquipement = models.ForeignKey(Utilisateur, related_name='createurEquipement', on_delete=models.CASCADE, null=True, blank=True)
     idLieu = models.ForeignKey(Lieu, on_delete=models.CASCADE, null=True, blank=True)
@@ -101,7 +111,7 @@ class Constituer(models.Model):
 
 class InformationMaintenance(models.Model):
     preventifGlissant = models.BooleanField(null=True, blank=True)
-    joursIntervalleMaintenance = models.TinyIntegerField()
+    joursIntervalleMaintenance = models.SmallIntegerField()
     dateCreation = models.DateTimeField()
     dateChangement = models.DateTimeField(null=True, blank=True)
     idInformationMaintenanceParent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
@@ -112,7 +122,7 @@ class InformationMaintenance(models.Model):
 
 class DocumentTechnique(models.Model):
     nomDocumentTechnique = models.CharField(max_length=50)
-    lienDocumentTechnique = models.CharField(max_length=100)
+    lienDocumentTechnique = models.URLField(max_length=100)
 
     def __str__(self):
         return self.nomDocumentTechnique
@@ -123,7 +133,7 @@ class Correspondre(models.Model):
 
 class Defaillance(models.Model):
     commentaireDefaillance = models.CharField(max_length=1000, null=True, blank=True)
-    niveau = models.CharField(max_length=50)
+    niveau = models.CharField(max_length=50, validators=[validate_niveau_de_defaillance])
     idUtilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
     idEquipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
 
@@ -132,7 +142,7 @@ class Defaillance(models.Model):
 
 class DocumentDefaillance(models.Model):
     nomDocumentDefaillance = models.CharField(max_length=50)
-    lienDocumentDefaillance = models.CharField(max_length=100)
+    lienDocumentDefaillance = models.URLField(max_length=100)
     idDefaillance = models.ForeignKey(Defaillance, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -156,7 +166,7 @@ class Intervention(models.Model):
 
 class DocumentIntervention(models.Model):
     nomDocumentIntervention = models.CharField(max_length=50)
-    lienDocumentIntervention = models.CharField(max_length=100)
+    lienDocumentIntervention = models.URLField(max_length=100)
     idIntervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
 
     def __str__(self):
