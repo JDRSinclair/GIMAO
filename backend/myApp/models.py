@@ -101,7 +101,7 @@ class Constituer(models.Model):
 
 class InformationMaintenance(models.Model):
     preventifGlissant = models.BooleanField(null=True, blank=True)
-    joursIntervalMaintenance = models.TinyIntegerField()
+    joursIntervalleMaintenance = models.TinyIntegerField()
     dateCreation = models.DateTimeField()
     dateChangement = models.DateTimeField(null=True, blank=True)
     idInformationMaintenanceParent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)

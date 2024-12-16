@@ -12,7 +12,7 @@ Fournisseur = (idFournisseur SMALLINT, nomFournisseur VARCHAR(50), numRue BYTE, 
 
 DocumentTechnique = (idDocumentTechnique SMALLINT, nomDocumentTechnique VARCHAR(50), lienDocumentTechnique VARCHAR(100));
 
-InformationMaintenance = (idInformationMaintenance SMALLINT, preventifGlissant LOGICAL, joursIntervalMaintenance BYTE, dateCreation DATETIME, dateChangement DATETIME, #idInformationMaintenanceParent, #idCreateurInformationMaintenance);
+InformationMaintenance = (idInformationMaintenance SMALLINT, preventifGlissant LOGICAL, joursIntervalleMaintenance BYTE, dateCreation DATETIME, dateChangement DATETIME, #idInformationMaintenanceParent, #idCreateurInformationMaintenance);
 
 Equipement = (idEquipement SMALLINT, dateMiseEnService DATE, dateCreation DATETIME, designation VARCHAR(50), prixAchat DECIMAL(10,2), lienImageEquipement VARCHAR(100), statutEquipement VARCHAR(50), #idFournisseur, #idInformationMaintenance, #idCreateurEquipement, #idLieu, #idModeleEquipement);
 
