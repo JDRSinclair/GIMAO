@@ -1,14 +1,32 @@
+# myApp/models.py
 from django.db import models
 from django.core.validators import RegexValidator, EmailValidator
+from django.contrib.auth.models import User, AbstractUser
+from django.core.exceptions import ValidationError
+
+
+# ------------------------- Création des validateurs des models -------------------------
 
 # Validateur pour les numéros de téléphone
-phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Numéro de téléphone non valide")
+phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Le numéro de téléphone doit être entré au format: '+999999999'. Jusqu'à 15 chiffres autorisés.")
 
-#Valideur pour le champ 'niveau' dans la table 'Defaillance'.
+# Valideur pour le champ 'niveau' dans la table 'Defaillance'.
 def validate_niveau_de_defaillance(value):
-    valid_niveaux = ["Critique", "Majeur", "Mineur"]
-    if value not in valid_niveaux:
-        raise ValidationError(f"Le niveau de défaillance doit être l'une des valeurs suivantes: {', '.join(valid_niveaux)}.")
+    niveaux_valid = ["Critique", "Majeur", "Mineur"]
+    
+    if value not in niveaux_valid:
+        raise ValidationError(f"Le niveau de défaillance doit être l'une des valeurs suivantes: {', '.join(niveaux_valid)}.")
+
+
+def validate_etat_equipement(value):
+    etat_valid = ["Rebuté", "En fonctionnement", "Dégradé", "A l'arret"]
+    
+    if value not in etat_valid:
+        raise ValidationError(f"Le statut du modèle doit être l'une des valeurs suivantes :  {', '.join(etat_valid)}.")
+
+
+# ------------------------- Création des models -------------------------
+
 
 class Role(models.Model):
     nomRole = models.CharField(max_length=50)
@@ -16,26 +34,48 @@ class Role(models.Model):
     def __str__(self):
         return self.nomRole
 
-class Utilisateur(models.Model):
-    nomUtilisateur = models.CharField(max_length=50)
-    motDePasse = models.CharField(max_length=100)
-    mailUtilisateur = models.EmailField(max_length=50, validators=[EmailValidator()])
-    numTelephoneUtilisateur = models.CharField(max_length=15, null=True, blank=True, validators=[phone_regex])
-    actif = models.BooleanField()
-
-    def __str__(self):
-        return self.nomUtilisateur
-
 class Avoir(models.Model):
-    idRole = models.ForeignKey(Role, on_delete=models.CASCADE)
-    idUtilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Fabricant(models.Model):
-    nomFabricant = models.CharField(max_length=50)
-    paysFabricant = models.CharField(max_length=50)
-    mailFabricant = models.EmailField(max_length=50, null=True, blank=True, validators=[EmailValidator()])
-    numTelephoneFabricant = models.CharField(max_length=15, null=True, blank=True, validators=[phone_regex])
-    serviceApresVente = models.BooleanField()
+    nomFabricant = models.CharField(
+        max_length=50,
+        help_text="Nom du fabricant",
+        error_messages={
+            'unique': "Ce nom de fabricant existe déjà.",
+        }
+    )
+
+    paysFabricant = models.CharField(
+        max_length=50,
+        help_text="Pays du fabricant"
+    )
+
+    mailFabricant = models.EmailField(
+        max_length=50,
+        null=True,
+        blank=True,
+        validators=[EmailValidator()],
+        help_text="Adresse e-mail du fabricant",
+        error_messages={
+            'invalid': "Entrez une adresse e-mail valide.",
+        }
+    )
+    
+    numTelephoneFabricant = models.CharField(
+        max_length=15,
+        null=True,
+        blank=True,
+        validators=[phone_regex],
+        help_text="Numéro de téléphone du fabricant",
+        error_messages={
+            'invalid': "Entrez un numéro de téléphone valide.",
+        }
+    )
+    serviceApresVente = models.BooleanField(
+        help_text="Indique si le fabricant offre un service après-vente"
+    )
 
     def __str__(self):
         return self.nomFabricant
@@ -49,101 +89,131 @@ class Fournisseur(models.Model):
     paysFournisseur = models.CharField(max_length=50)
     mailFournisseur = models.EmailField(max_length=50, null=True, blank=True, validators=[EmailValidator()])
     numTelephoneFournisseur = models.CharField(max_length=15, null=True, blank=True, validators=[phone_regex])
-    serviceApresVente = models.BooleanField()
+    serviceApresVente = models.BooleanField(
+        help_text="Indique si le fournisseur propose un service d'aprés vente",
+    )
+
 
     def __str__(self):
         return self.nomFournisseur
 
 class Consommable(models.Model):
     designation = models.CharField(max_length=50)
-    lienImageConsommable = models.URLField(max_length=100, null=True, blank=True)
-    idFabricant = models.ForeignKey(Fabricant, on_delete=models.CASCADE)
+    lienImageConsommable = models.ImageField(upload_to='images/consomable', null=False) 
+    fabricant = models.ForeignKey(Fabricant, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.designation
 
 class StockConsommable(models.Model):
-    idConsommable = models.ForeignKey(Consommable, on_delete=models.CASCADE)
-    idFournisseur = models.ForeignKey(Fournisseur, on_delete=models.CASCADE)
+    consommable = models.ForeignKey(Consommable, on_delete=models.CASCADE)
+    fournisseur = models.ForeignKey(Fournisseur, on_delete=models.CASCADE)
     prixAchat = models.DecimalField(max_digits=7, decimal_places=2)
     dateAchat = models.DateField()
     quantiteConsommable = models.SmallIntegerField()
-    commentaire = models.CharField(max_length=1000, null=True, blank=True)
+    commentaire = models.CharField(
+        max_length=1000, 
+        null=True, 
+        blank=True,
+        help_text="Informations complémentaires possibles à renseigner",
+        )
 
 class ModeleEquipement(models.Model):
     nomModeleEquipement = models.CharField(max_length=50)
-    idFabricant = models.ForeignKey(Fabricant, on_delete=models.CASCADE)
+    fabricant = models.ForeignKey(Fabricant, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nomModeleEquipement
 
 class EstCompatible(models.Model):
-    idConsommable = models.ForeignKey(Consommable, on_delete=models.CASCADE)
-    idModeleEquipement = models.ForeignKey(ModeleEquipement, on_delete=models.CASCADE)
+    consommable = models.ForeignKey(Consommable, on_delete=models.CASCADE)
+    modeleEquipement = models.ForeignKey(ModeleEquipement, on_delete=models.CASCADE)
 
 class Lieu(models.Model):
     nomLieu = models.CharField(max_length=50)
-    typeLieu = models.CharField(max_length=50)
-    idLieuParent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    typeLieu = models.CharField(
+        max_length=50,
+        help_text="Informations complémentaires optionnelles sur le type de lieu renseigné.")
+
+    lieuParent = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        help_text="Pointeur désignant la structure (un autre lieu) où se trouve l'élément en question.")
 
     def __str__(self):
         return self.nomLieu
 
 class Equipement(models.Model):
+    reference = models.CharField(
+        max_length=50,
+        primary_key=True,
+        )
+
     dateCreation = models.DateTimeField()
-    designation = models.CharField(max_length=50, null=True, blank=True)
+    designation = models.CharField(
+        max_length=50, 
+        null=True, 
+        blank=True, 
+        help_text="Nom par lequel nous faisons référence à la machine.")
     dateMiseEnService = models.DateField()
-    prixAchat = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    lienImageEquipement = models.URLField(max_length=100, null=True, blank=True)
+    prixAchat = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        null=True, 
+        blank=True,
+        help_text="Prix au qu'elle vous avont aquit le lot")
+    lienImageEquipement = models.ImageField(upload_to='images/equipement', null=False)
     statutEquipement = models.CharField(max_length=50, null=True, blank=True)
-    idCreateurEquipement = models.ForeignKey(Utilisateur, related_name='createurEquipement', on_delete=models.CASCADE, null=True, blank=True)
-    idLieu = models.ForeignKey(Lieu, on_delete=models.CASCADE, null=True, blank=True)
-    idModeleEquipement = models.ForeignKey(ModeleEquipement, on_delete=models.CASCADE, null=True, blank=True)
-    idFournisseur = models.ForeignKey(Fournisseur, on_delete=models.CASCADE, null=True, blank=True)
-    idInformationMaintenance = models.ForeignKey('InformationMaintenance', on_delete=models.CASCADE, null=True, blank=True)
+    createurEquipement = models.ForeignKey(User, related_name='createurEquipement', on_delete=models.CASCADE, null=True, blank=True)
+    lieu = models.ForeignKey('Lieu', on_delete=models.CASCADE, null=True, blank=True)
+    modeleEquipement = models.ForeignKey('ModeleEquipement', on_delete=models.CASCADE, null=True, blank=True)
+    fournisseur = models.ForeignKey('Fournisseur', on_delete=models.CASCADE, null=True, blank=True)
+    informationMaintenance = models.ForeignKey('InformationMaintenance', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.designation
 
 class Constituer(models.Model):
-    idEquipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
-    idConsommable = models.ForeignKey(Consommable, on_delete=models.CASCADE)
+    equipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
+    consommable = models.ForeignKey(Consommable, on_delete=models.CASCADE)
 
 class InformationMaintenance(models.Model):
     preventifGlissant = models.BooleanField(null=True, blank=True)
     joursIntervalleMaintenance = models.SmallIntegerField()
     dateCreation = models.DateTimeField()
     dateChangement = models.DateTimeField(null=True, blank=True)
-    idInformationMaintenanceParent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
-    idCreateurInformationMaintenance = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
+    informationMaintenanceParent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    createurInformationMaintenance = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"InformationMaintenance {self.id}"
 
 class DocumentTechnique(models.Model):
     nomDocumentTechnique = models.CharField(max_length=50)
-    lienDocumentTechnique = models.URLField(max_length=100)
+    lienDocumentTechnique = models.FileField(upload_to='documents/documentTecnique', null=False) 
 
     def __str__(self):
         return self.nomDocumentTechnique
 
 class Correspondre(models.Model):
-    idDocumentTechnique = models.ForeignKey(DocumentTechnique, on_delete=models.CASCADE)
-    idModeleEquipement = models.ForeignKey(ModeleEquipement, on_delete=models.CASCADE)
+    documentTechnique = models.ForeignKey(DocumentTechnique, on_delete=models.CASCADE)
+    modeleEquipement = models.ForeignKey(ModeleEquipement, on_delete=models.CASCADE)
 
 class Defaillance(models.Model):
     commentaireDefaillance = models.CharField(max_length=1000, null=True, blank=True)
     niveau = models.CharField(max_length=50, validators=[validate_niveau_de_defaillance])
-    idUtilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
-    idEquipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
+    utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
+    equipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.commentaireDefaillance
 
 class DocumentDefaillance(models.Model):
     nomDocumentDefaillance = models.CharField(max_length=50)
-    lienDocumentDefaillance = models.URLField(max_length=100)
-    idDefaillance = models.ForeignKey(Defaillance, on_delete=models.CASCADE)
+    lienDocumentDefaillance = models.FileField(upload_to='documents/documentDefaillance', null=False) 
+    defaillance = models.ForeignKey(Defaillance, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nomDocumentDefaillance
@@ -157,17 +227,26 @@ class Intervention(models.Model):
     dateFinIntervention = models.DateTimeField(null=True, blank=True)
     tempsEstime = models.TimeField(null=True, blank=True)
     commentaireIntervention = models.CharField(max_length=1000, null=True, blank=True)
-    idDefaillance = models.ForeignKey(Defaillance, on_delete=models.CASCADE)
-    idCreateurIntervention = models.ForeignKey(Utilisateur, related_name='createurIntervention', on_delete=models.CASCADE)
-    idResponsable = models.ForeignKey(Utilisateur, related_name='responsable', on_delete=models.CASCADE, null=True, blank=True)
+    defaillance = models.ForeignKey(Defaillance, on_delete=models.CASCADE)
+    createurIntervention = models.ForeignKey(User,
+    related_name='createurIntervention', 
+    on_delete=models.CASCADE,
+    help_text="La personne qui crée l'intervention")
+    
+    responsable = models.ForeignKey(User, 
+    related_name='responsable', 
+    on_delete=models.CASCADE, 
+    null=True, blank=True,
+    help_text="La personne qui réalise l'intervention"
+    )
 
     def __str__(self):
         return self.nomIntervention
 
 class DocumentIntervention(models.Model):
     nomDocumentIntervention = models.CharField(max_length=50)
-    lienDocumentIntervention = models.URLField(max_length=100)
-    idIntervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
+    lienDocumentIntervention = models.FileField(upload_to='documents/documentIntervention', null=False) 
+    intervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nomDocumentIntervention

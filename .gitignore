@@ -9,3 +9,7 @@ backend/myApp/__pycache__
 backend/myApp/migrations/__pycache__
 backend/api/__pycache__
 backend/gimao/__pycache__
+
+
+# Fichier de stockage des images et des différents types de fichiers complémentaires 
+backend/media

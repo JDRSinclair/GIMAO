@@ -1,15 +1,10 @@
 # api/serializers.py
 from rest_framework import serializers
-from myApp.models import Role, Utilisateur, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable, ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer, InformationMaintenance, DocumentTechnique, Correspondre, Defaillance, DocumentDefaillance, Intervention, DocumentIntervention
+from myApp.models import Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable, ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer, InformationMaintenance, DocumentTechnique, Correspondre, Defaillance, DocumentDefaillance, Intervention, DocumentIntervention
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
-        fields = '__all__'
-
-class UtilisateurSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Utilisateur
         fields = '__all__'
 
 class AvoirSerializer(serializers.ModelSerializer):

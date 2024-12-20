@@ -7,6 +7,7 @@ SECRET_KEY = 'your-secret-key'
 
 DEBUG = True
 
+
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
@@ -20,6 +21,7 @@ INSTALLED_APPS = [
     'myApp',
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -31,6 +33,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'gimao.urls'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 TEMPLATES = [
     {
@@ -78,7 +83,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 

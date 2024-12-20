@@ -1,14 +1,12 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import (
-    Role, Utilisateur, Avoir, Fabricant, Fournisseur, Consommable,
+     Role, Avoir, Fabricant, Fournisseur, Consommable,
     StockConsommable, ModeleEquipement, EstCompatible, Lieu, Equipement,
     Constituer, InformationMaintenance, DocumentTechnique, Correspondre,
     Defaillance, DocumentDefaillance, Intervention, DocumentIntervention
 )
-
-# Enregistrer les modèles dans l'interface d'administration
 admin.site.register(Role)
-admin.site.register(Utilisateur)
 admin.site.register(Avoir)
 admin.site.register(Fabricant)
 admin.site.register(Fournisseur)

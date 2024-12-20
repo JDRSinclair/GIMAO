@@ -1,15 +1,11 @@
 # api/views.py
 from rest_framework import viewsets
-from myApp.models import Role, Utilisateur, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable, ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer, InformationMaintenance, DocumentTechnique, Correspondre, Defaillance, DocumentDefaillance, Intervention, DocumentIntervention
-from .serializers import RoleSerializer, UtilisateurSerializer, AvoirSerializer, FabricantSerializer, FournisseurSerializer, ConsommableSerializer, StockConsommableSerializer, ModeleEquipementSerializer, EstCompatibleSerializer, LieuSerializer, EquipementSerializer, ConstituerSerializer, InformationMaintenanceSerializer, DocumentTechniqueSerializer, CorrespondreSerializer, DefaillanceSerializer, DocumentDefaillanceSerializer, InterventionSerializer, DocumentInterventionSerializer
+from myApp.models import Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable, ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer, InformationMaintenance, DocumentTechnique, Correspondre, Defaillance, DocumentDefaillance, Intervention, DocumentIntervention
+from .serializers import RoleSerializer, AvoirSerializer, FabricantSerializer, FournisseurSerializer, ConsommableSerializer, StockConsommableSerializer, ModeleEquipementSerializer, EstCompatibleSerializer, LieuSerializer, EquipementSerializer, ConstituerSerializer, InformationMaintenanceSerializer, DocumentTechniqueSerializer, CorrespondreSerializer, DefaillanceSerializer, DocumentDefaillanceSerializer, InterventionSerializer, DocumentInterventionSerializer
 
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
-
-class UtilisateurViewSet(viewsets.ModelViewSet):
-    queryset = Utilisateur.objects.all()
-    serializer_class = UtilisateurSerializer
 
 class AvoirViewSet(viewsets.ModelViewSet):
     queryset = Avoir.objects.all()

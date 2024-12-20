@@ -1,11 +1,10 @@
 # api/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import RoleViewSet, UtilisateurViewSet, AvoirViewSet, FabricantViewSet, FournisseurViewSet, ConsommableViewSet, StockConsommableViewSet, ModeleEquipementViewSet, EstCompatibleViewSet, LieuViewSet, EquipementViewSet, ConstituerViewSet, InformationMaintenanceViewSet, DocumentTechniqueViewSet, CorrespondreViewSet, DefaillanceViewSet, DocumentDefaillanceViewSet, InterventionViewSet, DocumentInterventionViewSet
+from .views import RoleViewSet, AvoirViewSet, FabricantViewSet, FournisseurViewSet, ConsommableViewSet, StockConsommableViewSet, ModeleEquipementViewSet, EstCompatibleViewSet, LieuViewSet, EquipementViewSet, ConstituerViewSet, InformationMaintenanceViewSet, DocumentTechniqueViewSet, CorrespondreViewSet, DefaillanceViewSet, DocumentDefaillanceViewSet, InterventionViewSet, DocumentInterventionViewSet
 
 router = DefaultRouter()
 router.register(r'roles', RoleViewSet)
-router.register(r'utilisateurs', UtilisateurViewSet)
 router.register(r'avoirs', AvoirViewSet)
 router.register(r'fabricants', FabricantViewSet)
 router.register(r'fournisseurs', FournisseurViewSet)
