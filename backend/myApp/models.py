@@ -146,26 +146,39 @@ class Lieu(models.Model):
         return self.nomLieu
 
 class Equipement(models.Model):
+    STATUT_CHOICES = [
+        ('Rebuté', 'Rebuté'),
+        ('En fonctionnement', 'En fonctionnement'),
+        ('Dégradé', 'Dégradé'),
+        ('A l\'arret', 'A l\'arret'),
+    ]
     reference = models.CharField(
         max_length=50,
         primary_key=True,
-        )
+    )
 
     dateCreation = models.DateTimeField()
     designation = models.CharField(
-        max_length=50, 
-        null=True, 
-        blank=True, 
-        help_text="Nom par lequel nous faisons référence à la machine.")
+        max_length=50,
+        null=True,
+        blank=True,
+        help_text="Nom par lequel nous faisons référence à la machine."
+    )
     dateMiseEnService = models.DateField()
     prixAchat = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        null=True, 
+        max_digits=10,
+        decimal_places=2,
+        null=True,
         blank=True,
-        help_text="Prix au qu'elle vous avont aquit le lot")
+        help_text="Prix auquel vous avez acheté le lot"
+    )
     lienImageEquipement = models.ImageField(upload_to='images/equipement', null=False)
-    statutEquipement = models.CharField(max_length=50, null=True, blank=True)
+    statutEquipement = models.CharField(
+        max_length=50,
+        choices=STATUT_CHOICES,
+        null=True,
+        blank=True
+    )
     createurEquipement = models.ForeignKey(User, related_name='createurEquipement', on_delete=models.CASCADE, null=True, blank=True)
     lieu = models.ForeignKey('Lieu', on_delete=models.CASCADE, null=True, blank=True)
     modeleEquipement = models.ForeignKey('ModeleEquipement', on_delete=models.CASCADE, null=True, blank=True)
@@ -202,8 +215,16 @@ class Correspondre(models.Model):
     modeleEquipement = models.ForeignKey(ModeleEquipement, on_delete=models.CASCADE)
 
 class Defaillance(models.Model):
+    DEFAILLANCE_CHOICES = [
+        ('Critique', 'Critique'),
+        ('Majeur', 'Majeur'),
+        ('Mineur', 'Mineur'),
+    ]
     commentaireDefaillance = models.CharField(max_length=1000, null=True, blank=True)
-    niveau = models.CharField(max_length=50, validators=[validate_niveau_de_defaillance])
+    niveau = models.CharField(
+        max_length=50,
+        choices=DEFAILLANCE_CHOICES, 
+        validators=[validate_niveau_de_defaillance])
     utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
     equipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
 
