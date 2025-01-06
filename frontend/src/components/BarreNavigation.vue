@@ -142,7 +142,6 @@
   
   <script>
   export default {
-    name: 'NavigationDrawer',
     data() {
       return {
         selectedItem: null, // État pour garder la trace de l'élément sélectionné

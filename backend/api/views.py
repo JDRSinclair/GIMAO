@@ -1,6 +1,5 @@
+# api/views.py
 from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.decorators import action
 from myApp.models import Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable, ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer, InformationMaintenance, DocumentTechnique, Correspondre, Defaillance, DocumentDefaillance, Intervention, DocumentIntervention
 from .serializers import RoleSerializer, AvoirSerializer, FabricantSerializer, FournisseurSerializer, ConsommableSerializer, StockConsommableSerializer, ModeleEquipementSerializer, EstCompatibleSerializer, LieuSerializer, EquipementSerializer, ConstituerSerializer, InformationMaintenanceSerializer, DocumentTechniqueSerializer, CorrespondreSerializer, DefaillanceSerializer, DocumentDefaillanceSerializer, InterventionSerializer, DocumentInterventionSerializer
 
@@ -39,37 +38,6 @@ class EstCompatibleViewSet(viewsets.ModelViewSet):
 class LieuViewSet(viewsets.ModelViewSet):
     queryset = Lieu.objects.all()
     serializer_class = LieuSerializer
-
-    def get_queryset(self):
-        if self.action == 'list':
-            return Lieu.objects.filter(lieuParent__isnull=True)
-        return super().get_queryset()
-
-    @action(detail=True, methods=['get'])
-    def sous_lieux(self, request, pk=None):
-        lieu = self.get_object()
-        sous_lieux = Lieu.objects.filter(lieuParent=lieu)
-        serializer = LieuSerializer(sous_lieux, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['get'])
-    def types_equipements(self, request, pk=None):
-        lieu = self.get_object()
-        types_equipements = ModeleEquipement.objects.filter(equipement__lieu__lieuParent=lieu).distinct()
-        serializer = ModeleEquipementSerializer(types_equipements, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['get'])
-    def equipements_by_lieu_and_type(self, request, pk=None):
-        lieu = self.get_object()
-        typeEquipementId = request.query_params.get('typeEquipementId')
-        if typeEquipementId:
-            type_equipement = ModeleEquipement.objects.get(id=typeEquipementId)
-            equipements = Equipement.objects.filter(lieu__lieuParent=lieu, modeleEquipement=type_equipement)
-        else:
-            equipements = Equipement.objects.filter(lieu__lieuParent=lieu)
-        serializer = EquipementSerializer(equipements, many=True)
-        return Response(serializer.data)
 
 class EquipementViewSet(viewsets.ModelViewSet):
     queryset = Equipement.objects.all()
