@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import TableauDeBord from '@/views/TableauDeBord.vue'
-import Equipements from '@/views/Equipements.vue'
-import Maintenances from '@/views/Maintenances.vue'
-import Techniciens from '@/views/Techniciens.vue'
-import GestionComptes from '@/views/GestionComptes.vue'
-import Commandes from '@/views/Commandes.vue'
-import Stocks from '@/views/Stocks.vue'
+import TableauDeBord from '@/views/TableauDeBord/TableauDeBord.vue'
+import Equipements from '@/views/Equipements/Equipements.vue'
+import Maintenances from '@/views/Maintenances/Maintenances.vue'
+import Techniciens from '@/views/Techniciens/Techniciens.vue'
+import GestionComptes from '@/views/GestionComptes/GestionComptes.vue'
+import Commandes from '@/views/Commandes/Commandes.vue'
+import Stocks from '@/views/Stocks/Stocks.vue'
 
 const routes = [
   {
