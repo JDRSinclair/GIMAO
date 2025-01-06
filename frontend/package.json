@@ -7,11 +7,11 @@
     "serve": "vue-cli-service serve"
   },
   "dependencies": {
+    "@vue/cli-service": "^5.0.0",
     "vue": "^3.2.37",
-    "vuetify": "^3.0.0",
-    "@vue/cli-service": "^5.0.0"
+    "vue-router": "^4.5.0",
+    "vuetify": "^3.0.0"
   },
-  "devDependencies": {},
   "author": "",
   "license": "ISC"
 }

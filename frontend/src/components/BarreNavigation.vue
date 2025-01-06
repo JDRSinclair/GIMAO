@@ -18,14 +18,14 @@
       <v-list-item
         v-for="item in navigationItems"
         :key="item.name"
-        @click="selectItem(item.name)"
+        :to="{ name: item.name }"
         :class="[getItemClasses(item.name), $style.itemSize]"
       >
         <template v-slot:prepend>
           <img
             :src="require(`@/assets/images/${item.icon}`)"
             :alt="`Icone ${item.name}`"
-            :class="[{ 'active-icon': selectedItem === item.name, 'inner-shadow': true }, $style.icon]"
+            :class="[{ 'active-icon': isActive(item.name), 'inner-shadow': true }, $style.icon]"
           />
         </template>
         <v-list-item-title class="font-weight-bold text-center" v-html="item.title"></v-list-item-title>
@@ -58,20 +58,14 @@ export default {
       ]
     }
   },
-  data() {
-    return {
-      selectedItem: null,
-    };
-  },
   methods: {
-    selectItem(item) {
-      this.selectedItem = item;
-      this.$emit('item-selected', item);
+    isActive(routeName) {
+      return this.$route.name === routeName;
     },
     getItemClasses(itemName) {
       return {
-        'active-item': this.selectedItem === itemName,
-        'no-hover': this.selectedItem === itemName,
+        'active-item': this.isActive(itemName),
+        'no-hover': this.isActive(itemName),
         'inner-shadow': true,
       };
     },

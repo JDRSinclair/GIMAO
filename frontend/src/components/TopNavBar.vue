@@ -2,14 +2,7 @@
   <v-app-bar app color="white" elevation="2" density="comfortable" class="px-6">
     <!-- Logo and Title -->
     <v-col class="d-flex align-center justify-start">
-      <v-avatar size="48" class="mr-2">
-        <v-img :src="logoUrl" alt="Logo" cover class="border"></v-img>
-      </v-avatar>
-      <span class="text-h6 font-weight-bold app-title">
-        GIMAO
-      </span>
     </v-col>
-
     <!-- Left-aligned Page Title -->
     <div class="text-h5 font-weight-bold page-title">
       {{ pageTitle }}
@@ -59,7 +52,7 @@ export default {
   props: {
     pageTitle: {
       type: String,
-      default: "Tableau de Bord"
+      required: true
     },
     userName: {
       type: String,
