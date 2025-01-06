@@ -3,39 +3,36 @@
     <!-- Logo and Title -->
     <v-col class="d-flex align-center justify-start">
       <v-avatar size="48" class="mr-2">
-        <v-img
-          src="https://i.imghippo.com/files/wCa5810fAA.png"
-          alt="Logo"
-          cover
-          class="border"
-        ></v-img>
+        <v-img :src="logoUrl" alt="Logo" cover class="border"></v-img>
       </v-avatar>
-      <span class="text-h6 font-weight-bold" style="color: #151d48; font-family: 'Montserrat', sans-serif;">
+      <span class="text-h6 font-weight-bold app-title">
         GIMAO
       </span>
     </v-col>
 
     <!-- Left-aligned Page Title -->
-    <div class="text-h5 font-weight-bold" style="color: #151d48; margin-left: 16px;">
-      Tableau de Bord
+    <div class="text-h5 font-weight-bold page-title">
+      {{ pageTitle }}
     </div>
 
     <v-spacer></v-spacer>
 
     <!-- Action Buttons -->
     <v-btn
-      color="#151D48"
+      color="primary"
       class="mr-4 text-none"
       density="comfortable"
+      @click="exportDatabase"
     >
       <v-icon start>mdi-database-export</v-icon>
       Exporter la base de données
     </v-btn>
 
     <v-btn
-      color="#151D48"
+      color="primary"
       class="mr-4 text-none"
       density="comfortable"
+      @click="logout"
     >
       <v-icon start>mdi-logout</v-icon>
       Déconnexion
@@ -43,19 +40,14 @@
 
     <!-- Profile Section -->
     <v-avatar size="40" class="ml-4">
-      <v-img
-        src="https://i.imghippo.com/files/SRJI2293jtI.png"
-        alt="Admin"
-        cover
-        class="border"
-      ></v-img>
+      <v-img :src="userAvatarUrl" :alt="userName" cover class="border"></v-img>
     </v-avatar>
     <div class="ml-2 text-left">
-      <div class="font-weight-bold" style="color: #151d48;">
-        Admin
+      <div class="font-weight-bold user-name">
+        {{ userName }}
       </div>
       <div class="text-caption text-grey-darken-1">
-        Administrateur
+        {{ userRole }}
       </div>
     </div>
   </v-app-bar>
@@ -64,5 +56,47 @@
 <script>
 export default {
   name: "TopNavBar",
+  props: {
+    pageTitle: {
+      type: String,
+      default: "Tableau de Bord"
+    },
+    userName: {
+      type: String,
+      default: "Admin"
+    },
+    userRole: {
+      type: String,
+      default: "Administrateur"
+    },
+    userAvatarUrl: {
+      type: String,
+      default: "https://i.imghippo.com/files/SRJI2293jtI.png"
+    },
+    logoUrl: {
+      type: String,
+      default: "https://i.imghippo.com/files/wCa5810fAA.png"
+    }
+  },
+  methods: {
+    exportDatabase() {
+      // Logique pour exporter la base de données
+      console.log("Exporting database...");
+    },
+    logout() {
+      // Logique pour la déconnexion
+      console.log("Logging out...");
+    }
+  }
 };
 </script>
+
+<style scoped>
+.app-title, .page-title, .user-name {
+  color: #151d48;
+}
+
+.app-title {
+  font-family: 'Montserrat', sans-serif;
+}
+</style>
