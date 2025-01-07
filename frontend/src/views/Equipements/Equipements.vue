@@ -23,10 +23,18 @@
             <v-data-table
               :headers="headers"
               :items="filteredEquipements"
+              :items-per-page="itemsPerPage"
+              :page.sync="page"
               item-value="name"
               class="elevation-1 rounded-lg"
-              hide-default-footer
+              @page-count="pageCount = $event"
             ></v-data-table>
+            <div class="text-center pt-2">
+              <v-pagination
+                v-model="page"
+                :length="pageCount"
+              ></v-pagination>
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -95,6 +103,9 @@ export default {
       },
     ]);
     const selectedLieu = ref(null);
+    const page = ref(1);
+    const pageCount = ref(0);
+    const itemsPerPage = ref(5);
 
     const filteredEquipements = computed(() => {
       if (!selectedLieu.value) {
@@ -113,7 +124,10 @@ export default {
       lieux,
       selectedLieu,
       handleLieuSelected,
-      filteredEquipements
+      filteredEquipements,
+      page,
+      pageCount,
+      itemsPerPage
     };
   }
 };
