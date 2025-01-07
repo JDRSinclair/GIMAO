@@ -19,5 +19,9 @@ app.use(router);
 // Utilisez Vuetify
 app.use(vuetify);
 
+// Fournir Vuetify à l'application
+app.provide('vuetify', vuetify);
+
+
 // Montez l'application
 app.mount('#app');
