@@ -8,6 +8,7 @@ import Techniciens from '@/views/Techniciens/Techniciens.vue'
 import GestionComptes from '@/views/GestionComptes/GestionComptes.vue'
 import Commandes from '@/views/Commandes/Commandes.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
+import Signalements from '@/views/Signalements/Signalements.vue'
 
 
 const routes = [
@@ -65,6 +66,12 @@ const routes = [
     name: 'Stocks',
     component: Stocks,
     meta: { title: 'Stocks' }
+  },
+  {
+    path: '/signalements',
+    name: 'Signalements',
+    component: Signalements,
+    meta: { title: 'Signalements' }
   }
 ]
 
