@@ -20,6 +20,13 @@
             </v-card>
           </v-col>
           <v-col cols="9">
+            <v-btn
+              color="primary"
+              @click="goToAnotherPage"
+              class="mb-4"
+            >
+              Aller à une autre page
+            </v-btn>
             <v-data-table
               :headers="headers"
               :items="filteredEquipements"
@@ -28,7 +35,16 @@
               item-value="name"
               class="elevation-1 rounded-lg"
               @page-count="pageCount = $event"
-            ></v-data-table>
+            >
+              <template v-slot:item="{ item }">
+                <tr @click="changerEquipement(item)" style="cursor: pointer;">
+                  <!-- Contenu de chaque cellule -->
+                  <td>{{ item.equipement }}</td>
+                  <td>{{ item.lieu }}</td>
+                  <td>{{ item.etat }}</td>
+                </tr>
+              </template>
+            </v-data-table>
             <div class="text-center pt-2">
               <v-pagination
                 v-model="page"
@@ -36,33 +52,6 @@
               ></v-pagination>
             </div>
           </v-col>
-          <v-col cols="9"> <!-- Augmente la largeur à 9/12 -->
-          <!-- Bouton en haut du tableau pour appeler une autre page -->
-          <v-btn
-            color="primary"
-            @click="goToAnotherPage"
-            class="mb-4"
-          >
-            Aller à une autre page
-          </v-btn>
-
-          <v-data-table
-            :headers="headers"
-            :items="equipements"
-            item-value="name"
-            class="elevation-1 rounded-lg"
-            hide-default-footer
-          >
-            <template v-slot:item="{ item }">
-              <tr @click="changerEquipement(item)" style="cursor: pointer;">
-                <!-- Contenu de chaque cellule -->
-                <td>{{ item.equipement }}</td>
-                <td>{{ item.salle }}</td>
-                <td>{{ item.etat }}</td>
-              </tr>
-            </template>
-          </v-data-table>
-        </v-col>
         </v-row>
       </v-container>
     </v-main>

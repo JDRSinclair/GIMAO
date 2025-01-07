@@ -211,29 +211,38 @@
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <!-- Vérifier si une image a été sélectionnée -->
               <template v-if="imageSrc">
-                <v-img
-                  :src="imageSrc"
-                  aspect-ratio="4/3"
-                  class="rounded-lg"
-                  alt="Equipment Image"
-                  @click="triggerFileInputImage"
-                ></v-img>
+                <v-row justify="center" align="center" class="fill-height" no-gutters>
+                  <v-col cols="auto">
+                    <v-img
+                      :src="imageSrc"
+                      width="300px"
+                      height="300px"
+                      class="rounded-lg"
+                      alt="Equipment Image"
+                      @click="triggerFileInputImage"
+                    ></v-img>
+                  </v-col>
+                </v-row>
               </template>
 
               <!-- Si aucune image n'est sélectionnée, afficher le bouton -->
               <template v-else>
-                <v-btn 
-                  color="transparent"
-                  @click="triggerFileInputImage" 
-                  icon
-                  class="rounded-circle"
-                  style="border: none; box-shadow: none;"
-                >
-                  <img 
-                    src="@/assets/images/iconPlus.svg" 
-                    alt="Icone Plus"   
-                  />
-                </v-btn>
+                <v-row justify="center" align="center" class="fill-height">
+                  <v-col cols="auto">
+                    <v-btn 
+                      color="transparent"
+                      @click="triggerFileInputImage" 
+                      icon
+                      class="rounded-circle"
+                      style="border: none; box-shadow: none; ;"
+                    >
+                      <img 
+                        src="@/assets/images/iconPlus.svg" 
+                        alt="Icone Plus"   
+                      />
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </template>
 
               <!-- Input invisible pour choisir une image -->
@@ -305,7 +314,10 @@
 
             <!-- Action Button -->
             <v-row justify="end">
-              <v-btn color="primary" class="mt-4" large>
+              <v-btn color="secoundary" class="mt-4 rounded" @click="$router.go(-1)" style="border-radius: 0; margin-right: 35px;" large>
+                Annuler
+              </v-btn>
+              <v-btn color="primary" class="mt-4 rounded" style="border-radius: 0 ;margin-right: 35px;" large>
                 Confirmer
               </v-btn>
             </v-row>
