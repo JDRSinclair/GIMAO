@@ -71,6 +71,7 @@
 
 <script>
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import NavigationDrawer from '@/components/BarreNavigation.vue';
 import TopNavBar from "@/components/TopNavBar.vue";
 import LieuxExplorer from '@/components/LieuxExplorer.vue';
@@ -84,6 +85,8 @@ export default {
     LieuxExplorer,
   },
   setup() {
+    const router = useRouter();
+
     const typesEquipements = ref(["Tous", "Type 1", "Type 2", "Type 3", "Type 4"]);
     const headers = ref([
       { text: "Équipement", value: "equipement", align: "start" },
@@ -135,7 +138,6 @@ export default {
     const itemsPerPage = ref(5);
 
     const goToAnotherPage = () => {
-      const router = useRouter();
       router.push({ name: 'AjouterEquipement' });
     };
 
@@ -169,9 +171,9 @@ export default {
       page,
       pageCount,
       itemsPerPage,
-      goToAnotherPage,    
-      handleItemSelected, 
-      changerEquipement   
+      goToAnotherPage,
+      handleItemSelected,
+      changerEquipement,
     };
   }
 };
