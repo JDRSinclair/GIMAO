@@ -1,59 +1,59 @@
 <template>
   <v-app>
-    <!-- Main Content -->
+    <!-- Contenu principal -->
     <v-main>
       <v-container>
         <v-row>
-          <!-- Left Section: Equipment Details -->
+          <!-- Section gauche : Détails de l'équipement -->
           <v-col cols="6">
             <v-card elevation="1" class="rounded-lg pa-2">
-              <v-card-title class="font-weight-bold text-uppercase text-primary">Détails de l'équipement</v-card-title>
+              <v-card-title class="font-weight-bold text-uppercase text-primary">Description de l'équipement</v-card-title>
 
               <v-row class="pa-2">
                 <v-col cols="12">
-                  <p><strong>Réference de l'équipement (num série):</strong> {{ equipment.ref }}</p>
+                  <p><strong>Référence de l'équipement (numéro de série) :</strong> {{ equipement.reference }}</p>
                 </v-col>
                 <v-col cols="12">
-                  <p><strong>Désignation de l'équipement:</strong> {{ equipment.designation }}</p>
+                  <p><strong>Désignation de l'équipement :</strong> {{ equipement.designation }}</p>
                 </v-col>
                 <v-col cols="12">
-                  <p><strong>Type de l'équipement:</strong> {{ equipment.type }}</p>
+                  <p><strong>Type de l'équipement :</strong> {{ equipement.type }}</p>
                 </v-col>
                 <v-col cols="12">
-                  <p><strong>Salle:</strong> {{ equipment.salle }}</p>
+                  <p><strong>Salle :</strong> {{ equipement.salle }}</p>
                 </v-col>
                 <v-col cols="12">
-                  <p><strong>État:</strong> {{ equipment.etat }}</p>
+                  <p><strong>État :</strong> {{ equipement.etat }}</p>
                 </v-col>
                 <v-col cols="12">
-                  <p><strong>Mise en fonction:</strong> {{ equipment.miseEnFonction }}</p>
+                  <p><strong>Mise en fonction :</strong> {{ equipement.miseEnFonction }}</p>
                 </v-col>
                 <v-col cols="12">
-                  <p><strong>Prix de l'équipement (€):</strong> {{ equipment.prix }}</p>
+                  <p><strong>Prix de l'équipement (€) :</strong> {{ equipement.prix }}</p>
                 </v-col>
                 <v-col cols="12">
-                  <p><strong>Fournisseur:</strong> {{ equipment.fournisseur }}</p>
+                  <p><strong>Fournisseur :</strong> {{ equipement.fournisseur }}</p>
                 </v-col>
                 <v-col cols="12">
-                  <p><strong>Modèle:</strong> {{ equipment.modele }}</p>
+                  <p><strong>Modèle :</strong> {{ equipement.modele }}</p>
                 </v-col>
               </v-row>
 
-              <!-- Documentation Section -->
+              <!-- Section documentation -->
               <v-card elevation="1" class="rounded-lg pa-2">
                 <v-card-title class="font-weight-bold text-uppercase text-primary">Documentation</v-card-title>
 
                 <v-data-table
-                  :headers="headers"
-                  :items="documentations"
-                  item-value="nomDocumentation"
+                  :headers="entetes"
+                  :items="documents"
+                  item-value="nomDocument"
                   class="elevation-1 rounded-lg"
                   hide-default-footer
                 >
                   <template v-slot:item="{ item, index }">
-                    <tr @click="telechargerDoc(item)" style="cursor: pointer;">
+                    <tr @click="telechargerDocument(item)" style="cursor: pointer;">
                       <td>
-                        {{ item.nomDocumentation }}
+                        {{ item.nomDocument }}
                       </td>
                     </tr>
                   </template>
@@ -62,68 +62,82 @@
             </v-card>
           </v-col>
 
-          <!-- Right Section: Image, Consumables, Maintenance, and Actions -->
+          <!-- Section droite : Image, consommables, maintenance et actions -->
           <v-col cols="6">
-            <!-- Image Section -->
+            <!-- Section image -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-img
-                :src="equipment.image"
+                :src="equipement.image"
                 aspect-ratio="4/3"
                 class="rounded-lg"
                 style="max-height: 30vh;"
-                alt="Equipment Image"
+                alt="Image de l'équipement"
               ></v-img>
             </v-card>
             
-            <!-- Consumables Section -->
+            <!-- Section consommables -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">
                 Consommables
               </v-card-title>
               <v-data-table
-                :headers="consumablesHeaders"
-                :items="consumables"
+                :items="consommables"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
               >
-                <template v-slot:item.name="{ item }">
-                  <span>{{ item.name }}</span>
+                <template v-slot:header>
+                  <tr>
+                    <th>Nom pièce</th>
+                    <th>État de la pièce</th>
+                    <th>En stock</th>
+                  </tr>
                 </template>
-                <template v-slot:item.status="{ item }">
-                  <span>{{ item.status }}</span>
-                </template>
-                <template v-slot:item.stock="{ item }">
-                  <span>{{ item.stock }}</span>
+                <template v-slot:item="{ item }">
+                  <tr>
+                    <td>{{ item.nom }}</td>
+                    <td>{{ item.etat }}</td>
+                    <td>{{ item.stock }}</td>
+                  </tr>
                 </template>
               </v-data-table>
             </v-card>
 
-            <!-- Maintenance History Section -->
+            <!-- Section historique de maintenance -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">
                 Maintenances effectuées
               </v-card-title>
               <v-data-table
-                :headers="maintenanceHeaders"
                 :items="maintenances"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
               >
-                <template v-slot:item.number="{ item }">
-                  <span>{{ item.number }}</span>
+                <template v-slot:header>
+                  <tr>
+                    <th>Numéro</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                  </tr>
                 </template>
-                <template v-slot:item.date="{ item }">
-                  <span>{{ item.date }}</span>
-                </template>
-                <template v-slot:item.action="{ item }">
-                  <v-btn icon @click="viewMaintenance(item)">
-                    <v-icon color="primary">mdi-eye</v-icon>
-                  </v-btn>
+                <template v-slot:item="{ item }">
+                  <tr>
+                    <td>{{ item.numero }}</td>
+                    <td>{{ item.date }}</td>
+                    <td>
+                      <v-btn icon @click="voirMaintenance(item)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye eye-icon">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                      </v-btn>
+
+                    </td>
+                  </tr>
                 </template>
               </v-data-table>
             </v-card>
 
-            <!-- Action Button -->
+            <!-- Bouton d'action -->
             <v-row justify="end">
               <v-btn color="primary" class="mt-4" large>
                 Modifier
@@ -150,36 +164,37 @@ export default {
   
   data() {
     return {
-      headers: [
-        { text: "Document", value: "nomDocumentation", align: "start" }
+      entetes: [
+        { text: "Document", value: "nomDocument", align: "start" }
       ],
-      documentations: [
-        { nomDocumentation: "Doc1" },
-        { nomDocumentation: "Doc2" },
-        { nomDocumentation: "Doc3" }
+      documents: [
+        { nomDocument: "Doc1" },
+        { nomDocument: "Doc2" },
+        { nomDocument: "Doc3" },
+        { nomDocument: "Doc4" }
       ],
-      consumablesHeaders: [
-        { text: "Nom pièce", value: "name" },
-        { text: "État de la pièce", value: "status" },
+      consommablesEntetes: [
+        { text: "Nom pièce", value: "nom" },
+        { text: "État de la pièce", value: "etat" },
         { text: "En stock", value: "stock" }
       ],
-      consumables: [
-        { name: "Pièce 1", status: "Endommagée", stock: 20 },
-        { name: "Pièce 2", status: "Normale", stock: 7 },
-        { name: "Pièce 3", status: "Normale", stock: 9 }
+      consommables: [
+        { nom: "Pièce 1", etat: "Endommagée", stock: 20 },
+        { nom: "Pièce 2", etat: "Normale", stock: 7 },
+        { nom: "Pièce 3", etat: "Normale", stock: 9 }
       ],
-      maintenanceHeaders: [
-        { text: "Numéro", value: "number" },
+      maintenancesEntetes: [
+        { text: "Numéro", value: "numero" },
         { text: "Date", value: "date" },
         { text: "", value: "action", align: "center" }
       ],
       maintenances: [
-        { number: 1, date: "10/07/24" },
-        { number: 2, date: "05/04/24" },
-        { number: 3, date: "15/01/24" }
+        { numero: 1, date: "10/07/24" },
+        { numero: 2, date: "05/04/24" },
+        { numero: 3, date: "15/01/24" }
       ],
-      equipment: {
-        ref: "Ref12345",
+      equipement: {
+        reference: "Ref12345",
         designation: "Equipement X",
         type: "Type Y",
         salle: "Salle1",
@@ -192,12 +207,13 @@ export default {
       }
     };
   },
+  
   methods: {
-    telechargerDoc(item) {
-      console.log('Selected item:', item);
+    telechargerDocument(item) {
+      console.log('Document sélectionné:', item);
     },
-    viewMaintenance(item) {
-      console.log('Viewing maintenance:', item);
+    voirMaintenance(item) {
+      console.log('Maintenance en cours de visualisation:', item);
     }
   },
 };
@@ -219,6 +235,11 @@ export default {
 .v-btn {
   background-color: #F1F5FF;
   border-radius: 50%;
+}
+
+.eye-icon {
+  width: 24px;
+  height: 24px;
 }
 
 h1 {
