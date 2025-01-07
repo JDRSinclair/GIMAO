@@ -149,7 +149,7 @@
                   <!-- Bouton pour ajouter une ligne -->
                   <v-btn 
                     color="transparent"
-                    @click="triggerFileInputDocumentation" 
+                    @click="activerFichierDocumentation" 
                     icon
                     class="rounded-circle"
                     style="border: none; box-shadow: none;"
@@ -201,7 +201,7 @@
                   ref="fileInputDocumentation" 
                   type="file" 
                   style="display: none;" 
-                  @change="handleFileChange" 
+                  @change="gererChangementFichier" 
                 />
               </v-card>
             </v-card>
@@ -219,7 +219,7 @@
                       height="300px"
                       class="rounded-lg"
                       alt="Equipment Image"
-                      @click="triggerFileInputImage"
+                      @click="activerFichierImage"
                     ></v-img>
                   </v-col>
                 </v-row>
@@ -231,7 +231,7 @@
                   <v-col cols="auto">
                     <v-btn 
                       color="transparent"
-                      @click="triggerFileInputImage" 
+                      @click="activerFichierImage" 
                       icon
                       class="rounded-circle"
                       style="border: none; box-shadow: none; ;"
@@ -470,17 +470,17 @@ export default {
     },
     
     // Ouvrir l'input de fichier pour la documentation
-    triggerFileInputDocumentation() {
+    activerFichierDocumentation() {
       this.$refs.fileInputDocumentation.click(); // Ouvre l'input pour un document
     },
 
     // Ouvrir l'input de fichier pour l'image
-    triggerFileInputImage() {
+    activerFichierImage() {
       this.$refs.fileInputImage.click(); // Ouvre l'input pour une image
     },
 
     // Cette méthode gère le changement de fichier (documents)
-    handleFileChange(event) {
+    gererChangementFichier(event) {
       const file = event.target.files[0]; // Récupère le fichier sélectionné
       if (file) {
         // Si le fichier est une image, on appelle la méthode changementImage
@@ -525,26 +525,3 @@ export default {
 
 };
 </script>
-
-<style scoped>
-.text-primary {
-  color: #05004E;
-}
-
-.text-dark {
-  color: #3C3C3C;
-}
-
-.v-card {
-  background-color: #FFFFFF;
-}
-
-.v-btn {
-  background-color: #F1F5FF;
-  border-radius: 50%;
-}
-
-h1 {
-  color: #05004E;
-}
-</style>

@@ -154,20 +154,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.text-primary {
-  color: #05004E;
-}
 
-.v-card {
-  background-color: #FFFFFF;
-}
-
-.v-btn.primary {
-  background-color: #05004E;
-}
-
-.v-btn.success {
-  background-color: #00C853;
-}
-</style>
