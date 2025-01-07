@@ -3,7 +3,7 @@
     <v-main>
       <v-container>
         <v-row>
-          <v-col cols="3">
+          <v-col cols="4">
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">Structure des lieux</v-card-title>
               <v-divider></v-divider>
@@ -19,13 +19,20 @@
               </v-list>
             </v-card>
           </v-col>
-          <v-col cols="9">
+          <v-col cols="8">
             <v-btn
               color="primary"
-              @click="goToAnotherPage"
+              @click="ouvrirPageAjoutEquipement"
               class="mb-4"
             >
-              Aller à une autre page
+              Aller à l'ajout d'équipement
+            </v-btn>
+            <v-btn
+              color="primary"
+              @click="ouvrirPageVoirEquipement"
+              class="mb-4"
+            >
+              Aller à la visualisation d'équipement
             </v-btn>
             <v-data-table
               :headers="headers"
@@ -126,8 +133,12 @@ export default {
     const pageCount = ref(0);
     const itemsPerPage = ref(5);
 
-    const goToAnotherPage = () => {
+    const ouvrirPageAjoutEquipement = () => {
       router.push({ name: 'AjouterEquipement' });
+    };
+
+    const ouvrirPageVoirEquipement = () => {
+      router.push({ name: 'VisualiserEquipement' });
     };
 
     const handleItemSelected = (item) => {
@@ -160,7 +171,8 @@ export default {
       page,
       pageCount,
       itemsPerPage,
-      goToAnotherPage,
+      ouvrirPageAjoutEquipement,
+      ouvrirPageVoirEquipement,
       handleItemSelected,
       changerEquipement,
     };
