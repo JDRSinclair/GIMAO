@@ -38,9 +38,9 @@
               <v-row align="center" no-gutters>
                 <v-col cols="10">
                   <v-select
-                    v-model="SelectionSalle"
-                    :items="salles" 
-                    label="Choisir une salle"
+                    v-model="Selectionlieu"
+                    :items="lieux" 
+                    label="Choisir un lieu"
                     outlined
                     dense
                   ></v-select>
@@ -49,7 +49,7 @@
                   <!-- Bouton invisible avec icône -->
                   <v-btn 
                     color="transparent"
-                    @click="ajouterSalle" 
+                    @click="ajouterlieu" 
                     icon
                     small
                     class="rounded-circle"
@@ -256,32 +256,89 @@
 
             </v-card>
             
-            <!-- Consumables Section -->
+            <!-- consommables Section -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
-              <v-card-title class="font-weight-bold text-uppercase text-primary">
-                Consommables
-              </v-card-title>
-              <v-data-table
-                :headers="[
-                  { text: 'Nom pièce', value: 'name' },
-                  { text: 'État de la pièce', value: 'status' },
-                  { text: 'En stock', value: 'stock' }
-                ]"
-                :items="consumables"
-                class="elevation-1 rounded-lg"
-                hide-default-footer
-              >
-                <template v-slot:item.name="{ item }">
-                  <span>{{ item.name }}</span>
-                </template>
-                <template v-slot:item.status="{ item }">
-                  <span>{{ item.status }}</span>
-                </template>
-                <template v-slot:item.stock="{ item }">
-                  <span>{{ item.stock }}</span>
-                </template>
-              </v-data-table>
+              <v-row align="center">
+                <v-card-title class="font-weight-bold text-uppercase text-primary">
+                  Consommables
+                </v-card-title>
+
+                <!-- Liste déroulante pour la sélection d'un consommable -->
+                <v-col cols="auto">
+                  <v-select
+                    v-model="selectedConsommable"
+                    :items="listeConsommable"
+                    item-text="name"
+                    item-value="id"
+                    label="Choisir un consommable"
+                    return-object
+                    @change="ajouterConsommable"
+                    class="mt-0"
+                    dense
+                    style="font-size: 18px; min-width: 250px; height: 50px;"
+                  ></v-select>
+                </v-col>
+                <v-btn
+                  color="transparent"
+                  @click="ajouterConsommable"
+                  icon
+                  class="rounded-circle"
+                  style="border: none; box-shadow: none;"
+                >
+                  <img
+                    src="@/assets/images/iconPlus.svg"
+                    alt="Icone Plus"
+                  />
+                </v-btn>
+              </v-row>
+                <v-data-table
+                  :headers="headers"
+                  :items="consommables"
+                  item-key="id"
+                  class="elevation-1 rounded-lg"
+                  hide-default-footer
+                >
+                  <!-- Personnaliser la ligne entière pour être cliquable -->
+                  <template v-slot:item="{ item, index }">
+                    <tr>
+                      <!-- Colonne Nom -->
+                      <td>{{ item.name }}</td>
+
+                      <!-- Colonne État -->
+                      <td>{{ item.status }}</td>
+
+                      <!-- Colonne Stock -->
+                      <td>{{ item.stock }}</td>
+
+                      <!-- Colonne Action : Bouton de suppression -->
+                      <td class="text-right">
+                        <v-btn
+                          color="transparent"
+                          icon
+                          @click.stop="effacerConsommable(index)"
+                          style="border: none; box-shadow: none;"
+                        >
+                          <img
+                            src="@/assets/images/iconEffacer.svg"
+                            alt="Icone Effacer"
+                          />
+                        </v-btn>
+                      </td>
+                    </tr>
+                  </template>
+
+                  <!-- Définir l'en-tête des colonnes -->
+                  <template v-slot:columns="{ columns }">
+                    <tr>
+                      <th v-for="column in columns" :key="column.text" class="text-center pa-1">
+                        {{ column.text }}
+                      </th>
+                    </tr>
+                  </template>
+                </v-data-table>
             </v-card>
+
+
 
             <!-- Maintenance History Section -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
@@ -341,27 +398,27 @@ export default {
       ReferenceEquipement: "",
       DesignationEquipement: "",         // Variable pour le nom de l'équipement
       TypeEquipment: "",         // Variable pour le type de l'équipement
-      SelectionSalle: null,        // Variable pour la salle sélectionnée
-      salles: [                   // Liste des salles disponibles
-        'Salle1','Salle2','Salle3'
-        // Ajouter d'autres salles si nécessaire
+      Selectionlieu: null,        // Variable pour la lieu sélectionnée
+      lieux: [                   // Liste des lieux disponibles
+        'lieu1','lieu2','lieu3'
+        // Ajouter d'autres lieux si nécessaire
       ],
-      SelectionEtat: null,        // Variable pour la salle sélectionnée
-      etats: [                   // Liste des salles disponibles
+      SelectionEtat: null,        // Variable pour la lieu sélectionnée
+      etats: [                   // Liste des lieux disponibles
         'En fonctionnement','Fonctionnement en mode dégradé',"A l'arrêt", 'Rebuté'
-        // Ajouter d'autres salles si nécessaire
+        // Ajouter d'autres lieux si nécessaire
       ],
       miseEnFonctionDate: '',
       prixEquipement: '',
       Fournisseur: null,
       Fabricant: null,
-      fournisseurs: [                   // Liste des salles disponibles
+      fournisseurs: [                   // Liste des lieux disponibles
         'Fournisseur1','Fournisseur2','Fournisseur3'
-        // Ajouter d'autres salles si nécessaire
+        // Ajouter d'autres lieux si nécessaire
       ],
-      modeles: [                   // Liste des salles disponibles
+      modeles: [                   // Liste des lieux disponibles
         'Modèle1','Modèle2','Modèle3'
-        // Ajouter d'autres salles si nécessaire
+        // Ajouter d'autres lieux si nécessaire
       ],
       headers: [
         {text: "Document", value: "nomDocumentation", align: "start" }
@@ -372,11 +429,27 @@ export default {
         // { nomDocumentation: "Doc3"},
       ],
       imageSrc: null,
+      // Liste des consommables disponibles
+      listeConsommable: [
+        { id: 1, name: 'Consommable A', status: 'Disponible', stock: 20 },
+        { id: 2, name: 'Consommable B', status: 'En rupture', stock: 0 },
+        { id: 3, name: 'Consommable C', status: 'Disponible', stock: 50 },
+      ],
+      // Tableau pour stocker les consommables sélectionnés
+      consommables: [],
+      // Données du consommable sélectionné dans la liste déroulante
+      selectedConsommable: null,
+      // En-têtes du tableau
+      headers: [
+        { text: 'Nom pièce', value: 'name' },
+        { text: 'État de la pièce', value: 'status' },
+        { text: 'En stock', value: 'stock' }
+      ],
     };
   },
   methods: {
-    ajouterSalle() {
-      console.log("Ajout d'une nouvelle salle");
+    ajouterlieu() {
+      console.log("Ajout d'une nouvelle lieu");
     },
     ajouterFournisseur() {
       console.log("Ajout d'un nouveau fournisseur");
@@ -389,6 +462,10 @@ export default {
     },
     effacerLigneDocumentation(index) {
       this.documentations.splice(index, 1);
+      console.log("Ligne supprimée à l'index:", index);
+    },
+    effacerConsommable(index) {
+      this.consommables.splice(index, 1);
       console.log("Ligne supprimée à l'index:", index);
     },
     
@@ -435,7 +512,15 @@ export default {
       } else {
         alert('Veuillez sélectionner une image valide.');
       }
-    }
+    },
+    ajouterConsommable() {
+      if (this.selectedConsommable) {
+        // Ajouter le consommable sélectionné à la table
+        this.consommables.push(this.selectedConsommable);
+        // Réinitialiser la sélection après ajout
+        this.selectedConsommable = null;
+      }
+    },
   }
 
 };
