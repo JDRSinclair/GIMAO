@@ -104,3 +104,33 @@ export default {
   margin-right: 2%;
 }
 </style>
+
+<style scoped>
+  body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.v-list-item {
+  color: var(--text-color);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.v-list-item:not(.no-hover):hover {
+  background-color: var(--hover-color);
+}
+
+.active-item {
+  background-color: var(--primary-color);
+  color: var(--active-text-color);
+}
+
+.active-icon {
+  filter: brightness(0) invert(1);
+}
+
+.inner-shadow {
+  box-shadow: inset 0 20px 50px rgba(55, 69, 87, 0.1);
+}
+</style>
