@@ -29,15 +29,32 @@
           </v-card>
         </v-col>
 
-        <!-- Tableau des équipements -->
         <v-col cols="9"> <!-- Augmente la largeur à 9/12 -->
+          <!-- Bouton en haut du tableau pour appeler une autre page -->
+          <v-btn
+            color="primary"
+            @click="goToAnotherPage"
+            class="mb-4"
+          >
+            Aller à une autre page
+          </v-btn>
+
           <v-data-table
             :headers="headers"
             :items="equipements"
             item-value="name"
             class="elevation-1 rounded-lg"
             hide-default-footer
-          ></v-data-table>
+          >
+            <template v-slot:item="{ item }">
+              <tr @click="changerEquipement(item)" style="cursor: pointer;">
+                <!-- Contenu de chaque cellule -->
+                <td>{{ item.equipement }}</td>
+                <td>{{ item.salle }}</td>
+                <td>{{ item.etat }}</td>
+              </tr>
+            </template>
+          </v-data-table>
         </v-col>
       </v-row>
       </v-container>
@@ -85,7 +102,13 @@ export default {
     };
   },
   methods: {
+    goToAnotherPage() {
+      this.$router.push({ name: 'AjouterEquipement' });
+    },
     handleItemSelected(item) {
+      console.log('Selected item:', item);
+    },
+    changerEquipement(item) {
       console.log('Selected item:', item);
     },
   },

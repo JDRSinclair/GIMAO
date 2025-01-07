@@ -1,11 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import TableauDeBord from '@/views/TableauDeBord/TableauDeBord.vue'
 import Equipements from '@/views/Equipements/Equipements.vue'
+import AjouterEquipement from '@/views/Equipements/AjouterEquipement.vue'
 import Maintenances from '@/views/Maintenances/Maintenances.vue'
 import Techniciens from '@/views/Techniciens/Techniciens.vue'
 import GestionComptes from '@/views/GestionComptes/GestionComptes.vue'
 import Commandes from '@/views/Commandes/Commandes.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
+
 
 const routes = [
   {
@@ -19,6 +21,12 @@ const routes = [
     name: 'Equipements',
     component: Equipements,
     meta: { title: 'Equipement' }
+  },
+  {
+    path: '/ajouterEquipement',
+    name: 'AjouterEquipement',
+    component: AjouterEquipement,
+    meta: { title: 'AjouterEquipement' }
   },
   {
     path: '/maintenances',
