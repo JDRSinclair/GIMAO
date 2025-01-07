@@ -6,7 +6,7 @@
         <!-- Filtres et tableau -->
         <v-row>
           <!-- Colonne contenant le filtre de type de bon -->
-          <v-col cols="3"> <!-- Réduit la largeur à 3/12 -->
+          <v-col cols="3">
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">Type de bon</v-card-title>
               <v-divider></v-divider>
@@ -19,14 +19,22 @@
           </v-col>
 
           <!-- Tableau des bons de travail -->
-          <v-col cols="9"> <!-- Augmente la largeur à 9/12 -->
+          <v-col cols="9">
             <v-data-table
               :headers="headers"
-              :items="bonsDeTravail"
+              :items="filteredBonsDeTravail"
+              :items-per-page="itemsPerPage"
+              :page.sync="page"
               item-value="name"
               class="elevation-1 rounded-lg"
-              hide-default-footer
+              @page-count="pageCount = $event"
             ></v-data-table>
+            <div class="text-center pt-2">
+              <v-pagination
+                v-model="page"
+                :length="pageCount"
+              ></v-pagination>
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -35,10 +43,22 @@
 </template>
 
 <script>
-import '@/assets/css/global.css'; // Importation du fichier CSS global
+import { ref } from 'vue';
+import '@/assets/css/global.css';
 
 export default {
   name: 'BonsDeTravail',
+  setup() {
+    const page = ref(1);
+    const pageCount = ref(0);
+    const itemsPerPage = ref(5);
+
+    return {
+      page,
+      pageCount,
+      itemsPerPage
+    };
+  },
   data() {
     return {
       typesDeBon: ["Tous", "Demande d'intervention", "Bon de travail", "Bon de travail terminé"],
