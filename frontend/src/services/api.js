@@ -15,4 +15,7 @@ export default {
   getModeleEquipements() {
     return axios.get(`${API_URL}modeleequipements/`);
   },
+  getInformationStatus() {
+    return axios.get(`${API_URL}informationStatus/`);
+  },
 };

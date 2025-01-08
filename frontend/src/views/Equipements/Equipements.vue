@@ -37,17 +37,16 @@
               :items="filteredEquipements"
               :items-per-page="itemsPerPage"
               :page.sync="page"
-              item-value="name"
               class="elevation-1 rounded-lg"
               @page-count="pageCount = $event"
             >
-            <template v-slot:item="{ item }">
-              <tr>
-                <td>{{ item.designation }}</td>
-                <td>{{ item.lieu ? item.lieu.nomLieu : 'N/A' }}</td>
-                <td>{{ item.statutEquipement }}</td>
-              </tr>
-            </template>
+              <template v-slot:item="{ item }">
+                <tr @click="ouvrirPageVoirEquipement(item.idEquipement)" style="cursor: pointer;">
+                  <td>{{ item.designation }}</td>
+                  <td>{{ item.nomLieu || 'N/A' }}</td>
+                  <td>{{ item.statutEquipement || 'N/A' }}</td>
+                </tr>
+              </template>
             </v-data-table>
             <div class="text-center pt-2">
               <v-pagination
@@ -56,7 +55,6 @@
               </v-pagination>
             </div>
           </v-col>
-          
         </v-row>
       </v-container>
     </v-main>
@@ -80,47 +78,67 @@ export default {
     LieuxExplorer,
   },
   setup() {
+    const router = useRouter();
     const state = reactive({
       equipements: [],
       lieux: [],
       modeleEquipements: [],
+      informationStatus: [], // Add informationStatus
       selectedLieu: null,
       page: 1,
       pageCount: 0,
       itemsPerPage: 5,
-      typesEquipements: [],
       headers: [
         { text: 'Désignation', value: 'designation' },
-        { text: 'Lieu', value: 'lieu.nomLieu' },
+        { text: 'Lieu', value: 'nomLieu' },
         { text: 'Statut', value: 'statutEquipement' },
       ],
-
     });
 
     const fetchData = async () => {
       try {
-        const [equipementsRes, lieuxRes, modeleEquipementsRes] = await Promise.all([
+        const [equipementsRes, lieuxRes, modeleEquipementsRes, informationStatusRes] = await Promise.all([
           api.getEquipements(),
           api.getLieux(),
-          api.getModeleEquipements()
+          api.getModeleEquipements(),
+          api.getInformationStatus() // Fetch informationStatus data
         ]);
         
         state.equipements = equipementsRes.data;
         state.lieux = lieuxRes.data;
         state.modeleEquipements = modeleEquipementsRes.data;
+        state.informationStatus = informationStatusRes.data; // Store informationStatus data
         
-        console.log('Modèles d\'équipements:', state.modeleEquipements);
-        console.log('Données récupérées avec succès');
+        console.log('Equipements:', state.equipements);
+        console.log('Lieux:', state.lieux);
+        console.log('Information Status:', state.informationStatus);
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
       }
     };
 
-    const filteredEquipements = computed(() => {
-      if (!state.selectedLieu) {
-        return state.equipements;
+    const ouvrirPageAjoutEquipement = () => {
+      router.push({ name: 'AjouterEquipement' });
+    };
+
+    const ouvrirPageVoirEquipement = (idEquipement) => {
+      if (!idEquipement) {
+        console.error('ID is missing');
+        return;
       }
-      return state.equipements.filter(e => e.lieu === state.selectedLieu);
+      router.push({ name: 'VisualiserEquipement', params: { id: idEquipement } });
+    };
+
+    const filteredEquipements = computed(() => {
+      return state.equipements.map(equipement => {
+        const lieu = state.lieux.find(l => l.idLieu === equipement.lieu_id); // Map lieu_id to nomLieu
+        const status = state.informationStatus.find(s => s.equipement_id === equipement.idEquipement); // Map equipement_id to statutEquipement
+        return {
+          ...equipement,
+          nomLieu: lieu ? lieu.nomLieu : 'N/A', // Add nomLieu
+          statutEquipement: status ? status.statutEquipement : 'N/A', // Add statutEquipement
+        };
+      });
     });
 
     const handleLieuSelected = (lieu) => {
@@ -135,6 +153,8 @@ export default {
       ...toRefs(state),
       filteredEquipements,
       handleLieuSelected,
+      ouvrirPageAjoutEquipement,
+      ouvrirPageVoirEquipement,
     };
   }
 };
