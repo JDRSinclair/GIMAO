@@ -13,15 +13,11 @@
                 <v-col cols="12">
                   <p><strong>Nom Intervention :</strong> {{ form.nomIntervention }}</p>
                 </v-col>
-                <!-- Switch Champ interventionCurative  -->
+                <!-- Switch Champ interventionCurative Affiche Oui si intervventionCurative est 1 , Non sinon -->
                 <v-col cols="12">
-                  <p><strong>Intervention Curative :</strong></p>
-                  <v-switch
-                    :value="form.interventionCurative === 'OUI'"
-                    activated
-                  ></v-switch>
-                   <!-- Champ DateAssignation  -->
+                  <p><strong>Intervention Curative ? :</strong> {{ form.interventionCurative === '1' ? 'Oui' : 'Non' }}</p>
                 </v-col>
+                <!-- Champ InterventionCurative  -->
                 <v-col cols="12">
                   <p><strong>Date Assignation :</strong> {{ form.dateAssignation }}</p>
                 </v-col>
@@ -44,18 +40,20 @@
               </v-row>
             </v-col>
 
-            <!-- Colonne de droite avec le champ commentaire -->
+            <!-- Champ Commentaire  -->
             <v-col cols="6">
               <p><strong>Commentaire :</strong></p>
               <p>{{ form.commentaire }}</p>
             </v-col>
           </v-row>
 
-          <!-- Boutons en bas -->
+          <!-- Boutons  -->
           <v-row justify="center" class="mt-4">
+            <!-- Bouton Annuler  -->
             <v-btn color="primary" class="text-white mx-2" @click="annulerFormulaire">
               Annuler
             </v-btn>
+            <!-- Bouton Valider  -->
             <v-btn color="success" class="text-white mx-2" @click="validerFormulaire">
               Valider
             </v-btn>
@@ -73,7 +71,7 @@ export default {
     return {
       form: {
         nomIntervention: "Lieu 1",
-        interventionCurative: "OUI",
+        interventionCurative: "1", 
         dateAssignation: "01/01/2025", 
         dateCloture: "08/01/2025", 
         dateDebutIntervention: "2024-01-01", 
@@ -84,16 +82,16 @@ export default {
     };
   },
 
+  //Methode pour annuler la fin d'intervention
   methods: {
-    
     annulerFormulaire() {
       this.$router.push({ name: 'TableauDeBord' });
     },
     
+    //Methode pour valider la fin de l'intervention
     validerFormulaire() {
       this.$router.push({ name: 'TableauDeBord' });
     },
   },
 };
 </script>
-
