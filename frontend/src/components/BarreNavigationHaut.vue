@@ -48,7 +48,7 @@
 
 <script>
 export default {
-  name: "TopNavBar",
+  name: "BarreNavigationHaut",
   props: {
     pageTitle: {
       type: String,

@@ -69,7 +69,7 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import NavigationDrawer from '@/components/BarreNavigation.vue';
-import TopNavBar from "@/components/TopNavBar.vue";
+import TopNavBar from "@/components/BarreNavigationHaut.vue";
 import LieuxExplorer from '@/components/LieuxExplorer.vue';
 import '@/assets/css/global.css';
 

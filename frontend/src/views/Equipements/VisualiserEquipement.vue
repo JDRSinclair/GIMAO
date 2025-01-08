@@ -152,7 +152,7 @@
 
 <script>
 import NavigationDrawer from '@/components/BarreNavigation.vue'; // Assurez-vous que le chemin est correct
-import TopNavBar from "@/components/TopNavBar.vue";
+import TopNavBar from "@/components/BarreNavigationHaut.vue";
 import '@/assets/css/global.css'; // Importation du fichier CSS global
 
 export default {
