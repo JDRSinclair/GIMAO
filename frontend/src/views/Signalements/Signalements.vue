@@ -3,7 +3,7 @@
     <v-main>
       <v-container class="py-5">
         <v-card class="pa-4">
-          <h1 class="text-primary text-center">Prévoir une maintenance</h1>
+          <h1 class="text-primary text-center">Signaler une défaillance</h1>
 
           <v-row>
             <!-- Colonne de gauche avec les champs -->
@@ -39,26 +39,6 @@
                       dense
                       :rules="[v => !!v || (validationTriggered && 'Équipement requis')]"
                     ></v-select>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-select
-                      v-model="form.technicien"
-                      label="Technicien"
-                      :items="techniciens"
-                      outlined
-                      dense
-                      :rules="[v => !!v || (validationTriggered && 'Technicien requis')]"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="form.dateDebut"
-                      label="Date début"
-                      type="date"
-                      outlined
-                      dense
-                      :rules="[v => !!v || (validationTriggered && 'Date début requise')]"
-                    ></v-text-field>
                   </v-col>
                 </v-row>
               </v-form>
@@ -97,13 +77,10 @@ export default {
       lieux: ["Lieu 1", "Lieu 2", "Lieu 3"],
       salles: ["Salle 1", "Salle 2", "Salle 3"],
       equipements: ["Equipement 1", "Equipement 2", "Equipement 3"],
-      techniciens: ["Technicien 1", "Technicien 2", "Technicien 3"],
       form: {
         lieu: null,
         salle: null,
         equipement: null,
-        technicien: null,
-        dateDebut: null,
         commentaire: "",
       },
       formulaireValide: false,
@@ -120,8 +97,6 @@ export default {
         lieu: null,
         salle: null,
         equipement: null,
-        technicien: null,
-        dateDebut: null,
         commentaire: "",
       };
       this.validationTriggered = false; // Réinitialise les messages d'erreur
