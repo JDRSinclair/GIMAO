@@ -27,13 +27,6 @@
             >
               Aller à l'ajout d'équipement
             </v-btn>
-            <v-btn
-              color="primary"
-              @click="ouvrirPageVoirEquipement"
-              class="mb-4"
-            >
-              Aller à la visualisation d'équipement
-            </v-btn>
             <v-data-table
               :headers="headers"
               :items="filteredEquipements"
@@ -42,10 +35,10 @@
               item-value="name"
               class="elevation-1 rounded-lg"
               @page-count="pageCount = $event"
+              hover
             >
               <template v-slot:item="{ item }">
-                <tr @click="changerEquipement(item)" style="cursor: pointer;">
-                  <!-- Contenu de chaque cellule -->
+                <tr @click="ouvrirPageVoirEquipement(item.equipement)" style="cursor: pointer;">
                   <td>{{ item.equipement }}</td>
                   <td>{{ item.lieu }}</td>
                   <td>{{ item.etat }}</td>
@@ -137,16 +130,12 @@ export default {
       router.push({ name: 'AjouterEquipement' });
     };
 
-    const ouvrirPageVoirEquipement = () => {
-      router.push({ name: 'VisualiserEquipement' });
-    };
-
-    const handleItemSelected = (item) => {
-      console.log('Selected item:', item);
-    };
-
-    const changerEquipement = (item) => {
-      console.log('Selected item:', item);
+    const ouvrirPageVoirEquipement = (id) => {
+      if (!id) {
+        console.error('ID is missing');
+        return;
+      }
+      router.push({ name: 'VisualiserEquipement', params: { id } });
     };
 
     const filteredEquipements = computed(() => {
@@ -173,9 +162,19 @@ export default {
       itemsPerPage,
       ouvrirPageAjoutEquipement,
       ouvrirPageVoirEquipement,
-      handleItemSelected,
-      changerEquipement,
     };
   }
 };
 </script>
+
+<style scoped>
+/* Effet de survol personnalisé */
+.v-data-table tr:hover {
+  background-color: #e6f2ff; /* Fond bleu clair au survol */
+  transition: background-color 0.3s ease; /* Transition fluide */
+}
+
+.v-data-table tr:hover td {
+  color: #0056b3; /* Couleur du texte en bleu foncé au survol */
+}
+</style>

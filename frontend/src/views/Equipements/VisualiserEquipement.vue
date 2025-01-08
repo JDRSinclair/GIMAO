@@ -164,58 +164,114 @@ export default {
   
   data() {
     return {
+      isLoadingEquipement: true,
+      isLoadingDocuments: true,
+      isLoadingConsommables: true,
+      isLoadingMaintenances: true,
+      equipement: {},
+      documents: [],
+      consommables: [],
+      maintenances: [],
       entetes: [
         { text: "Document", value: "nomDocument", align: "start" }
       ],
-      documents: [
-        { nomDocument: "Doc1" },
-        { nomDocument: "Doc2" },
-        { nomDocument: "Doc3" },
-        { nomDocument: "Doc4" }
-      ],
-      consommablesEntetes: [
-        { text: "Nom pièce", value: "nom" },
-        { text: "État de la pièce", value: "etat" },
-        { text: "En stock", value: "stock" }
-      ],
-      consommables: [
-        { nom: "Pièce 1", etat: "Endommagée", stock: 20 },
-        { nom: "Pièce 2", etat: "Normale", stock: 7 },
-        { nom: "Pièce 3", etat: "Normale", stock: 9 }
-      ],
-      maintenancesEntetes: [
-        { text: "Numéro", value: "numero" },
-        { text: "Date", value: "date" },
-        { text: "", value: "action", align: "center" }
-      ],
-      maintenances: [
-        { numero: 1, date: "10/07/24" },
-        { numero: 2, date: "05/04/24" },
-        { numero: 3, date: "15/01/24" }
-      ],
-      equipement: {
-        reference: "Ref12345",
-        designation: "Equipement X",
-        type: "Type Y",
-        salle: "Salle1",
-        etat: "En fonctionnement",
-        miseEnFonction: "2023-01-01",
-        prix: 1200.00,
-        fournisseur: "Fournisseur1",
-        modele: "Modèle1",
-        image: require('@/assets/images/LogoGIMAO.png')
-      }
     };
   },
   
   methods: {
+    // Fetch equipment data
+    fetchEquipementData(id) {
+      // Simulate an API call
+      setTimeout(() => {
+        const mockEquipementData = {
+          '1': {
+            reference: "Ref12345",
+            designation: "Equipement X",
+            type: "Type Y",
+            salle: "Salle1",
+            etat: "En fonctionnement",
+            miseEnFonction: "2023-01-01",
+            prix: 1200.00,
+            fournisseur: "Fournisseur1",
+            modele: "Modèle1",
+            image: require('@/assets/images/LogoGIMAO.png'),
+          }
+        };
+
+        this.equipement = mockEquipementData[id] || {};
+        this.isLoadingEquipement = false;
+      }, 1000); // Simulate network delay
+    },
+
+    // Fetch documents data
+    fetchDocumentsData(id) {
+      // Simulate an API call
+      setTimeout(() => {
+        const mockDocumentsData = {
+          '1': [
+            { nomDocument: "Doc1" },
+            { nomDocument: "Doc2" },
+            { nomDocument: "Doc3" },
+            { nomDocument: "Doc4" }
+          ]
+        };
+
+        this.documents = mockDocumentsData[id] || [];
+        this.isLoadingDocuments = false;
+      }, 1200); // Simulate network delay
+    },
+
+    // Fetch consommables data
+    fetchConsommablesData(id) {
+      // Simulate an API call
+      setTimeout(() => {
+        const mockConsommablesData = {
+          '1': [
+            { nom: "Pièce 1", etat: "Endommagée", stock: 20 },
+            { nom: "Pièce 2", etat: "Normale", stock: 7 },
+            { nom: "Pièce 3", etat: "Normale", stock: 9 }
+          ]
+        };
+
+        this.consommables = mockConsommablesData[id] || [];
+        this.isLoadingConsommables = false;
+      }, 800); // Simulate network delay
+    },
+
+    // Fetch maintenances data
+    fetchMaintenancesData(id) {
+      // Simulate an API call
+      setTimeout(() => {
+        const mockMaintenancesData = {
+          '1': [
+            { numero: 1, date: "10/07/24" },
+            { numero: 2, date: "05/04/24" },
+            { numero: 3, date: "15/01/24" }
+          ]
+        };
+
+        this.maintenances = mockMaintenancesData[id] || [];
+        this.isLoadingMaintenances = false;
+      }, 1500); // Simulate network delay
+    },
+
+    // Other methods
     telechargerDocument(item) {
       console.log('Document sélectionné:', item);
     },
     voirMaintenance(item) {
       console.log('Maintenance en cours de visualisation:', item);
-    }
+    },
   },
+
+  
+  created() {
+    const equipementId = this.$route.params.id;
+    this.fetchEquipementData(equipementId);
+    this.fetchDocumentsData(equipementId);
+    this.fetchConsommablesData(equipementId);
+    this.fetchMaintenancesData(equipementId);
+  }
 };
 </script>
 
