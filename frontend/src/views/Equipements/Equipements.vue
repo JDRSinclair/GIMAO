@@ -3,7 +3,7 @@
     <v-main>
       <v-container>
         <v-row>
-          <v-col cols="3">
+          <v-col cols="4">
             <!-- Affichage de lieux  -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">Structure des lieux</v-card-title>
@@ -24,7 +24,14 @@
           </v-col>
 
           <!-- Affichage des équipements choisis -->
-          <v-col cols="9">
+          <v-col cols="8">
+            <v-btn
+              color="primary"
+              @click="ouvrirPageAjoutEquipement"
+              class="mb-4"
+            >
+              Aller à l'ajout d'équipement
+            </v-btn>
             <v-data-table
               :headers="headers"
               :items="filteredEquipements"
@@ -58,8 +65,9 @@
 
 <script>
 import { ref, computed, onMounted, reactive, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
 import NavigationDrawer from '@/components/BarreNavigation.vue';
-import TopNavBar from "@/components/TopNavBar.vue";
+import TopNavBar from "@/components/BarreNavigationHaut.vue";
 import LieuxExplorer from '@/components/LieuxExplorer.vue';
 import '@/assets/css/global.css';
 import api from '@/services/api';
@@ -131,3 +139,15 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+/* Effet de survol personnalisé */
+.v-data-table tr:hover {
+  background-color: #e6f2ff; /* Fond bleu clair au survol */
+  transition: background-color 0.3s ease; /* Transition fluide */
+}
+
+.v-data-table tr:hover td {
+  color: #0056b3; /* Couleur du texte en bleu foncé au survol */
+}
+</style>

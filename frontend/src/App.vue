@@ -10,7 +10,7 @@
 
 <script>
 import NavigationDrawer from '@/components/BarreNavigation.vue';
-import TopNavBar from "@/components/TopNavBar.vue";
+import TopNavBar from "@/components/BarreNavigationHaut.vue";
 
 export default {
   name: 'App',

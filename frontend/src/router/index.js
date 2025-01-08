@@ -1,11 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import TableauDeBord from '@/views/TableauDeBord/TableauDeBord.vue'
 import Equipements from '@/views/Equipements/Equipements.vue'
+import AjouterEquipement from '@/views/Equipements/AjouterEquipement.vue'
+import VisualiserEquipement from '@/views/Equipements/VisualiserEquipement.vue'
 import Maintenances from '@/views/Maintenances/Maintenances.vue'
 import Techniciens from '@/views/Techniciens/Techniciens.vue'
 import GestionComptes from '@/views/GestionComptes/GestionComptes.vue'
 import Commandes from '@/views/Commandes/Commandes.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
+import Signalements from '@/views/Signalements/Signalements.vue'
+
 
 const routes = [
   {
@@ -19,6 +23,18 @@ const routes = [
     name: 'Equipements',
     component: Equipements,
     meta: { title: 'Equipement' }
+  },
+  {
+    path: '/ajouterEquipement',
+    name: 'AjouterEquipement',
+    component: AjouterEquipement,
+    meta: { title: 'AjouterEquipement' }
+  },
+  {
+    path: '/equipement/:id',
+    name: 'VisualiserEquipement',
+    component: VisualiserEquipement,
+    meta: { title: 'VisualiserEquipement' }
   },
   {
     path: '/maintenances',
@@ -50,6 +66,12 @@ const routes = [
     name: 'Stocks',
     component: Stocks,
     meta: { title: 'Stocks' }
+  },
+  {
+    path: '/signalements',
+    name: 'Signalements',
+    component: Signalements,
+    meta: { title: 'Signalements' }
   }
 ]
 

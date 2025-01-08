@@ -55,6 +55,7 @@ export default {
         { name: 'GestionComptes', icon: 'GestionComptes.svg', title: 'Gestion des <br>comptes' },
         { name: 'Commandes', icon: 'Commande.svg', title: 'Commandes' },
         { name: 'Stocks', icon: 'Stocks.svg', title: 'Stocks' },
+        { name: 'Signalements', icon: 'Signalements.svg', title: 'Signalements' },
       ]
     }
   },
@@ -105,7 +106,7 @@ export default {
 </style>
 
 <style scoped>
-body {
+  body {
   font-family: 'Poppins', sans-serif;
 }
 
