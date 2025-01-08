@@ -19,7 +19,7 @@ def validate_niveau_de_defaillance(value):
 
 
 def validate_etat_equipement(value):
-    etat_valid = ["Rebuté", "En fonctionnement", "Dégradé", "A l'arret"]
+    etat_valid = ["Rebuté", "En fonctionnement", "Dégradé", "A l'arrêt"]
     
     if value not in etat_valid:
         raise ValidationError(f"Le statut du modèle doit être l'une des valeurs suivantes :  {', '.join(etat_valid)}.")
@@ -146,12 +146,6 @@ class Lieu(models.Model):
         return self.nomLieu
 
 class Equipement(models.Model):
-    STATUT_CHOICES = [
-        ('Rebuté', 'Rebuté'),
-        ('En fonctionnement', 'En fonctionnement'),
-        ('Dégradé', 'Dégradé'),
-        ('A l\'arret', 'A l\'arret'),
-    ]
     reference = models.CharField(
         max_length=50,
         primary_key=True,
@@ -173,17 +167,12 @@ class Equipement(models.Model):
         help_text="Prix auquel vous avez acheté le lot"
     )
     lienImageEquipement = models.ImageField(upload_to='images/equipement', null=False)
-    statutEquipement = models.CharField(
-        max_length=50,
-        choices=STATUT_CHOICES,
-        null=True,
-        blank=True
-    )
     createurEquipement = models.ForeignKey(User, related_name='createurEquipement', on_delete=models.CASCADE, null=True, blank=True)
     lieu = models.ForeignKey('Lieu', on_delete=models.CASCADE, null=True, blank=True)
     modeleEquipement = models.ForeignKey('ModeleEquipement', on_delete=models.CASCADE, null=True, blank=True)
     fournisseur = models.ForeignKey('Fournisseur', on_delete=models.CASCADE, null=True, blank=True)
-    informationMaintenance = models.ForeignKey('InformationMaintenance', on_delete=models.CASCADE, null=True, blank=True)
+    preventifGlissant = models.BooleanField(null=True, blank=True)
+    joursIntervalleMaintenance = models.SmallIntegerField()
 
     def __str__(self):
         return self.designation
@@ -192,16 +181,26 @@ class Constituer(models.Model):
     equipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
     consommable = models.ForeignKey(Consommable, on_delete=models.CASCADE)
 
-class InformationMaintenance(models.Model):
-    preventifGlissant = models.BooleanField(null=True, blank=True)
-    joursIntervalleMaintenance = models.SmallIntegerField()
-    dateCreation = models.DateTimeField()
+class InformationStatut(models.Model):
+    STATUT_CHOICES = [
+        ('Rebuté', 'Rebuté'),
+        ('En fonctionnement', 'En fonctionnement'),
+        ('Dégradé', 'Dégradé'),
+        ('A l\'arret', 'A l\'arret'),
+    ]
+    statutEquipement = models.CharField(
+            max_length=50,
+            choices=STATUT_CHOICES,
+            null=True,
+            blank=True
+        )
     dateChangement = models.DateTimeField(null=True, blank=True)
-    informationMaintenanceParent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
-    createurInformationMaintenance = models.ForeignKey(User, on_delete=models.CASCADE)
+    equipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
+    informationStatutParent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    ModificateurStatut = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"InformationMaintenance {self.id}"
+        return f"Statut de {self.equipement}: {self.statutEquipement} (modifié le {self.dateChangement})"
 
 class DocumentTechnique(models.Model):
     nomDocumentTechnique = models.CharField(max_length=50)
