@@ -7,7 +7,8 @@
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">Structure des lieux</v-card-title>
               <v-divider></v-divider>
-              <LieuxExplorer :lieux="lieux" @select-lieu="handleLieuSelected" />
+              <ExplorateurLieux
+             :lieux="lieux" @select-lieu="handleLieuSelected" />
             </v-card>
             <v-card elevation="1" class="rounded-lg pa-2">
               <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
@@ -63,7 +64,7 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import NavigationDrawer from '@/components/BarreNavigation.vue';
 import TopNavBar from "@/components/BarreNavigationHaut.vue";
-import LieuxExplorer from '@/components/LieuxExplorer.vue';
+import ExplorateurLieux from '@/components/ExplorateurLieux.vue';
 import '@/assets/css/global.css';
 
 export default {
@@ -71,7 +72,8 @@ export default {
   components: {
     NavigationDrawer,
     TopNavBar,
-    LieuxExplorer,
+    ExplorateurLieux
+  ,
   },
   setup() {
     const router = useRouter();
