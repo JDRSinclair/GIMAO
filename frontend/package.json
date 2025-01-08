@@ -7,11 +7,12 @@
     "serve": "vue-cli-service serve"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "@vue/cli-service": "^5.0.0",
     "axios": "^1.7.9",
     "vue": "^3.2.37",
     "vue-router": "^4.5.0",
-    "vuetify": "^3.0.0"
+    "vuetify": "^3.6.0"
   },
   "author": "",
   "license": "ISC"
