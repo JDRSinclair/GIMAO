@@ -87,7 +87,7 @@
               class="text-white mx-2"
               @click="reinitialiserFormulaire"
             >
-              Annuler
+              Effacer
             </v-btn>
             <v-btn
               color="success"
