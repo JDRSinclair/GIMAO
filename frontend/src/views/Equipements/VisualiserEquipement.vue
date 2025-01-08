@@ -184,7 +184,7 @@ export default {
       // Simulate an API call
       setTimeout(() => {
         const mockEquipementData = {
-          '1': {
+          'Équipement 1': {
             reference: "Ref12345",
             designation: "Equipement X",
             type: "Type Y",
@@ -208,7 +208,7 @@ export default {
       // Simulate an API call
       setTimeout(() => {
         const mockDocumentsData = {
-          '1': [
+          'Équipement 1': [
             { nomDocument: "Doc1" },
             { nomDocument: "Doc2" },
             { nomDocument: "Doc3" },
@@ -226,7 +226,7 @@ export default {
       // Simulate an API call
       setTimeout(() => {
         const mockConsommablesData = {
-          '1': [
+          'Équipement 1': [
             { nom: "Pièce 1", etat: "Endommagée", stock: 20 },
             { nom: "Pièce 2", etat: "Normale", stock: 7 },
             { nom: "Pièce 3", etat: "Normale", stock: 9 }
@@ -243,7 +243,7 @@ export default {
       // Simulate an API call
       setTimeout(() => {
         const mockMaintenancesData = {
-          '1': [
+          'Équipement 1': [
             { numero: 1, date: "10/07/24" },
             { numero: 2, date: "05/04/24" },
             { numero: 3, date: "15/01/24" }
