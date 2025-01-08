@@ -41,7 +41,7 @@
               @page-count="pageCount = $event"
             >
               <template v-slot:item="{ item }">
-                <tr @click="ouvrirPageVoirEquipement(item.idEquipement)" style="cursor: pointer;">
+                <tr @click="ouvrirPageVoirEquipement(item.reference)" style="cursor: pointer;">
                   <td>{{ item.designation }}</td>
                   <td>{{ item.nomLieu || 'N/A' }}</td>
                   <td>{{ item.statutEquipement || 'N/A' }}</td>
@@ -117,26 +117,41 @@ export default {
       }
     };
 
+
     const ouvrirPageAjoutEquipement = () => {
       router.push({ name: 'AjouterEquipement' });
     };
 
-    const ouvrirPageVoirEquipement = (idEquipement) => {
-      if (!idEquipement) {
-        console.error('ID is missing');
+    const ouvrirPageVoirEquipement = (reference) => {
+      if (!reference) {
+        console.error('Reference is missing');
         return;
       }
-      router.push({ name: 'VisualiserEquipement', params: { id: idEquipement } });
+      router.push({ name: 'VisualiserEquipement', params: { reference } });
     };
 
+    const findLieuById = (lieux, id) => {
+      for (const lieu of lieux) {
+        if (lieu.id === id) {
+          return lieu; // Return the matching lieu object
+        }
+        if (lieu.children && lieu.children.length > 0) {
+          const found = findLieuById(lieu.children, id); // Recursively search children
+          if (found) {
+            return found; // Return the matching lieu object from children
+          }
+        }
+      }
+      return null; // Return null if no match is found
+    };
+    
     const filteredEquipements = computed(() => {
       return state.equipements.map(equipement => {
-        const lieu = state.lieux.find(l => l.idLieu === equipement.lieu_id); // Map lieu_id to nomLieu
-        const status = state.informationStatus.find(s => s.equipement_id === equipement.idEquipement); // Map equipement_id to statutEquipement
+        const lieu = findLieuById(state.lieux, equipement.lieu); // Find lieu in the hierarchy
+        console.log('Mapping lieu:', { equipementLieu: equipement.lieu, foundLieu: lieu }); // Debug mapping
         return {
           ...equipement,
           nomLieu: lieu ? lieu.nomLieu : 'N/A', // Add nomLieu
-          statutEquipement: status ? status.statutEquipement : 'N/A', // Add statutEquipement
         };
       });
     });

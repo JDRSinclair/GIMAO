@@ -31,7 +31,7 @@ const routes = [
     meta: { title: 'AjouterEquipement' }
   },
   {
-    path: '/equipement/:id',
+    path: '/equipement/:reference',
     name: 'VisualiserEquipement',
     component: VisualiserEquipement,
     meta: { title: 'VisualiserEquipement' }
