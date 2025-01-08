@@ -22,7 +22,7 @@
                 :items="defaillances"
                 :items-per-page="5"
                 :page.sync="defaillancesPage"
-                item-value="name"
+                item-value="nom"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
               ></v-data-table>
@@ -48,9 +48,10 @@
                 :items="interventions"
                 :items-per-page="5"
                 :page.sync="interventionsPage"
-                item-value="name"
+                item-value="nom"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
+                @click:row="cloturerIntervention"
               ></v-data-table>
               <v-pagination
                 v-model="interventionsPage"
@@ -116,14 +117,15 @@ export default {
     };
   },
   methods: {
-    handleItemSelected(item) {
-      console.log('Selected item:', item);
-    },
     transformerEnBonDeTravail() {
       console.log('Transformer en bon de travail');
     },
     cloturerFicheIntervention() {
       console.log('Clôturer la fiche d\'intervention');
+    },
+    cloturerIntervention() {
+      // Rediriger vers la page de clôture d'intervention sans paramètres
+      this.$router.push({ name: 'CloturerIntervention' });
     },
   },
 };
