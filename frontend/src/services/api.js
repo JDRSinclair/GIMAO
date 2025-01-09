@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api/';  
+const API_URL = 'http://localhost:8000/api/';
 
 export default {
 
@@ -15,7 +15,13 @@ export default {
   getModeleEquipements() {
     return axios.get(`${API_URL}modeleequipements/`);
   },
+
   getInformationStatus() {
     return axios.get(`${API_URL}informationStatus/`);
   },
+
+  getEquipementById(id) {
+    return axios.get(`${API_URL}equipements/${id}/`);
+  },
 };
+

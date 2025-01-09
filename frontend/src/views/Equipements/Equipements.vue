@@ -3,18 +3,21 @@
     <v-main>
       <v-container>
         <v-row>
+          <!-- Colonne de gauche : Structure des lieux et Types d'équipements -->
           <v-col cols="4">
-            <!-- Lieux Explorer -->
+            <!-- Carte pour explorer la structure des lieux -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">Structure des lieux</v-card-title>
               <v-divider></v-divider>
+              <!-- Composant LieuxExplorer pour afficher la hiérarchie des lieux -->
               <LieuxExplorer :lieux="lieux" @select-lieu="handleLieuSelected" />
             </v-card>
 
-            <!-- Types d'équipements -->
+            <!-- Carte pour afficher les types d'équipements -->
             <v-card elevation="1" class="rounded-lg pa-2">
               <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
               <v-divider></v-divider>
+              <!-- Liste des modèles d'équipements -->
               <v-list dense>
                 <v-list-item v-for="(modele, index) in modeleEquipements" :key="index" link>
                   <v-list-item-title>{{ modele.nomModeleEquipement }}</v-list-item-title>
@@ -23,11 +26,14 @@
             </v-card>
           </v-col>
 
-          <!-- Tableau des équipements -->
+          <!-- Colonne de droite : Tableau des équipements -->
           <v-col cols="8">
+            <!-- Bouton pour naviguer vers la page d'ajout d'équipement -->
             <v-btn color="primary" @click="ouvrirPageAjoutEquipement" class="mb-4">
               Aller à l'ajout d'équipement
             </v-btn>
+
+            <!-- Tableau des équipements avec pagination -->
             <v-data-table
               :headers="headers"
               :items="filteredEquipements"
@@ -36,6 +42,7 @@
               class="elevation-1 rounded-lg"
               @page-count="pageCount = $event"
             >
+              <!-- Template personnalisé pour chaque ligne du tableau -->
               <template v-slot:item="{ item }">
                 <tr @click="ouvrirPageVoirEquipement(item.reference)" style="cursor: pointer;">
                   <td>{{ item.designation }}</td>
@@ -44,6 +51,8 @@
                 </tr>
               </template>
             </v-data-table>
+
+            <!-- Pagination -->
             <div class="text-center pt-2">
               <v-pagination v-model="page" :length="pageCount"></v-pagination>
             </div>
@@ -65,25 +74,28 @@ export default {
   components: { LieuxExplorer },
   setup() {
     const router = useRouter();
+
+    // État réactif pour stocker les données et les états de l'application
     const state = reactive({
-      equipements: [],
-      lieux: [],
-      modeleEquipements: [],
-      informationStatus: [],
-      selectedLieu: null,
-      page: 1,
-      pageCount: 0,
-      itemsPerPage: 5,
-      headers: [
+      equipements: [], // Liste des équipements
+      lieux: [], // Liste des lieux
+      modeleEquipements: [], // Liste des modèles d'équipements
+      informationStatus: [], // Liste des statuts des équipements
+      selectedLieu: null, // Lieu sélectionné
+      page: 1, // Page actuelle de la pagination
+      pageCount: 0, // Nombre total de pages
+      itemsPerPage: 5, // Nombre d'éléments par page
+      headers: [ // En-têtes du tableau des équipements
         { text: 'Désignation', value: 'designation' },
         { text: 'Lieu', value: 'nomLieu' },
         { text: 'Statut', value: 'statutEquipement' },
       ],
     });
 
-    // Fetch all required data
+    // Fonction pour récupérer les données depuis l'API
     const fetchData = async () => {
       try {
+        // Récupération simultanée des données des équipements, lieux, modèles et statuts
         const [equipementsRes, lieuxRes, modeleEquipementsRes, informationStatusRes] = await Promise.all([
           api.getEquipements(),
           api.getLieux(),
@@ -91,6 +103,7 @@ export default {
           api.getInformationStatus(),
         ]);
 
+        // Mise à jour de l'état avec les données récupérées
         state.equipements = equipementsRes.data;
         state.lieux = lieuxRes.data;
         state.modeleEquipements = modeleEquipementsRes.data;
@@ -100,49 +113,51 @@ export default {
       }
     };
 
-    // Find lieu by ID recursively
+    // Fonction récursive pour trouver un lieu par son ID dans la hiérarchie des lieux
     const findLieuById = (lieux, id) => {
       for (const lieu of lieux) {
-        if (lieu.id === id) return lieu;
+        if (lieu.id === id) return lieu; // Retourne le lieu si l'ID correspond
         if (lieu.children) {
-          const found = findLieuById(lieu.children, id);
+          const found = findLieuById(lieu.children, id); // Recherche récursive dans les enfants
           if (found) return found;
         }
       }
-      return null;
+      return null; // Retourne null si le lieu n'est pas trouvé
     };
 
-    // Map equipements with lieu and statut
+    // Propriété calculée pour mapper les équipements avec leur lieu et statut
     const filteredEquipements = computed(() => {
       return state.equipements.map(equipement => {
-        const lieu = findLieuById(state.lieux, equipement.lieu);
-        const statut = state.informationStatus.find(status => status.equipement === equipement.reference);
+        const lieu = findLieuById(state.lieux, equipement.lieu); // Trouve le lieu associé
+        const statut = state.informationStatus.find(status => status.equipement === equipement.reference); // Trouve le statut associé
         return {
           ...equipement,
-          nomLieu: lieu ? lieu.nomLieu : 'N/A',
-          statutEquipement: statut ? statut.statutEquipement : 'N/A',
+          nomLieu: lieu ? lieu.nomLieu : 'N/A', // Ajoute le nom du lieu ou 'N/A' si non trouvé
+          statutEquipement: statut ? statut.statutEquipement : 'N/A', // Ajoute le statut ou 'N/A' si non trouvé
         };
       });
     });
 
-    // Handle lieu selection
+    // Gestion de la sélection d'un lieu
     const handleLieuSelected = (lieu) => {
       state.selectedLieu = lieu.nomLieu;
     };
 
-    // Navigation functions
+    // Navigation vers la page d'ajout d'équipement
     const ouvrirPageAjoutEquipement = () => {
       router.push({ name: 'AjouterEquipement' });
     };
 
+    // Navigation vers la page de visualisation d'un équipement
     const ouvrirPageVoirEquipement = (reference) => {
       if (!reference) return console.error('Reference is missing');
       router.push({ name: 'VisualiserEquipement', params: { reference } });
     };
 
-    // Fetch data on mount
+    // Récupération des données au montage du composant
     onMounted(fetchData);
 
+    // Retour des propriétés et méthodes exposées au template
     return {
       ...toRefs(state),
       filteredEquipements,
@@ -155,6 +170,7 @@ export default {
 </script>
 
 <style scoped>
+/* Style pour le survol des lignes du tableau */
 .v-data-table tr:hover {
   background-color: #e6f2ff;
   transition: background-color 0.3s ease;

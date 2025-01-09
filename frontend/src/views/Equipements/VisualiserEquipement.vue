@@ -1,41 +1,33 @@
 <template>
   <v-app>
-    <!-- Contenu principal -->
     <v-main>
       <v-container>
         <v-row>
           <!-- Section gauche : Détails de l'équipement -->
-          <v-col cols="6">
+          <v-col cols="12" md="6">
             <v-card elevation="1" class="rounded-lg pa-2">
               <v-card-title class="font-weight-bold text-uppercase text-primary">Description de l'équipement</v-card-title>
 
               <v-row class="pa-2">
                 <v-col cols="12">
-                  <p><strong>Référence de l'équipement (numéro de série) :</strong> {{ equipement.reference }}</p>
-                </v-col>
-                <v-col cols="12">
-                  <p><strong>Désignation de l'équipement :</strong> {{ equipement.designation }}</p>
-                </v-col>
-                <v-col cols="12">
-                  <p><strong>Type de l'équipement :</strong> {{ equipement.type }}</p>
-                </v-col>
-                <v-col cols="12">
-                  <p><strong>Salle :</strong> {{ equipement.salle }}</p>
-                </v-col>
-                <v-col cols="12">
-                  <p><strong>État :</strong> {{ equipement.etat }}</p>
-                </v-col>
-                <v-col cols="12">
-                  <p><strong>Mise en fonction :</strong> {{ equipement.miseEnFonction }}</p>
-                </v-col>
-                <v-col cols="12">
-                  <p><strong>Prix de l'équipement (€) :</strong> {{ equipement.prix }}</p>
-                </v-col>
-                <v-col cols="12">
-                  <p><strong>Fournisseur :</strong> {{ equipement.fournisseur }}</p>
-                </v-col>
-                <v-col cols="12">
-                  <p><strong>Modèle :</strong> {{ equipement.modele }}</p>
+                  <div class="grid-container">
+                    <div class="grid-title"><strong>Référence de l'équipement (numéro de série) :</strong></div>
+                    <div class="grid-data">{{ equipement.reference || 'N/A' }}</div>
+                    <div class="grid-title"><strong>Désignation de l'équipement :</strong></div>
+                    <div class="grid-data">{{ equipement.designation || 'N/A' }}</div>
+                    <div class="grid-title"><strong>Salle :</strong></div>
+                    <div class="grid-data">{{ equipement.lieu?.nomLieu || 'N/A' }}</div>
+                    <div class="grid-title"><strong>État :</strong></div>
+                    <div class="grid-data">{{ equipement.dernier_statut?.statutEquipement || 'N/A' }}</div>
+                    <div class="grid-title"><strong>Mise en fonction :</strong></div>
+                    <div class="grid-data">{{ equipement.miseEnFonction || 'N/A' }}</div>
+                    <div class="grid-title"><strong>Prix de l'équipement (€) :</strong></div>
+                    <div class="grid-data">{{ equipement.prix || 'N/A' }}</div>
+                    <div class="grid-title"><strong>Fournisseur :</strong></div>
+                    <div class="grid-data">{{ equipement.fournisseur?.nomFournisseur || 'N/A' }}</div>
+                    <div class="grid-title"><strong>Modèle :</strong></div>
+                    <div class="grid-data">{{ equipement.modeleEquipement?.nomModeleEquipement || 'N/A' }}</div>
+                  </div>
                 </v-col>
               </v-row>
 
@@ -53,7 +45,7 @@
                   <template v-slot:item="{ item, index }">
                     <tr @click="telechargerDocument(item)" style="cursor: pointer;">
                       <td>
-                        {{ item.nomDocument }}
+                        {{ item.nomDocument || 'N/A' }}
                       </td>
                     </tr>
                   </template>
@@ -63,7 +55,7 @@
           </v-col>
 
           <!-- Section droite : Image, consommables, maintenance et actions -->
-          <v-col cols="6">
+          <v-col cols="12" md="6">
             <!-- Section image -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-img
@@ -94,9 +86,9 @@
                 </template>
                 <template v-slot:item="{ item }">
                   <tr>
-                    <td>{{ item.nom }}</td>
-                    <td>{{ item.etat }}</td>
-                    <td>{{ item.stock }}</td>
+                    <td>{{ item.nom || 'N/A' }}</td>
+                    <td>{{ item.etat || 'N/A' }}</td>
+                    <td>{{ item.stock || 'N/A' }}</td>
                   </tr>
                 </template>
               </v-data-table>
@@ -121,8 +113,8 @@
                 </template>
                 <template v-slot:item="{ item }">
                   <tr>
-                    <td>{{ item.numero }}</td>
-                    <td>{{ item.date }}</td>
+                    <td>{{ item.numero || 'N/A' }}</td>
+                    <td>{{ item.date || 'N/A' }}</td>
                     <td>
                       <v-btn icon @click="voirMaintenance(item)">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye eye-icon">
@@ -130,7 +122,6 @@
                           <circle cx="12" cy="12" r="3"></circle>
                         </svg>
                       </v-btn>
-
                     </td>
                   </tr>
                 </template>
@@ -151,111 +142,79 @@
 </template>
 
 <script>
-import NavigationDrawer from '@/components/BarreNavigation.vue'; // Assurez-vous que le chemin est correct
-import TopNavBar from "@/components/BarreNavigationHaut.vue";
-import '@/assets/css/global.css'; // Importation du fichier CSS global
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import api from '@/services/api';
 
 export default {
   name: 'VisualiserEquipement',
-  components: {
-    NavigationDrawer,
-    TopNavBar,
-  },
+  setup() {
+    const route = useRoute();
+    const equipementId = route.params.reference; // Assuming the route parameter is named 'reference'
+    
+    // Reactive state
+    const equipement = ref({});
+    const documents = ref([]);
+    const consommables = ref([]);
+    const maintenances = ref([]);
+    const isLoading = ref(true);
+    
+    // Fetch equipment data
+    const fetchEquipementData = async () => {
+      try {
+        // Fetch the specific equipment details
+        const equipementResponse = await api.getEquipementById(equipementId);
+        equipement.value = equipementResponse.data;
+      
+        // Fetch the full list of equipment to get dateMiseEnService and prixAchat
+        const equipementsResponse = await api.getEquipements();
+        const fullEquipementData = equipementsResponse.data.find(
+          (eq) => eq.reference === equipementId
+        );
+      
+        // If the equipment is found in the full list, merge the data
+        if (fullEquipementData) {
+          equipement.value = {
+            ...equipement.value, // Existing data from getEquipementById
+            miseEnFonction: fullEquipementData.dateMiseEnService, // Add dateMiseEnService
+            prix: fullEquipementData.prixAchat, // Add prixAchat
+          };
+        }
+      
+        // Extract documents from the response
+        documents.value = [
+          ...equipementResponse.data.documents_techniques,
+          ...equipementResponse.data.documents_defaillance,
+          ...equipementResponse.data.documents_intervention,
+        ];
+      
+        // Extract consumables from the response
+        consommables.value = equipementResponse.data.consommables_compatibles;
+      
+        // Extract maintenances (if available)
+        maintenances.value = []; // You can mock this if needed
+      } catch (error) {
+        console.error('Error fetching equipment data:', error);
+      } finally {
+        isLoading.value = false;
+      }
+    };
   
-  data() {
+    // Fetch all data on component mount
+    onMounted(fetchEquipementData);
+  
     return {
-      isLoadingEquipement: true,
-      isLoadingDocuments: true,
-      isLoadingConsommables: true,
-      isLoadingMaintenances: true,
-      equipement: {},
-      documents: [],
-      consommables: [],
-      maintenances: [],
+      equipement,
+      documents,
+      consommables,
+      maintenances,
+      isLoading,
       entetes: [
         { text: "Document", value: "nomDocument", align: "start" }
       ],
     };
   },
-  
   methods: {
-    // Fetch equipment data
-    fetchEquipementData(id) {
-      // Simulate an API call
-      setTimeout(() => {
-        const mockEquipementData = {
-          'Équipement 1': {
-            reference: "Ref12345",
-            designation: "Equipement X",
-            type: "Type Y",
-            salle: "Salle1",
-            etat: "En fonctionnement",
-            miseEnFonction: "2023-01-01",
-            prix: 1200.00,
-            fournisseur: "Fournisseur1",
-            modele: "Modèle1",
-            image: require('@/assets/images/LogoGIMAO.png'),
-          }
-        };
-
-        this.equipement = mockEquipementData[id] || {};
-        this.isLoadingEquipement = false;
-      }, 1000); // Simulate network delay
-    },
-
-    // Fetch documents data
-    fetchDocumentsData(id) {
-      // Simulate an API call
-      setTimeout(() => {
-        const mockDocumentsData = {
-          'Équipement 1': [
-            { nomDocument: "Doc1" },
-            { nomDocument: "Doc2" },
-            { nomDocument: "Doc3" },
-            { nomDocument: "Doc4" }
-          ]
-        };
-
-        this.documents = mockDocumentsData[id] || [];
-        this.isLoadingDocuments = false;
-      }, 1200); // Simulate network delay
-    },
-
-    // Fetch consommables data
-    fetchConsommablesData(id) {
-      // Simulate an API call
-      setTimeout(() => {
-        const mockConsommablesData = {
-          'Équipement 1': [
-            { nom: "Pièce 1", etat: "Endommagée", stock: 20 },
-            { nom: "Pièce 2", etat: "Normale", stock: 7 },
-            { nom: "Pièce 3", etat: "Normale", stock: 9 }
-          ]
-        };
-
-        this.consommables = mockConsommablesData[id] || [];
-        this.isLoadingConsommables = false;
-      }, 800); // Simulate network delay
-    },
-
-    // Fetch maintenances data
-    fetchMaintenancesData(id) {
-      // Simulate an API call
-      setTimeout(() => {
-        const mockMaintenancesData = {
-          'Équipement 1': [
-            { numero: 1, date: "10/07/24" },
-            { numero: 2, date: "05/04/24" },
-            { numero: 3, date: "15/01/24" }
-          ]
-        };
-
-        this.maintenances = mockMaintenancesData[id] || [];
-        this.isLoadingMaintenances = false;
-      }, 1500); // Simulate network delay
-    },
-
-    // Other methods
     telechargerDocument(item) {
       console.log('Document sélectionné:', item);
     },
@@ -263,15 +222,6 @@ export default {
       console.log('Maintenance en cours de visualisation:', item);
     },
   },
-
-  
-  created() {
-    const equipementId = this.$route.params.id;
-    this.fetchEquipementData(equipementId);
-    this.fetchDocumentsData(equipementId);
-    this.fetchConsommablesData(equipementId);
-    this.fetchMaintenancesData(equipementId);
-  }
 };
 </script>
 
@@ -300,5 +250,39 @@ export default {
 
 h1 {
   color: #05004E;
+}
+
+/* CSS Grid for aligning titles and data */
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns: one for titles, one for data */
+  gap: 8px; /* Space between rows */
+  align-items: center; /* Vertically align items */
+}
+
+.grid-title {
+  font-weight: bold;
+  white-space: normal; /* Allow titles to wrap */
+  word-break: break-word; /* Break long words if necessary */
+}
+
+.grid-data {
+  white-space: nowrap; /* Prevent data from wrapping */
+}
+
+/* Responsive adjustments for small screens */
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr; /* Switch to a single column on small screens */
+  }
+
+  .grid-title {
+    white-space: normal; /* Allow titles to wrap */
+    word-break: normal; /* Prevent excessive line breaks */
+  }
+
+  .grid-data {
+    white-space: normal; /* Allow data to wrap if needed */
+  }
 }
 </style>
