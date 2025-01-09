@@ -4,7 +4,6 @@
       <v-container class="py-5">
         <v-card class="pa-4">
           <h1 class="text-primary text-center">Signaler une défaillance</h1>
-
           <v-row>
             <!-- Colonne de gauche avec les champs -->
             <v-col cols="6">
@@ -17,7 +16,7 @@
                       :items="lieux"
                       outlined
                       dense
-                      :rules="[v => !!v || (validationTriggered && 'Lieu requis')]"
+                      :rules="[v => !!v || (validationDeclenchee && 'Lieu requis')]"
                     ></v-select>
                   </v-col>
                   <v-col cols="12">
@@ -27,7 +26,7 @@
                       :items="salles"
                       outlined
                       dense
-                      :rules="[v => !!v || (validationTriggered && 'Salle requise')]"
+                      :rules="[v => !!v || (validationDeclenchee && 'Salle requise')]"
                     ></v-select>
                   </v-col>
                   <v-col cols="12">
@@ -37,15 +36,15 @@
                       :items="equipements"
                       outlined
                       dense
-                      :rules="[v => !!v || (validationTriggered && 'Équipement requis')]"
+                      :rules="[v => !!v || (validationDeclenchee && 'Équipement requis')]"
                     ></v-select>
                   </v-col>
-                                <!-- Groupe de boutons radio pour l'état -->
+              <!-- Groupe de boutons radio pour l'état -->
               <v-radio-group
                 v-model="form.etat"
                 class="mt-4"
                 row
-                :rules="[v => !!v || (validationTriggered && 'État requis')]"
+                :rules="[v => !!v || (validationDeclenchee && 'État requis')]"
               >
                 <v-radio
                   label="Fonctionnel"
@@ -66,7 +65,6 @@
                 </v-row>
               </v-form>
             </v-col>
-
             <!-- Colonne de droite : Champ commentaire + Boutons radio -->
             <v-col cols="6">
               <v-textarea
@@ -75,12 +73,10 @@
                 rows="10"
                 outlined
               ></v-textarea>
-
-
             </v-col>
           </v-row>
 
-          <!-- Boutons en bas -->
+          <!-- Boutons du bas -->
           <v-row justify="center" class="mt-4">
             <v-btn
               color="primary"
@@ -115,30 +111,39 @@ export default {
         salle: null,
         equipement: null,
         commentaire: "",
-        etat: null, // Propriété pour stocker l'état sélectionné
+        etat: null,
       },
       formulaireValide: false,
-      validationTriggered: false,
+      validationDeclenchee: false,
     };
   },
 
   methods: {
+    /**
+     * Réinitialise le formulaire en effaçant les valeurs des champs, 
+     * en remettant la validation à zéro et en annulant la validation.
+     */
     reinitialiserFormulaire() {
       this.form = {
         lieu: null,
         salle: null,
         equipement: null,
         commentaire: "",
-        etat: null, // Réinitialiser aussi l'état
+        etat: null,
       };
-      this.validationTriggered = false;
+      this.validationDeclenchee = false;
       if (this.$refs.formulaire) {
         this.$refs.formulaire.resetValidation();
       }
     },
 
+    /**
+     * Valide le formulaire et le soumet si tous les champs sont valides.
+     * Si le formulaire est valide, affiche un message de confirmation et
+     * envoie le formulaire par console. Sinon, affiche un message d'erreur.
+     */
     validerFormulaire() {
-      this.validationTriggered = true;
+      this.validationDeclenchee = true;
       const formulaire = this.$refs.formulaire;
 
       if (formulaire) {
