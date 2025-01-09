@@ -50,11 +50,15 @@
           <!-- Boutons  -->
           <v-row justify="center" class="mt-4">
             <!-- Bouton Annuler  -->
-            <v-btn color="primary" class="text-white mx-2" @click="annulerFormulaire">
+            <v-btn color="primary" class="text-white mx-2" @click="annulerCloture">
               Annuler
             </v-btn>
             <!-- Bouton Valider  -->
-            <v-btn color="success" class="text-white mx-2" @click="validerFormulaire">
+            <v-btn color="error" class="text-white mx-2" @click="validerCloture">
+              Refuser
+            </v-btn>
+            <!-- Bouton Valider  -->
+            <v-btn color="success" class="text-white mx-2" @click="validerCloture">
               Valider
             </v-btn>
           </v-row>
@@ -84,12 +88,17 @@ export default {
 
   //Methode pour annuler la fin d'intervention
   methods: {
-    annulerFormulaire() {
+    annulerCloture() {
       this.$router.push({ name: 'TableauDeBord' });
     },
     
+    
+    refuserCloture() {
+      this.$router.push({ name: 'TableauDeBord' });
+    },
+
     //Methode pour valider la fin de l'intervention
-    validerFormulaire() {
+    validerCloture() {
       this.$router.push({ name: 'TableauDeBord' });
     },
   },
