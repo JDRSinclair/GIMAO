@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <!-- Contenu principal -->
     <v-main>
       <v-container>
         <v-row>
@@ -38,11 +37,9 @@
                   <p><strong>Modèle :</strong> {{ equipement.modele }}</p>
                 </v-col>
               </v-row>
-
               <!-- Section documentation -->
               <v-card elevation="1" class="rounded-lg pa-2">
                 <v-card-title class="font-weight-bold text-uppercase text-primary">Documentation</v-card-title>
-
                 <v-data-table
                   :headers="entetes"
                   :items="documents"
@@ -61,7 +58,6 @@
               </v-card>
             </v-card>
           </v-col>
-
           <!-- Section droite : Image, consommables, maintenance et actions -->
           <v-col cols="6">
             <!-- Section image -->
@@ -74,7 +70,6 @@
                 alt="Image de l'équipement"
               ></v-img>
             </v-card>
-            
             <!-- Section consommables -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">
@@ -101,7 +96,6 @@
                 </template>
               </v-data-table>
             </v-card>
-
             <!-- Section historique de maintenance -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">
@@ -136,7 +130,6 @@
                 </template>
               </v-data-table>
             </v-card>
-
             <!-- Bouton d'action -->
             <v-row justify="end">
               <v-btn color="primary" class="mt-4" large>
@@ -151,9 +144,9 @@
 </template>
 
 <script>
-import NavigationDrawer from '@/components/BarreNavigation.vue'; // Assurez-vous que le chemin est correct
+import NavigationDrawer from '@/components/BarreNavigation.vue'; 
 import TopNavBar from "@/components/BarreNavigationHaut.vue";
-import '@/assets/css/global.css'; // Importation du fichier CSS global
+import '@/assets/css/global.css';
 
 export default {
   name: 'VisualiserEquipement',
@@ -179,12 +172,15 @@ export default {
   },
   
   methods: {
-    // Fetch equipment data
-    fetchEquipementData(id) {
-      // Simulate an API call
+    /**
+     * Simule l'appel API pour recuperer les informations d'un équipement.
+     * 
+     * @param {string} id - L'ID de l'équipement.
+     */
+    recupererDonneesEquipements(id) {
       setTimeout(() => {
-        const mockEquipementData = {
-          'Équipement 1': {
+        const donneesSimulees = {
+            'Équipement 1': {
             reference: "Ref12345",
             designation: "Equipement X",
             type: "Type Y",
@@ -198,14 +194,19 @@ export default {
           }
         };
 
-        this.equipement = mockEquipementData[id] || {};
+        this.equipement = donneesSimulees[id] || {};
         this.isLoadingEquipement = false;
-      }, 1000); // Simulate network delay
+      }, 1000); // Simule le delai internet
     },
 
-    // Fetch documents data
-    fetchDocumentsData(id) {
-      // Simulate an API call
+
+    /**
+     * Simule l'appel API pour récupérer les documents d'un équipement.
+     * 
+     * @param {string} id - L'ID de l'équipement.
+     */
+    recupererDonneesDocuments(id) {
+      // Simule un appel API
       setTimeout(() => {
         const mockDocumentsData = {
           'Équipement 1': [
@@ -215,15 +216,22 @@ export default {
             { nomDocument: "Doc4" }
           ]
         };
-
         this.documents = mockDocumentsData[id] || [];
         this.isLoadingDocuments = false;
-      }, 1200); // Simulate network delay
+      }, 1200);
     },
 
-    // Fetch consommables data
-    fetchConsommablesData(id) {
-      // Simulate an API call
+    /**
+     * Simule l'appel API pour récupérer les consommables d'un équipement.
+     *
+     * @param {string} id - L'ID de l'équipement.
+     *
+     * Cette fonction met à jour la liste des consommables associés à un équipement en simulant un appel API.
+     * Les données sont récupérées après un délai simulé et assignées à l'attribut consommables.
+     * La variable isLoadingConsommables est mise à false une fois les données chargées.
+     */
+    recupererDonneesConsommables(id) {
+      // Simule un appel API
       setTimeout(() => {
         const mockConsommablesData = {
           'Équipement 1': [
@@ -235,12 +243,20 @@ export default {
 
         this.consommables = mockConsommablesData[id] || [];
         this.isLoadingConsommables = false;
-      }, 800); // Simulate network delay
+      }, 800);
     },
 
-    // Fetch maintenances data
-    fetchMaintenancesData(id) {
-      // Simulate an API call
+    /**
+     * Simule l'appel API pour récupérer les maintenances d'un équipement.
+     *
+     * @param {string} id - L'ID de l'équipement.
+     *
+     * Cette fonction met à jour la liste des maintenances associées à un équipement en simulant un appel API.
+     * Les données sont récupérées après un délai simulé et assignées à l'attribut maintenances.
+     * La variable isLoadingMaintenances est mise à false une fois les données chargées.
+     */
+    recupererDonneesMaintenance(id) {
+      // Simule un appel API
       setTimeout(() => {
         const mockMaintenancesData = {
           'Équipement 1': [
@@ -252,13 +268,23 @@ export default {
 
         this.maintenances = mockMaintenancesData[id] || [];
         this.isLoadingMaintenances = false;
-      }, 1500); // Simulate network delay
+      }, 1500);
     },
 
-    // Other methods
+    /**
+     * @function telechargerDocument
+     * @description Télécharge un document
+     * @param {Object} item - Objet contenant le nom du document
+     */
     telechargerDocument(item) {
       console.log('Document sélectionné:', item);
     },
+
+    /**
+     * @function voirMaintenance
+     * @description Affiche les détails de maintenance pour l'élément donné
+     * @param {Object} item - Objet représentant la maintenance à visualiser
+     */
     voirMaintenance(item) {
       console.log('Maintenance en cours de visualisation:', item);
     },
@@ -267,10 +293,10 @@ export default {
   
   created() {
     const equipementId = this.$route.params.id;
-    this.fetchEquipementData(equipementId);
-    this.fetchDocumentsData(equipementId);
-    this.fetchConsommablesData(equipementId);
-    this.fetchMaintenancesData(equipementId);
+    this.recupererDonneesEquipements(equipementId);
+    this.recupererDonneesDocuments(equipementId);
+    this.recupererDonneesConsommables(equipementId);
+    this.recupererDonneesMaintenance(equipementId);
   }
 };
 </script>
