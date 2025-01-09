@@ -8,7 +8,7 @@
               <v-card-title class="font-weight-bold text-uppercase text-primary">Structure des lieux</v-card-title>
               <v-divider></v-divider>
               <ExplorateurLieux
-             :lieux="lieux" @select-lieu="handleLieuSelected" />
+             :lieux="lieux" @select-lieu="gererLieuSelectione" />
             </v-card>
             <v-card elevation="1" class="rounded-lg pa-2">
               <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
@@ -30,12 +30,12 @@
             </v-btn>
             <v-data-table
               :headers="headers"
-              :items="filteredEquipements"
-              :items-per-page="itemsPerPage"
+              :items="equipementsFiltres"
+              :items-per-page="itemsParPage"
               :page.sync="page"
               item-value="name"
               class="elevation-1 rounded-lg"
-              @page-count="pageCount = $event"
+              @page-count="nbPage = $event"
               hover
             >
               <template v-slot:item="{ item }">
@@ -49,7 +49,7 @@
             <div class="text-center pt-2">
               <v-pagination
                 v-model="page"
-                :length="pageCount"
+                :length="nbPage"
               ></v-pagination>
             </div>
           </v-col>
@@ -75,7 +75,33 @@ export default {
     ExplorateurLieux
   ,
   },
-  setup() {
+  /**
+   * Setup de la page des équipements.
+   * 
+   * Cette fonction est appelée une seule fois, au moment de l'instanciation
+   * du composant. Elle renvoie un objet qui sera injecté dans le composant
+   * comme propriétés.
+   * 
+   * Les propriétés et les méthodes suivantes sont mises à disposition :
+   * 
+   * - typesEquipements : un tableau des types d'équipements (par exemple, "Tous", "Type 1", "Type 2", etc.)
+   * - headers : un tableau des en-têtes de la table des équipements
+   * - equipements : un tableau des équipements (au format { id, nom, lieu, etat })
+   * - lieux : un tableau des lieux dans l'entreprise (au format { id, nomLieu, children: [{ id, nomLieu, children: [ ... ] }] })
+   * - lieuSelectione : la valeur du lieu selectionné par l'utilisateur
+   * - gererLieuSelectione : une fonction qui met à jour la valeur de lieuSelectione
+   *   en fonction du lieu qui a été selectionné dans l'arbre
+   * - equipementsFiltres : un computed qui filtre les équipements en fonction
+   *   du lieu selectionné
+   * - page : la page actuelle de la pagination
+   * - nbPage : le nombre de pages de la pagination
+   * - itemsParPage : le nombre d'éléments par page
+   * - ouvrirPageAjoutEquipement : une fonction qui ouvre la page d'ajout d'un équipement
+   * - ouvrirPageVoirEquipement : une fonction qui ouvre la page de visualisation
+   *   d'un équipement en fonction de son ID
+   * 
+   */
+    setup() {
     const router = useRouter();
 
     const typesEquipements = ref(["Tous", "Type 1", "Type 2", "Type 3", "Type 4"]);
@@ -123,15 +149,26 @@ export default {
         ]
       },
     ]);
-    const selectedLieu = ref(null);
-    const page = ref(1);
-    const pageCount = ref(0);
-    const itemsPerPage = ref(5);
+    const lieuSelectione = ref(null);
 
+    const page = ref(1);
+
+    const nbPage = ref(0);
+    
+    const itemsParPage = ref(5);
+
+    /**
+     * Ouvre la page d'ajout d'un équipement.
+     */
     const ouvrirPageAjoutEquipement = () => {
       router.push({ name: 'AjouterEquipement' });
     };
 
+    /**
+     * Ouvre la page de visualisation d'un équipement.
+     * 
+     * @param {number} id - L'ID de l'équipement à visualiser.
+     */
     const ouvrirPageVoirEquipement = (id) => {
       if (!id) {
         console.error('ID is missing');
@@ -140,28 +177,37 @@ export default {
       router.push({ name: 'VisualiserEquipement', params: { id } });
     };
 
-    const filteredEquipements = computed(() => {
-      if (!selectedLieu.value) {
+    /**
+     * Filtre les équipements en fonction du lieu selectionné.
+     */
+    const equipementsFiltres = computed(() => {
+      if (!lieuSelectione.value) {
         return equipements.value;
       }
-      return equipements.value.filter(e => e.lieu === selectedLieu.value);
+      return equipements.value.filter(e => e.lieu === lieuSelectione.value);
     });
 
-    const handleLieuSelected = (lieu) => {
-      selectedLieu.value = lieu.nomLieu;
+    /**
+     * Met à jour la valeur de lieuSelectione en fonction du lieu 
+     * qui a été selectionné dans l'arbre.
+     * 
+     * @param {Object} lieu - Le lieu qui a été selectionné.
+     */
+    const gererLieuSelectione = (lieu) => {
+      lieuSelectione.value = lieu.nomLieu;
     };
-
+    
     return {
       typesEquipements,
       headers,
       equipements,
       lieux,
-      selectedLieu,
-      handleLieuSelected,
-      filteredEquipements,
+      lieuSelectione,
+      gererLieuSelectione,
+      equipementsFiltres,
       page,
-      pageCount,
-      itemsPerPage,
+      nbPage,
+      itemsParPage,
       ouvrirPageAjoutEquipement,
       ouvrirPageVoirEquipement,
     };
@@ -170,13 +216,12 @@ export default {
 </script>
 
 <style scoped>
-/* Effet de survol personnalisé */
 .v-data-table tr:hover {
-  background-color: #e6f2ff; /* Fond bleu clair au survol */
-  transition: background-color 0.3s ease; /* Transition fluide */
+  background-color: #e6f2ff; 
+  transition: background-color 0.3s ease;
 }
 
 .v-data-table tr:hover td {
-  color: #0056b3; /* Couleur du texte en bleu foncé au survol */
+  color: #0056b3;
 }
 </style>
