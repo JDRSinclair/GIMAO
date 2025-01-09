@@ -49,17 +49,17 @@
                 <v-radio
                   label="Fonctionnel"
                   value="Fonctionnel"
-                  color="black"
+                  color="primary"
                 ></v-radio>
                 <v-radio
                   label="À l'arrêt"
                   value="À l'arrêt"
-                  color="black"
+                  color="primary"
                 ></v-radio>
                 <v-radio
                   label="Rebuté"
                   value="Rebuté"
-                  color="black"
+                  color="primary"
                 ></v-radio>
               </v-radio-group>
                 </v-row>
@@ -100,6 +100,8 @@
 </template>
 
 <script>
+import '@/assets/css/global.css';
+
 export default {
   data() {
     return {
