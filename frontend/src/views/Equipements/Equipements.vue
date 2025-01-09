@@ -1,106 +1,94 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container>
-        <v-row>
-          <v-col cols="4">
-            <!-- Affichage de lieux  -->
-            <v-card elevation="1" class="rounded-lg pa-2 mb-4">
-              <v-card-title class="font-weight-bold text-uppercase text-primary">Structure des lieux</v-card-title>
-              <v-divider></v-divider>
-              <LieuxExplorer :lieux="lieux" @select-lieu="handleLieuSelected" />
-            </v-card>
+  <v-container>
+    <v-row>
+      <v-col cols="4">
+        <!-- Structure des lieux -->
+        <v-card elevation="1" class="rounded-lg pa-2 mb-4">
+          <v-card-title class="font-weight-bold text-uppercase text-primary">
+            Structure des lieux
+          </v-card-title>
+          <v-divider></v-divider>
+          <LieuxExplorer :lieux="lieuxAvecTous" @select-lieu="handleLieuSelected" />
+        </v-card>
 
-            <!-- Affichage de Types d'équipements -->
-            <v-card elevation="1" class="rounded-lg pa-2">
-              <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
-              <v-divider></v-divider>
-              <v-list dense>
-                <v-list-item v-for="(modele, index) in modeleEquipements" :key="index" link>
-                  <v-list-item-title>{{ modele.nomModeleEquipement }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-card>
-          </v-col>
+        <!-- Types d'équipements -->
+        <v-card elevation="1" class="rounded-lg pa-2">
+          <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
+          <v-divider></v-divider>
+          <v-list dense>
+            <v-list-item link @click="handleTypeEquipementSelected(null)">
+              <v-list-item-title>Tous</v-list-item-title>
+            </v-list-item>
+            <v-list-item v-for="(modele, index) in modeleEquipements" :key="index" link @click="handleTypeEquipementSelected(modele)">
+              <v-list-item-title>{{ modele.nomModeleEquipement }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-col>
 
-          <!-- Affichage des équipements choisis -->
-          <v-col cols="8">
-            <v-btn
-              color="primary"
-              @click="ouvrirPageAjoutEquipement"
-              class="mb-4"
-            >
-              Aller à l'ajout d'équipement
-            </v-btn>
-            <v-data-table
-              :headers="headers"
-              :items="filteredEquipements"
-              :items-per-page="itemsPerPage"
-              :page.sync="page"
-              item-value="name"
-              class="elevation-1 rounded-lg"
-              @page-count="pageCount = $event"
-            >
-            <template v-slot:item="{ item }">
-              <tr>
-                <td>{{ item.designation }}</td>
-                <td>{{ item.lieu ? item.lieu.nomLieu : 'N/A' }}</td>
-                <td>{{ item.statutEquipement }}</td>
-              </tr>
-            </template>
-            </v-data-table>
-            <div class="text-center pt-2">
-              <v-pagination
-                v-model="page"
-                :length="pageCount">
-              </v-pagination>
-            </div>
-          </v-col>
-          
-        </v-row>
-      </v-container>
-    </v-main>
-  </v-app>
+      <v-col cols="8">
+        <!-- Bouton d'ajout d'équipement -->
+        <v-btn color="primary" @click="ouvrirPageAjoutEquipement" class="mb-4">
+          Aller à l'ajout d'équipement
+        </v-btn>
+
+        <!-- Table des équipements -->
+        <v-data-table
+          :headers="header"
+          :items="filteredEquipements"
+          :items-per-page="itemsPerPage"
+          :page.sync="page"
+          class="elevation-1 rounded-lg"
+          @page-count="pageCount = $event"
+          :sort-by="['designation']"
+          :sort-desc="[false]"
+        >
+        </v-data-table>
+
+        <v-pagination v-model="page" :length="pageCount" class="text-center pt-2"></v-pagination>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 import { ref, computed, onMounted, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-import NavigationDrawer from '@/components/BarreNavigation.vue';
-import TopNavBar from "@/components/BarreNavigationHaut.vue";
 import LieuxExplorer from '@/components/LieuxExplorer.vue';
-import '@/assets/css/global.css';
 import api from '@/services/api';
 
 export default {
   name: 'Equipements',
   components: {
-    NavigationDrawer,
-    TopNavBar,
     LieuxExplorer,
   },
   setup() {
+    const router = useRouter();
     const state = reactive({
       equipements: [],
       lieux: [],
       modeleEquipements: [],
       selectedLieu: null,
+      selectedTypeEquipement: null,
       page: 1,
       pageCount: 0,
       itemsPerPage: 5,
-      typesEquipements: [],
-      headers: [
-        { text: 'Désignation', value: 'designation' },
-        { text: 'Lieu', value: 'lieu.nomLieu' },
-        { text: 'Statut', value: 'statutEquipement' },
+      header: [
+        { title: 'Désignation', value: 'modeleEquipement.nomModeleEquipement', sortable: true, align: 'center' },
+        { title: 'Lieu', value: 'lieu.nomLieu', sortable: true, align: 'center' },
+        { title: 'Statut', value: 'statut.statutEquipement', sortable: true, align: 'center',
+          sort: (a, b) => {
+            const order = ['Rebuté', 'En fonctionnement', 'Dégradé', 'A l\'arrêt'];
+            return order.indexOf(a) - order.indexOf(b);
+          }
+        },
       ],
-
     });
 
     const fetchData = async () => {
       try {
         const [equipementsRes, lieuxRes, modeleEquipementsRes] = await Promise.all([
-          api.getEquipements(),
+          api.getEquipementsVue(),
           api.getLieux(),
           api.getModeleEquipements()
         ]);
@@ -108,46 +96,60 @@ export default {
         state.equipements = equipementsRes.data;
         state.lieux = lieuxRes.data;
         state.modeleEquipements = modeleEquipementsRes.data;
-        
-        console.log('Modèles d\'équipements:', state.modeleEquipements);
-        console.log('Données récupérées avec succès');
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
       }
     };
 
+    const lieuxAvecTous = computed(() => {
+      return [{ id: null, nomLieu: 'Tous', children: [] }, ...state.lieux];
+    });
+
     const filteredEquipements = computed(() => {
-      if (!state.selectedLieu) {
-        return state.equipements;
-      }
-      return state.equipements.filter(e => e.lieu === state.selectedLieu);
+      return state.equipements.filter(e => {
+        const lieuMatch = !state.selectedLieu || state.selectedLieu === 'Tous' || e.lieu.nomLieu === state.selectedLieu;
+        const typeMatch = !state.selectedTypeEquipement || e.modeleEquipement.nomModeleEquipement === state.selectedTypeEquipement;
+        return lieuMatch && typeMatch;
+      });
     });
 
     const handleLieuSelected = (lieu) => {
       state.selectedLieu = lieu.nomLieu;
     };
 
-    onMounted(() => {
-      fetchData();
-    });
+    const handleTypeEquipementSelected = (modele) => {
+      state.selectedTypeEquipement = modele ? modele.nomModeleEquipement : null;
+    };
+
+    const ouvrirPageAjoutEquipement = () => {
+      router.push('/ajouter-equipement');
+    };
+
+    onMounted(fetchData);
 
     return {
       ...toRefs(state),
+      lieuxAvecTous,
       filteredEquipements,
       handleLieuSelected,
+      handleTypeEquipementSelected,
+      ouvrirPageAjoutEquipement,
     };
   }
 };
 </script>
 
 <style scoped>
-/* Effet de survol personnalisé */
 .v-data-table tr:hover {
-  background-color: #e6f2ff; /* Fond bleu clair au survol */
-  transition: background-color 0.3s ease; /* Transition fluide */
+  background-color: #e6f2ff;
+  transition: background-color 0.3s ease;
 }
 
 .v-data-table tr:hover td {
-  color: #0056b3; /* Couleur du texte en bleu foncé au survol */
+  color: #0056b3;
+}
+
+.v-data-table th {
+  color: black !important;
 }
 </style>

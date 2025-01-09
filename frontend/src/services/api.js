@@ -13,6 +13,10 @@ export default {
   },
 
   getModeleEquipements() {
-    return axios.get(`${API_URL}modeleequipements/`);
+    return axios.get(`${API_URL}modele-equipements/`);
   },
+
+  getEquipementsVue(){
+    return axios.get(`${API_URL}equipements-detail/`);
+  }
 };

@@ -11,12 +11,27 @@ from myApp.models import (
     DocumentDefaillance, Intervention, DocumentIntervention
 )
 from .serializers import (
-    RoleSerializer, AvoirSerializer, FabricantSerializer, FournisseurSerializer,
-    ConsommableSerializer, StockConsommableSerializer, ModeleEquipementSerializer,
-    EstCompatibleSerializer, LieuSerializer, EquipementSerializer, ConstituerSerializer,
-    InformationStatutSerializer, DocumentTechniqueSerializer, CorrespondreSerializer,
-    DefaillanceSerializer, DocumentDefaillanceSerializer, InterventionSerializer,
-    DocumentInterventionSerializer,EquipementDetailSerializer ,LieuHierarchySerializer
+    RoleSerializer,
+    AvoirSerializer,
+    FabricantSerializer,
+    FournisseurSerializer,
+    ConsommableSerializer,
+    StockConsommableSerializer,
+    ModeleEquipementSerializer,
+    EstCompatibleSerializer,
+    LieuSerializer,
+    EquipementSerializer,
+    ConstituerSerializer,
+    InformationStatutSerializer,
+    DocumentTechniqueSerializer,
+    CorrespondreSerializer,
+    DefaillanceSerializer,
+    DocumentDefaillanceSerializer,
+    InterventionSerializer,
+    DocumentInterventionSerializer,
+
+    EquipementDetailSerializer,
+    LieuHierarchySerializer,
 )
 
 class RoleViewSet(viewsets.ModelViewSet):
@@ -55,6 +70,9 @@ class LieuViewSet(viewsets.ModelViewSet):
     queryset = Lieu.objects.all()
     serializer_class = LieuSerializer
 
+class EquipementViewSet(viewsets.ModelViewSet):
+    queryset = Equipement.objects.all()
+    serializer_class = EquipementSerializer
 
 class ConstituerViewSet(viewsets.ModelViewSet):
     queryset = Constituer.objects.all()
@@ -88,53 +106,35 @@ class DocumentInterventionViewSet(viewsets.ModelViewSet):
     queryset = DocumentIntervention.objects.all()
     serializer_class = DocumentInterventionSerializer
 
-class EquipementViewSet(viewsets.ModelViewSet):
-    queryset = Equipement.objects.all()
+
+
+# --------------------------------------------------------------------------
+
+
+# Affichage des equipemnts de la page Equipements.vue
+class EquipementDetailViewSet(viewsets.ModelViewSet):
+    queryset = Equipement.objects.select_related('lieu', 'modeleEquipement')
+    serializer_class = EquipementDetailSerializer
     lookup_field = 'reference'
-    
-    def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return EquipementDetailSerializer
-        return EquipementSerializer
 
     def get_queryset(self):
-        if self.action == 'retrieve':
-            return Equipement.objects.select_related(
-                'lieu', 
-                'modeleEquipement__fabricant', 
-                'fournisseur', 
-                'createurEquipement'
-            ).prefetch_related(
-                Prefetch('informationstatut_set', 
-                         queryset=InformationStatut.objects.order_by('-dateChangement'),
-                         to_attr='statuts'),
-                Prefetch('defaillance_set', 
-                         queryset=Defaillance.objects.prefetch_related(
-                             'intervention_set',
-                             'documentdefaillance_set',
-                             'intervention_set__documentintervention_set'
-                         )),
-                Prefetch('modeleEquipement__estcompatible_set__consommable', 
-                         queryset=Consommable.objects.all()),
-                Prefetch('modeleEquipement__correspondre_set__documentTechnique',
-                         queryset=DocumentTechnique.objects.all()),
-            )
-        return Equipement.objects.all()
+        return super().get_queryset().prefetch_related(
+            'createurEquipement',
+            'fournisseur',
+            Prefetch('informationstatut_set', 
+                     queryset=InformationStatut.objects.order_by('-dateChangement'),
+                     to_attr='statuts')
+        )
 
-    def get_object(self):
-        reference = self.kwargs.get('reference')
-        try:
-            obj = self.get_queryset().get(reference=reference)
-            if hasattr(obj, 'statuts') and obj.statuts:
-                obj.dernier_statut = obj.statuts[0]
-            else:
-                obj.dernier_statut = obj.informationstatut_set.order_by('-dateChangement').first()
-            return obj
-        except Equipement.DoesNotExist:
-            raise NotFound(f"Aucun équipement trouvé avec la référence {reference}")
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
+# Affichage de la hiérarchie des lieux (LieuxExplorer)
 @api_view(['GET'])
 def get_lieux_hierarchy(request):
-    top_level_lieux = Lieu.objects.filter(lieuParent__isnull=True)
-    serializer = LieuHierarchySerializer(top_level_lieux, many=True)
+    top_level_lieux = Lieu.objects.filter(lieuParent__isnull=True).prefetch_related('lieu_set')
+    serializer = LieuHierarchySerializer(top_level_lieux, many=True, context={'request': request})
     return Response(serializer.data)
+

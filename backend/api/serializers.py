@@ -23,13 +23,6 @@ class FabricantSerializer(serializers.ModelSerializer):
         model = Fabricant
         fields = '__all__'
 
-class ModeleEquipementDetailSerializer(serializers.ModelSerializer):
-    fabricant = FabricantSerializer(read_only=True)
-
-    class Meta:
-        model = ModeleEquipement
-        fields = '__all__'
-
 class FournisseurSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fournisseur
@@ -55,19 +48,25 @@ class EstCompatibleSerializer(serializers.ModelSerializer):
         model = EstCompatible
         fields = '__all__'
 
-class InformationStatutSerializer(serializers.ModelSerializer):
+class LieuSerializer(serializers.ModelSerializer):
     class Meta:
-        model = InformationStatut
+        model = Lieu
         fields = '__all__'
 
 class EquipementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Equipement
         fields = '__all__'
+        
 
 class ConstituerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Constituer
+        fields = '__all__'
+
+class InformationStatutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InformationStatut
         fields = '__all__'
 
 class DocumentTechniqueSerializer(serializers.ModelSerializer):
@@ -81,21 +80,15 @@ class CorrespondreSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class DefaillanceSerializer(serializers.ModelSerializer):
-    interventions = serializers.SerializerMethodField()
-
     class Meta:
-        model = Defaillance
+        model = Defaillance 
         fields = '__all__'
-
-    def get_interventions(self, obj):
-        from .serializers import InterventionSerializer
-        return InterventionSerializer(obj.intervention_set.all(), many=True).data
 
 class DocumentDefaillanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentDefaillance
         fields = '__all__'
-
+    
 class InterventionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Intervention
@@ -105,11 +98,38 @@ class DocumentInterventionSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentIntervention
         fields = '__all__'
+        
 
-class LieuSerializer(serializers.ModelSerializer):
+
+# -------------------------------------------------------------------------
+
+
+
+class EquipementDetailSerializer(serializers.ModelSerializer):
+    lieu = LieuSerializer(read_only=True)
+    modeleEquipement = ModeleEquipementSerializer(read_only=True)
+    statut = serializers.SerializerMethodField()
+
     class Meta:
-        model = Lieu
+        model = Equipement
         fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['lieu'] = LieuSerializer(instance.lieu).data
+        representation['modeleEquipement'] = ModeleEquipementSerializer(instance.modeleEquipement).data
+        return representation
+
+    def get_statut(self, obj):
+        dernier_statut = obj.informationstatut_set.order_by('-dateChangement').first()
+        if dernier_statut:
+            return {
+                'statutEquipement': dernier_statut.statutEquipement,
+                'dateChangement': dernier_statut.dateChangement,
+                'ModificateurStatut': dernier_statut.ModificateurStatut.username if dernier_statut.ModificateurStatut else None
+            }
+        return None
+
 
 class LieuHierarchySerializer(serializers.ModelSerializer):
     children = serializers.SerializerMethodField()
@@ -129,58 +149,5 @@ class LieuHierarchySerializer(serializers.ModelSerializer):
             representation.pop('children')
         return representation
 
-# Class AllEquipementDetailSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Equipements
-#         fields = '__all__'
-    
 
-class EquipementDetailSerializer(serializers.ModelSerializer):
-    lieu = LieuSerializer(read_only=True)
-    modeleEquipement = ModeleEquipementDetailSerializer(read_only=True)
-    fournisseur = FournisseurSerializer(read_only=True)
-    defaillances = serializers.SerializerMethodField()
-    consommables_compatibles = serializers.SerializerMethodField()
-    documents_techniques = serializers.SerializerMethodField()
-    documents_defaillance = serializers.SerializerMethodField()
-    documents_intervention = serializers.SerializerMethodField()
-    dernier_statut = InformationStatutSerializer(read_only=True)
 
-    class Meta:
-        model = Equipement
-        fields = ['reference', 'designation', 'lieu', 'modeleEquipement', 'fournisseur', 
-                  'defaillances', 'consommables_compatibles', 
-                  'documents_techniques', 'documents_defaillance', 'documents_intervention',
-                  'dernier_statut']
-
-    def get_interventions(self, obj):
-        return InterventionSerializer(obj.defaillance_set.all().prefetch_related('intervention_set'), many=True).data
-
-    def get_consommables_compatibles(self, obj):
-        return ConsommableSerializer(obj.modeleEquipement.estcompatible_set.all().select_related('consommable'), many=True).data
-
-    def get_documents_techniques(self, obj):
-        # Récupérer les documents techniques via le modèle Correspondre
-        correspondances = Correspondre.objects.filter(modeleEquipement=obj.modeleEquipement)
-        documents_techniques = [correspondance.documentTechnique for correspondance in correspondances]
-        return DocumentTechniqueSerializer(documents_techniques, many=True).data
-
-    def get_documents_defaillance(self, obj):
-        return DocumentDefaillanceSerializer(DocumentDefaillance.objects.filter(defaillance__equipement=obj), many=True).data
-
-    def get_documents_intervention(self, obj):
-        return DocumentInterventionSerializer(DocumentIntervention.objects.filter(intervention__defaillance__equipement=obj), many=True).data
-
-    def get_defaillances(self, obj):
-        return DefaillanceSerializer(obj.defaillance_set.all().prefetch_related('intervention_set'), many=True).data
-
-    
-    def get_dernier_statut(self, obj):
-        dernier_statut = obj.informationstatut_set.order_by('-dateChangement').first()
-        if dernier_statut:
-            return {
-                'statutEquipement': dernier_statut.statutEquipement,
-                'dateChangement': dernier_statut.dateChangement,
-                'ModificateurStatut': dernier_statut.ModificateurStatut.username if dernier_statut.ModificateurStatut else None
-            }
-        return None
