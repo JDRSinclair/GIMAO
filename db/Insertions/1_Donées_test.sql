@@ -97,19 +97,9 @@ INSERT INTO myApp_consommable (designation, lienImageConsommable, fabricant_id) 
 ('Joint E', 'images/consomable/joint.jpg', 5);
 
 
-INSERT INTO myApp_informationmaintenance (
-    preventifGlissant,
-    joursIntervalleMaintenance,
-    dateCreation,
-    dateChangement,
-    informationMaintenanceParent_id,
-    createurInformationMaintenance_id
-) VALUES
-(True, 30, '2023-01-01 00:00:00', NULL, NULL, 1),
-(False, 60, '2023-02-01 00:00:00', NULL, NULL, 2),
-(True, 90, '2023-03-01 00:00:00', NULL, NULL, 3),
-(False, 120, '2023-04-01 00:00:00', NULL, NULL, 1),
-(True, 180, '2023-05-01 00:00:00', NULL, NULL, 3);
+
+
+
 
 
 INSERT INTO myApp_fournisseur (nomFournisseur, numRue, nomRue, codePostal, ville, paysFournisseur, mailFournisseur, numTelephoneFournisseur, serviceApresVente) VALUES
@@ -165,23 +155,55 @@ INSERT INTO myApp_equipement (
     dateMiseEnService,
     prixAchat,
     lienImageEquipement,
-    statutEquipement,
     createurEquipement_id,
     lieu_id,
     modeleEquipement_id,
     fournisseur_id,
-    informationMaintenance_id
+    preventifGlissant,
+    joursIntervalleMaintenance
 ) VALUES
-('EQ-001', '2023-01-15 09:00:00', 'Excavatrice Quantique XQ-1000', '2023-01-20', 500000.00, 'images/equipement/excavatrice.jpg', 'En fonctionnement', 1, 9, 1, 1, 1),
-('EQ-002', '2023-02-01 10:30:00', 'Foreuse Moléculaire FM-500', '2023-02-05', 350000.00, 'images/equipement/foreuse.jpg', 'En fonctionnement', 2, 10, 2, 2, 2),
-('EQ-003', '2023-03-10 11:45:00', 'Compresseur Gravitationnel CG-750', '2023-03-15', 420000.00, 'images/equipement/compresseur.jpg', 'En fonctionnement', 3, 11, 3, 3, 3),
-('EQ-004', '2023-04-05 14:00:00', 'Laminoir Magnétique LM-2000', '2023-04-10', 380000.00, 'images/equipement/laminoir.jpg', 'En fonctionnement', 1, 13, 4, 4, 4),
-('EQ-005', '2023-05-20 16:15:00', 'Presse Hydrostatique PH-3000', '2023-05-25', 450000.00, 'images/equipement/presse.jpg', 'En fonctionnement', 2, 14, 5, 5, 5),
-('EQ-006', '2023-06-07 08:30:00', 'Extrudeuse à Plasma EP-1500', '2023-06-12', 320000.00, 'images/equipement/extrudeuse.jpg', 'Dégradé', 3, 15, 6, 1, 1),
-('EQ-007', '2023-07-18 13:45:00', 'Laser de Précision Nanométrique LPN-X', '2023-07-23', 550000.00, 'images/equipement/laser.jpg', 'En fonctionnement', 1, 22, 7, 2, 2),
-('EQ-008', '2023-08-30 11:00:00', 'Scanner Holographique SH-4D', '2023-09-04', 480000.00, 'images/equipement/scanner.jpg', 'En fonctionnement', 2, 23, 8, 3, 3),
-('EQ-009', '2023-09-12 15:30:00', 'Imprimante Biomoléculaire IB-3000', '2023-09-17', 620000.00, 'images/equipement/imprimante.jpg', 'A l arret', 3, 24, 9, 4, 4),
-('EQ-010', '2023-10-25 10:15:00', 'Robot Assembleur Intelligent RAI-5000', '2023-10-30', 700000.00, 'images/equipement/robot.jpg', 'En fonctionnement', 1, 25, 10, 5, 5);
+('EQ-001', '2023-01-15 09:00:00', 'Excavatrice Quantique XQ-1000', '2023-01-20', 500000.00, 'images/equipement/excavatrice.jpg', 1, 9, 1, 1, TRUE, 30),
+('EQ-002', '2023-02-01 10:30:00', 'Foreuse Moléculaire FM-500', '2023-02-05', 350000.00, 'images/equipement/foreuse.jpg', 2, 10, 2, 2, FALSE, 60),
+('EQ-003', '2023-03-10 11:45:00', 'Compresseur Gravitationnel CG-750', '2023-03-15', 420000.00, 'images/equipement/compresseur.jpg', 3, 11, 3, 3, TRUE, 90),
+('EQ-004', '2023-04-05 14:00:00', 'Laminoir Magnétique LM-2000', '2023-04-10', 380000.00, 'images/equipement/laminoir.jpg', 1, 13, 4, 4, FALSE, 120),
+('EQ-005', '2023-05-20 16:15:00', 'Presse Hydrostatique PH-3000', '2023-05-25', 450000.00, 'images/equipement/presse.jpg', 2, 14, 5, 5, TRUE, 180),
+('EQ-006', '2023-06-07 08:30:00', 'Extrudeuse à Plasma EP-1500', '2023-06-12', 320000.00, 'images/equipement/extrudeuse.jpg', 3, 15, 6, 1, FALSE, 45),
+('EQ-007', '2023-07-18 13:45:00', 'Laser de Précision Nanométrique LPN-X', '2023-07-23', 550000.00, 'images/equipement/laser.jpg', 1, 22, 7, 2, TRUE, 75),
+('EQ-008', '2023-08-30 11:00:00', 'Scanner Holographique SH-4D', '2023-09-04', 480000.00, 'images/equipement/scanner.jpg', 2, 23, 8, 3, FALSE, 100),
+('EQ-009', '2023-09-12 15:30:00', 'Imprimante Biomoléculaire IB-3000', '2023-09-17', 620000.00, 'images/equipement/imprimante.jpg', 3, 24, 9, 4, TRUE, 150),
+('EQ-010', '2023-10-25 10:15:00', 'Robot Assembleur Intelligent RAI-5000', '2023-10-30', 700000.00, 'images/equipement/robot.jpg', 1, 25, 10, 5, FALSE, 200);
+
+
+INSERT INTO myApp_informationstatut (
+    statutEquipement,
+    dateChangement,
+    equipement_id,
+    informationStatutParent_id,
+    ModificateurStatut_id
+) VALUES
+('En fonctionnement', NULL, 'EQ-001', NULL, 1),
+('En fonctionnement', NULL, 'EQ-002', NULL, 2),
+('En fonctionnement', NULL, 'EQ-003', NULL, 3),
+('En fonctionnement', NULL, 'EQ-004', NULL, 1),
+('En fonctionnement', NULL, 'EQ-005', NULL, 2),
+('En fonctionnement', NULL, 'EQ-006', NULL, 3),
+('En fonctionnement', NULL, 'EQ-007', NULL, 1),
+('En fonctionnement', NULL, 'EQ-008', NULL, 2),
+('En fonctionnement', NULL, 'EQ-009', NULL, 3),
+('En fonctionnement', NULL, 'EQ-010', NULL, 1);
+
+
+INSERT INTO myApp_defaillance (
+    commentaireDefaillance,
+    niveau,
+    utilisateur_id,
+    equipement_id
+) VALUES
+('Problème de surchauffe dans le système de plasma', 'Majeur', 3, 'EQ-006'),
+('Dysfonctionnement du système d''alimentation', 'Critique', 3, 'EQ-009');
+
+
+
 
 INSERT INTO myApp_constituer (equipement_id, consommable_id) VALUES
 ('EQ-001', 1),

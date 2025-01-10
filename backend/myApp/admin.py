@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from .models import (
      Role, Avoir, Fabricant, Fournisseur, Consommable,
     StockConsommable, ModeleEquipement, EstCompatible, Lieu, Equipement,
-    Constituer, InformationMaintenance, DocumentTechnique, Correspondre,
+    Constituer, InformationStatut, DocumentTechnique, Correspondre,
     Defaillance, DocumentDefaillance, Intervention, DocumentIntervention
 )
 admin.site.register(Role)
@@ -17,7 +17,7 @@ admin.site.register(EstCompatible)
 admin.site.register(Lieu)
 admin.site.register(Equipement)
 admin.site.register(Constituer)
-admin.site.register(InformationMaintenance)
+admin.site.register(InformationStatut)
 admin.site.register(DocumentTechnique)
 admin.site.register(Correspondre)
 admin.site.register(Defaillance)

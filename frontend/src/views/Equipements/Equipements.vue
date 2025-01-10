@@ -1,180 +1,155 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container>
-        <v-row>
-          <v-col cols="4">
-            <v-card elevation="1" class="rounded-lg pa-2 mb-4">
-              <v-card-title class="font-weight-bold text-uppercase text-primary">Structure des lieux</v-card-title>
-              <v-divider></v-divider>
-              <LieuxExplorer :lieux="lieux" @select-lieu="handleLieuSelected" />
-            </v-card>
-            <v-card elevation="1" class="rounded-lg pa-2">
-              <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
-              <v-divider></v-divider>
-              <v-list dense>
-                <v-list-item v-for="(type, index) in typesEquipements" :key="index" link>
-                  <v-list-item-title>{{ type }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-card>
-          </v-col>
-          <v-col cols="8">
-            <v-btn
-              color="primary"
-              @click="ouvrirPageAjoutEquipement"
-              class="mb-4"
-            >
-              Aller à l'ajout d'équipement
-            </v-btn>
-            <v-data-table
-              :headers="headers"
-              :items="filteredEquipements"
-              :items-per-page="itemsPerPage"
-              :page.sync="page"
-              item-value="name"
-              class="elevation-1 rounded-lg"
-              @page-count="pageCount = $event"
-              hover
-            >
-              <template v-slot:item="{ item }">
-                <tr @click="ouvrirPageVoirEquipement(item.equipement)" style="cursor: pointer;">
-                  <td>{{ item.equipement }}</td>
-                  <td>{{ item.lieu }}</td>
-                  <td>{{ item.etat }}</td>
-                </tr>
-              </template>
-            </v-data-table>
-            <div class="text-center pt-2">
-              <v-pagination
-                v-model="page"
-                :length="pageCount"
-              ></v-pagination>
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-main>
-  </v-app>
+  <v-container>
+    <v-row>
+      <v-col cols="4">
+        <!-- Structure des lieux -->
+        <v-card elevation="1" class="rounded-lg pa-2 mb-4">
+          <v-card-title class="font-weight-bold text-uppercase text-primary">
+            Structure des lieux
+          </v-card-title>
+          <v-divider></v-divider>
+          <LieuxExplorer :lieux="lieuxAvecTous" @select-lieu="handleLieuSelected" />
+        </v-card>
+
+        <!-- Types d'équipements -->
+        <v-card elevation="1" class="rounded-lg pa-2">
+          <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
+          <v-divider></v-divider>
+          <v-list dense>
+            <v-list-item link @click="handleTypeEquipementSelected(null)">
+              <v-list-item-title>Tous</v-list-item-title>
+            </v-list-item>
+            <v-list-item v-for="(modele, index) in modeleEquipements" :key="index" link @click="handleTypeEquipementSelected(modele)">
+              <v-list-item-title>{{ modele.nomModeleEquipement }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-col>
+
+      <v-col cols="8">
+        <!-- Bouton d'ajout d'équipement -->
+        <v-btn color="primary" @click="ouvrirPageAjoutEquipement" class="mb-4">
+          Aller à l'ajout d'équipement
+        </v-btn>
+
+        <!-- Table des équipements -->
+        <v-data-table
+          :headers="header"
+          :items="filteredEquipements"
+          :items-per-page="itemsPerPage"
+          :page.sync="page"
+          class="elevation-1 rounded-lg"
+          @page-count="pageCount = $event"
+          :sort-by="['designation']"
+          :sort-desc="[false]"
+        >
+        </v-data-table>
+
+        <v-pagination v-model="page" :length="pageCount" class="text-center pt-2"></v-pagination>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-import NavigationDrawer from '@/components/BarreNavigation.vue';
-import TopNavBar from "@/components/BarreNavigationHaut.vue";
 import LieuxExplorer from '@/components/LieuxExplorer.vue';
-import '@/assets/css/global.css';
+import api from '@/services/api';
 
 export default {
   name: 'Equipements',
   components: {
-    NavigationDrawer,
-    TopNavBar,
     LieuxExplorer,
   },
   setup() {
     const router = useRouter();
+    const state = reactive({
+      equipements: [],
+      lieux: [],
+      modeleEquipements: [],
+      selectedLieu: null,
+      selectedTypeEquipement: null,
+      page: 1,
+      pageCount: 0,
+      itemsPerPage: 5,
+      header: [
+        { title: 'Désignation', value: 'modeleEquipement.nomModeleEquipement', sortable: true, align: 'center' },
+        { title: 'Lieu', value: 'lieu.nomLieu', sortable: true, align: 'center' },
+        { title: 'Statut', value: 'statut.statutEquipement', sortable: true, align: 'center',
+          sort: (a, b) => {
+            const order = ['Rebuté', 'En fonctionnement', 'Dégradé', 'A l\'arrêt'];
+            return order.indexOf(a) - order.indexOf(b);
+          }
+        },
+      ],
+    });
 
-    const typesEquipements = ref(["Tous", "Type 1", "Type 2", "Type 3", "Type 4"]);
-    const headers = ref([
-      { text: "Équipement", value: "equipement", align: "start" },
-      { text: "Lieu", value: "lieu" },
-      { text: "État", value: "etat" },
-    ]);
-    const equipements = ref([
-      { equipement: "Équipement 1", lieu: "Ligne d'Assemblage 1", etat: "À l'arrêt" },
-      { equipement: "Équipement 2", lieu: "Ligne d'Assemblage 1", etat: "Rebuté" },
-      { equipement: "Équipement 3", lieu: "Ligne d'Assemblage 2", etat: "Fonctionnel" },
-      { equipement: "Équipement 4", lieu: "Poste de Soudure", etat: "Fonctionnel" },
-      { equipement: "Équipement 5", lieu: "Zone de Test", etat: "Fonctionnel" },
-      { equipement: "Équipement 6", lieu: "Unité de Moulage", etat: "À l'arrêt" },
-      { equipement: "Équipement 7", lieu: "Unité de Peinture", etat: "Fonctionnel" },
-      { equipement: "Équipement 8", lieu: "Zone d'Emballage", etat: "Fonctionnel" },
-    ]);
-    const lieux = ref([
-      {
-        id: 1,
-        nomLieu: 'Bâtiment Principal',
-        children: [
-          {
-            id: 5,
-            nomLieu: 'Zone de Production A',
-            children: [
-              { id: 9, nomLieu: 'Ligne d\'Assemblage 1' },
-              { id: 10, nomLieu: 'Ligne d\'Assemblage 2' },
-              { id: 11, nomLieu: 'Poste de Soudure' },
-              { id: 12, nomLieu: 'Zone de Test' },
-            ]
-          },
-          {
-            id: 6,
-            nomLieu: 'Zone de Production B',
-            children: [
-              { id: 13, nomLieu: 'Unité de Moulage' },
-              { id: 14, nomLieu: 'Unité de Peinture' },
-              { id: 15, nomLieu: 'Zone d\'Emballage' },
-            ]
-          },
-          { id: 7, nomLieu: 'Atelier de Maintenance' },
-          { id: 8, nomLieu: 'Salle de Contrôle Qualité' },
-        ]
-      },
-    ]);
-    const selectedLieu = ref(null);
-    const page = ref(1);
-    const pageCount = ref(0);
-    const itemsPerPage = ref(5);
-
-    const ouvrirPageAjoutEquipement = () => {
-      router.push({ name: 'AjouterEquipement' });
-    };
-
-    const ouvrirPageVoirEquipement = (id) => {
-      if (!id) {
-        console.error('ID is missing');
-        return;
+    const fetchData = async () => {
+      try {
+        const [equipementsRes, lieuxRes, modeleEquipementsRes] = await Promise.all([
+          api.getEquipementsVue(),
+          api.getLieux(),
+          api.getModeleEquipements()
+        ]);
+        
+        state.equipements = equipementsRes.data;
+        state.lieux = lieuxRes.data;
+        state.modeleEquipements = modeleEquipementsRes.data;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données:', error);
       }
-      router.push({ name: 'VisualiserEquipement', params: { id } });
     };
+
+    const lieuxAvecTous = computed(() => {
+      return [{ id: null, nomLieu: 'Tous', children: [] }, ...state.lieux];
+    });
 
     const filteredEquipements = computed(() => {
-      if (!selectedLieu.value) {
-        return equipements.value;
-      }
-      return equipements.value.filter(e => e.lieu === selectedLieu.value);
+      return state.equipements.filter(e => {
+        const lieuMatch = !state.selectedLieu || state.selectedLieu === 'Tous' || e.lieu.nomLieu === state.selectedLieu;
+        const typeMatch = !state.selectedTypeEquipement || e.modeleEquipement.nomModeleEquipement === state.selectedTypeEquipement;
+        return lieuMatch && typeMatch;
+      });
     });
 
     const handleLieuSelected = (lieu) => {
-      selectedLieu.value = lieu.nomLieu;
+      state.selectedLieu = lieu.nomLieu;
     };
 
+    const handleTypeEquipementSelected = (modele) => {
+      state.selectedTypeEquipement = modele ? modele.nomModeleEquipement : null;
+    };
+
+    const ouvrirPageAjoutEquipement = () => {
+      router.push('/ajouter-equipement');
+    };
+
+    onMounted(fetchData);
+
     return {
-      typesEquipements,
-      headers,
-      equipements,
-      lieux,
-      selectedLieu,
-      handleLieuSelected,
+      ...toRefs(state),
+      lieuxAvecTous,
       filteredEquipements,
-      page,
-      pageCount,
-      itemsPerPage,
+      handleLieuSelected,
+      handleTypeEquipementSelected,
       ouvrirPageAjoutEquipement,
-      ouvrirPageVoirEquipement,
     };
   }
 };
 </script>
 
 <style scoped>
-/* Effet de survol personnalisé */
 .v-data-table tr:hover {
-  background-color: #e6f2ff; /* Fond bleu clair au survol */
-  transition: background-color 0.3s ease; /* Transition fluide */
+  background-color: #e6f2ff;
+  transition: background-color 0.3s ease;
 }
 
 .v-data-table tr:hover td {
-  color: #0056b3; /* Couleur du texte en bleu foncé au survol */
+  color: #0056b3;
+}
+
+.v-data-table th {
+  color: black !important;
 }
 </style>
