@@ -111,12 +111,12 @@ export default {
         createurEquipement: null,
         nomDocumentTechnique: '',
         lienDocumentTechnique: null,
+        documentationTechnique: null,
       },
       fournisseurs: [],
       modeles: [],
       lieux: [],
       utilisateurs: [],
-      documentsTech: []
     });
 
     const handleImageUpload = (event) => {
@@ -139,8 +139,6 @@ export default {
           }
         }
       });
-
-      try {
         // Envoi de la requête pour l'équipement
         const responseEquipement = await api.createEquipement(formDataEquipement);
 
@@ -158,20 +156,13 @@ export default {
             if (responseDocument.status === 201) {
               alert('Document technique ajouté avec succès !');
 
-              try {
-                const [documentationRES] = await Promise.all([
-                  api.getDocumentationTech(),
-                ]);
-                state.documentsTech = documentationRES.data;
-              } catch (error) {
-                console.error('Erreur lors du chargement des données :', error);
-              }
-              
-              const formDataJointure = new FormData();
-              formDataJointure.append('modeleEquipement', state.formData.modeleEquipement);
-              formDataJointure.append('nomDocumentTechnique', state.formData.nomDocumentTechnique);
+              await fetchDocument();
 
-              const responseDocument = await api.joinEquipementDocumentation(formDataJointure);
+              const formDataJointure = new FormData();
+              formDataJointure.append('modeleEquipement', state.formData.modeleEquipement);  // ID du modèle
+              formDataJointure.append('documentationTech', state.documentsTech[0].id);
+
+              await api.joinEquipementDocumentation(formDataJointure);
               if (responseDocument.status === 201) {
                 alert('Jointure réussite !');
                 router.push('/equipements');
@@ -185,9 +176,18 @@ export default {
         } else {
           alert('Erreur lors de l’ajout de l’équipement.');
         }
+    };
+
+    const fetchDocument = async () => {
+      try {
+        const documentationRES = await api.getDernierDocumentationTech();
+
+        if (documentationRES.data) {
+          state.documentsTech = state.documentsTech || [];
+          state.documentsTech.push(documentationRES.data);
+        }
       } catch (error) {
-        console.error('Erreur lors de la soumission du formulaire :', error);
-        alert('Une erreur est survenue.');
+        console.error('Erreur lors du chargement des données :', error);
       }
     };
 

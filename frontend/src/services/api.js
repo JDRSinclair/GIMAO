@@ -28,6 +28,10 @@ export default {
     return axios.get(`${API_URL}documentstechniques/`);
   },
 
+  getDernierDocumentationTech() {
+    return axios.get(`${API_URL}dernier-document-technique/`);
+  },
+
   createEquipement(data) {
     return axios.post(`${API_URL}creer-equipement/`, data);
   },
