@@ -16,14 +16,25 @@
           <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
           <v-divider></v-divider>
           <v-list dense>
-            <v-list-item link @click="handleTypeEquipementSelected(null)">
+            <v-list-item 
+              link 
+              @click="handleTypeEquipementSelected(null)"
+              :class="{ 'selected-item': selectedTypeEquipements.length === 0 }"
+            >
               <v-list-item-title>Tous</v-list-item-title>
             </v-list-item>
-            <v-list-item v-for="(modele, index) in modeleEquipements" :key="index" link @click="handleTypeEquipementSelected(modele)">
+            <v-list-item 
+              v-for="(modele, index) in modeleEquipements" 
+              :key="index" 
+              link 
+              @click="handleTypeEquipementSelected(modele)"
+              :class="{ 'selected-item': isTypeEquipementSelected(modele) }"
+            >
               <v-list-item-title>{{ modele.nomModeleEquipement }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card>
+
       </v-col>
 
       <v-col cols="8">
@@ -64,12 +75,13 @@ export default {
   },
   setup() {
     const router = useRouter();
+
     const state = reactive({
       equipements: [],
       lieux: [],
       modeleEquipements: [],
       selectedLieu: null,
-      selectedTypeEquipement: null,
+      selectedTypeEquipements: [],
       page: 1,
       pageCount: 0,
       itemsPerPage: 5,
@@ -92,7 +104,7 @@ export default {
           api.getLieux(),
           api.getModeleEquipements()
         ]);
-        
+
         state.equipements = equipementsRes.data;
         state.lieux = lieuxRes.data;
         state.modeleEquipements = modeleEquipementsRes.data;
@@ -102,15 +114,7 @@ export default {
     };
 
     const lieuxAvecTous = computed(() => {
-      return [{ id: null, nomLieu: 'Tous', children: [] }, ...state.lieux];
-    });
-
-    const filteredEquipements = computed(() => {
-      return state.equipements.filter(e => {
-        const lieuMatch = !state.selectedLieu || state.selectedLieu === 'Tous' || e.lieu.nomLieu === state.selectedLieu;
-        const typeMatch = !state.selectedTypeEquipement || e.modeleEquipement.nomModeleEquipement === state.selectedTypeEquipement;
-        return lieuMatch && typeMatch;
-      });
+      return [{ id: null, nomLieu: 'Tous' }, ...state.lieux];
     });
 
     const handleLieuSelected = (lieu) => {
@@ -118,8 +122,30 @@ export default {
     };
 
     const handleTypeEquipementSelected = (modele) => {
-      state.selectedTypeEquipement = modele ? modele.nomModeleEquipement : null;
+      if (modele === null) {
+        state.selectedTypeEquipements = [];
+      } else {
+        const index = state.selectedTypeEquipements.findIndex(m => m.nomModeleEquipement === modele.nomModeleEquipement);
+        if (index > -1) {
+          state.selectedTypeEquipements.splice(index, 1);
+        } else {
+          state.selectedTypeEquipements.push(modele);
+        }
+      }
     };
+
+    const isTypeEquipementSelected = (modele) => {
+      return state.selectedTypeEquipements.some(m => m.nomModeleEquipement === modele.nomModeleEquipement);
+    };
+
+    const filteredEquipements = computed(() => {
+      return state.equipements.filter(e => {
+        const lieuMatch = !state.selectedLieu || state.selectedLieu === 'Tous' || e.lieu.nomLieu === state.selectedLieu;
+        const typeMatch = state.selectedTypeEquipements.length === 0 || 
+                          state.selectedTypeEquipements.some(m => m.nomModeleEquipement === e.modeleEquipement.nomModeleEquipement);
+        return lieuMatch && typeMatch;
+      });
+    });
 
     const ouvrirPageAjoutEquipement = () => {
       router.push('/ajouter-equipement');
@@ -134,6 +160,7 @@ export default {
       handleLieuSelected,
       handleTypeEquipementSelected,
       ouvrirPageAjoutEquipement,
+      isTypeEquipementSelected,
     };
   }
 };
@@ -151,5 +178,14 @@ export default {
 
 .v-data-table th {
   color: black !important;
+}
+
+.selected-item {
+  background-color: #7577e9 !important;
+  color: white !important;
+}
+
+.selected-item:hover {
+  background-color: #5658c7 !important;
 }
 </style>
