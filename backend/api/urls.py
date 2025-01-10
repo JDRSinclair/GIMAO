@@ -7,7 +7,9 @@ from .views import (
     EstCompatibleViewSet, LieuViewSet, EquipementViewSet, ConstituerViewSet,
     InformationStatutViewSet, DocumentTechniqueViewSet, CorrespondreViewSet,
     DefaillanceViewSet, DocumentDefaillanceViewSet, InterventionViewSet,
-    DocumentInterventionViewSet, get_lieux_hierarchy
+    DocumentInterventionViewSet, get_lieux_hierarchy, UserViewSet,
+    EquipementCreateView, DocumentTechniqueCreateView, JointureEquipementDocumentCreateView
+  
 )
 
 router = DefaultRouter()
@@ -29,9 +31,17 @@ router.register(r'defaillances', DefaillanceViewSet)
 router.register(r'documentdefaillances', DocumentDefaillanceViewSet)
 router.register(r'interventions', InterventionViewSet)
 router.register(r'documentinterventions', DocumentInterventionViewSet)
+router.register(r'users', UserViewSet)
+
 
 urlpatterns = [
     path('', include(router.urls)),
     path('lieux-hierarchy/', get_lieux_hierarchy, name='lieux-hierarchy'),
     path('equipements/<str:reference>/detail/', EquipementViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
+    path('fournisseurs', FournisseurViewSet, name='fournisseurs'),
+    
+    path('creer-equipement/', EquipementCreateView.as_view(), name='creer-equipement'),
+    path('creer-document-technique/', DocumentTechniqueCreateView.as_view(), name='creer-document-technique'),
+    path('jointure-equipement-document/', JointureEquipementDocumentCreateView.as_view(), name='jointure-equipement-document'),
+
 ]

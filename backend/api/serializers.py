@@ -1,6 +1,7 @@
 # api/serializers.py
 from rest_framework import serializers
 from django.db.models import Max
+from django.contrib.auth.models import User
 from myApp.models import (
     Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable,
     ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer,
@@ -75,6 +76,11 @@ class DocumentTechniqueSerializer(serializers.ModelSerializer):
         model = DocumentTechnique
         fields = '__all__'
 
+class DocumentTechniqueJointureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocumentTechnique
+        fields = ['id']
+
 class CorrespondreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Correspondre
@@ -111,6 +117,11 @@ class LieuSerializer(serializers.ModelSerializer):
         model = Lieu
         fields = '__all__'
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
 class LieuHierarchySerializer(serializers.ModelSerializer):
     children = serializers.SerializerMethodField()
 
@@ -128,12 +139,6 @@ class LieuHierarchySerializer(serializers.ModelSerializer):
         if not representation['children']:
             representation.pop('children')
         return representation
-
-# Class AllEquipementDetailSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Equipements
-#         fields = '__all__'
-    
 
 class EquipementDetailSerializer(serializers.ModelSerializer):
     lieu = LieuSerializer(read_only=True)

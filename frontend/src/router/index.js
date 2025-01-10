@@ -9,6 +9,8 @@ import GestionComptes from '@/views/GestionComptes/GestionComptes.vue'
 import Commandes from '@/views/Commandes/Commandes.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
 import Signalements from '@/views/Signalements/Signalements.vue'
+import testInsertionEquipement from '@/views/Equipements/testInsertionEquipement.vue'
+import test from '@/views/Equipements/test.vue'
 
 
 const routes = [
@@ -29,6 +31,18 @@ const routes = [
     name: 'AjouterEquipement',
     component: AjouterEquipement,
     meta: { title: 'AjouterEquipement' }
+  },
+  {
+    path: '/testInsertionEquipement',
+    name: 'testInsertionEquipement',
+    component: testInsertionEquipement,
+    meta: { title: 'testInsertionEquipement' }
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: test,
+    meta: { title: 'test' }
   },
   {
     path: '/equipement/:id',

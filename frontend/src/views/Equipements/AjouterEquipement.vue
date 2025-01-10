@@ -377,6 +377,9 @@
               <v-btn color="primary" class="mt-4 rounded" style="border-radius: 0 ;margin-right: 35px;" large>
                 Confirmer
               </v-btn>
+              <v-btn color="primary" class="mt-4 rounded" @click="test" style="border-radius: 0 ;margin-right: 35px;" large>
+                Test
+              </v-btn>
             </v-row>
           </v-col>
         </v-row>
@@ -521,6 +524,14 @@ export default {
         this.selectedConsommable = null;
       }
     },
+    // async testConnection() {
+    //   try {
+    //     const response = await axios.get("http://127.0.0.1:8000/api/test/");
+    //     console.log(response.data.message);
+    //   } catch (error) {
+    //     console.log("Erreur de connexion avec le serveur.")
+    //   }
+    // },
   }
 
 };

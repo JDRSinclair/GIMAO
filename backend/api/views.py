@@ -1,9 +1,16 @@
 # api/serializers.py
 from rest_framework import viewsets
 from django.db.models import Prefetch
+from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.contrib.auth.models import User
+
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+
 from myApp.models import (
     Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable,
     ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer,
@@ -16,7 +23,9 @@ from .serializers import (
     EstCompatibleSerializer, LieuSerializer, EquipementSerializer, ConstituerSerializer,
     InformationStatutSerializer, DocumentTechniqueSerializer, CorrespondreSerializer,
     DefaillanceSerializer, DocumentDefaillanceSerializer, InterventionSerializer,
-    DocumentInterventionSerializer,EquipementDetailSerializer ,LieuHierarchySerializer
+    DocumentInterventionSerializer,EquipementDetailSerializer ,LieuHierarchySerializer,
+    UserSerializer
+    
 )
 
 class RoleViewSet(viewsets.ModelViewSet):
@@ -55,7 +64,6 @@ class LieuViewSet(viewsets.ModelViewSet):
     queryset = Lieu.objects.all()
     serializer_class = LieuSerializer
 
-
 class ConstituerViewSet(viewsets.ModelViewSet):
     queryset = Constituer.objects.all()
     serializer_class = ConstituerSerializer
@@ -86,7 +94,11 @@ class InterventionViewSet(viewsets.ModelViewSet):
 
 class DocumentInterventionViewSet(viewsets.ModelViewSet):
     queryset = DocumentIntervention.objects.all()
-    serializer_class = DocumentInterventionSerializer
+    serializer_class = DocumentInterventionSerializer   
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer  
 
 class EquipementViewSet(viewsets.ModelViewSet):
     queryset = Equipement.objects.all()
@@ -138,3 +150,33 @@ def get_lieux_hierarchy(request):
     top_level_lieux = Lieu.objects.filter(lieuParent__isnull=True)
     serializer = LieuHierarchySerializer(top_level_lieux, many=True)
     return Response(serializer.data)
+
+class EquipementCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = EquipementSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Création réussie", "data": serializer.data}, status=HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+class DocumentTechniqueCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = DocumentTechniqueSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Création réussie", "data": serializer.data}, status=HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+class JointureEquipementDocumentCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = CorrespondreSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Création réussie", "data": serializer.data}, status=HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
