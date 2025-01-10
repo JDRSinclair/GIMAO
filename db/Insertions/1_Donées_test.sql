@@ -7,17 +7,60 @@ INSERT INTO myApp_role (nomRole) VALUES
 ('Administrateur');
 
 INSERT INTO myApp_lieu (nomLieu, typeLieu, lieuParent_id) VALUES
-('Atelier A', 'Atelier de production', NULL),
-('Salle de stock', 'Salle de stockage', NULL),
-('Bureau B', 'Bureau administratif', NULL),
-('Laboratoire C', 'Laboratoire de recherche', NULL),
-('Salle de réunion', 'Salle de réunion', NULL),
-('Atelier D', 'Atelier de maintenance', NULL),
-('Sous-atelier 1', 'Sous-atelier', 1),
-('Sous-atelier 2', 'Sous-atelier', 1),
-('Sous-atelier 3', 'Sous-atelier', 1),
-('Sous-atelier 1', 'Sous-atelier', 4),
-('Sous-atelier 2', 'Sous-atelier', 4);
+-- Niveau 1 : Bâtiments principaux
+('Bâtiment Principal', 'Bâtiment', NULL),
+('Entrepôt Logistique', 'Entrepôt', NULL),
+('Centre de Recherche', 'Laboratoire', NULL),
+('Complexe Administratif', 'Bureau', NULL),
+
+-- Niveau 2 : Zones dans le Bâtiment Principal
+('Zone de Production A', 'Zone de production', 1),
+('Zone de Production B', 'Zone de production', 1),
+('Atelier de Maintenance', 'Atelier', 1),
+('Salle de Contrôle Qualité', 'Laboratoire', 1),
+
+-- Niveau 3 : Sous-zones dans la Zone de Production A
+('Ligne d''Assemblage 1', 'Ligne de production', 5),
+('Ligne d''Assemblage 2', 'Ligne de production', 5),
+('Poste de Soudure', 'Poste de travail', 5),
+('Zone de Test', 'Zone de test', 5),
+
+-- Niveau 3 : Sous-zones dans la Zone de Production B
+('Unité de Moulage', 'Unité de production', 6),
+('Unité de Peinture', 'Unité de production', 6),
+('Zone d''Emballage', 'Zone logistique', 6),
+
+-- Niveau 2 : Zones dans l'Entrepôt Logistique
+('Zone de Réception', 'Zone logistique', 2),
+('Zone de Stockage A', 'Zone de stockage', 2),
+('Zone de Stockage B', 'Zone de stockage', 2),
+('Zone d''Expédition', 'Zone logistique', 2),
+
+-- Niveau 3 : Sous-zones dans la Zone de Stockage A
+('Rack de Stockage 1', 'Rack', 17),
+('Rack de Stockage 2', 'Rack', 17),
+('Zone de Préparation des Commandes', 'Zone de travail', 17),
+
+-- Niveau 2 : Zones dans le Centre de Recherche
+('Laboratoire de Chimie', 'Laboratoire', 3),
+('Laboratoire de Physique', 'Laboratoire', 3),
+('Salle de Prototypage', 'Atelier', 3),
+('Salle de Conférence Scientifique', 'Salle de réunion', 3),
+
+-- Niveau 3 : Sous-zones dans le Laboratoire de Chimie
+('Salle d''Analyse Spectrale', 'Salle d''analyse', 22),
+('Salle de Synthèse', 'Salle d''expérimentation', 22),
+
+-- Niveau 2 : Zones dans le Complexe Administratif
+('Département des Ressources Humaines', 'Bureau', 4),
+('Département Financier', 'Bureau', 4),
+('Salle de Conférence Principale', 'Salle de réunion', 4),
+('Cafétéria', 'Zone de restauration', 4),
+
+-- Niveau 3 : Sous-zones dans le Département des Ressources Humaines
+('Bureau du Directeur RH', 'Bureau individuel', 26),
+('Espace de Recrutement', 'Espace ouvert', 26),
+('Salle de Formation', 'Salle de formation', 26);
 
 
 INSERT INTO auth_user (
@@ -54,19 +97,9 @@ INSERT INTO myApp_consommable (designation, lienImageConsommable, fabricant_id) 
 ('Joint E', 'images/consomable/joint.jpg', 5);
 
 
-INSERT INTO myApp_informationmaintenance (
-    preventifGlissant,
-    joursIntervalleMaintenance,
-    dateCreation,
-    dateChangement,
-    informationMaintenanceParent_id,
-    createurInformationMaintenance_id
-) VALUES
-(True, 30, '2023-01-01 00:00:00', NULL, NULL, 1),
-(False, 60, '2023-02-01 00:00:00', NULL, NULL, 2),
-(True, 90, '2023-03-01 00:00:00', NULL, NULL, 3),
-(False, 120, '2023-04-01 00:00:00', NULL, NULL, 1),
-(True, 180, '2023-05-01 00:00:00', NULL, NULL, 3);
+
+
+
 
 
 INSERT INTO myApp_fournisseur (nomFournisseur, numRue, nomRue, codePostal, ville, paysFournisseur, mailFournisseur, numTelephoneFournisseur, serviceApresVente) VALUES
@@ -82,13 +115,37 @@ INSERT INTO myApp_modeleequipement (
     nomModeleEquipement,
     fabricant_id
 ) VALUES
-('Machine à dynamiter', 1),
-('Machine à plaques de fer', 2),
-('Graveuse de bois', 3),
-('Imprimante 3D', 4),
-('Scanner géothermique', 5),
-('Machine à fusée', 1);
+-- Alpha Corp (id: 1)
+('Excavatrice Quantique XQ-1000', 1),
+('Foreuse Moléculaire FM-500', 1),
+('Compresseur Gravitationnel CG-750', 1),
 
+-- Beta Industries (id: 2)
+('Laminoir Magnétique LM-2000', 2),
+('Presse Hydrostatique PH-3000', 2),
+('Extrudeuse à Plasma EP-1500', 2),
+
+-- Gamma Tech (id: 3)
+('Laser de Précision Nanométrique LPN-X', 3),
+('Scanner Holographique SH-4D', 3),
+('Imprimante Biomoléculaire IB-3000', 3),
+
+-- Delta Solutions (id: 4)
+('Robot Assembleur Intelligent RAI-5000', 4),
+('Drone de Maintenance Autonome DMA-X1', 4),
+('Système d Inspection Quantique SIQ-2000', 4),
+
+-- Epsilon Innovations (id: 5)
+('Générateur de Champ de Force GCF-X', 5),
+('Stabilisateur Temporel ST-1000', 5),
+('Analyseur de Matière Noire AMN-500', 5),
+
+-- Additional entries for variety
+('Synthétiseur de Matériaux SM-3000', 1),
+('Tour à Commande Neuronale TCN-X', 2),
+('Recycleur Moléculaire RM-2000', 3),
+('Fabricateur Quantique FQ-5000', 4),
+('Téléporteur de Particules TP-X1', 5);
 
 
 INSERT INTO myApp_equipement (
@@ -98,29 +155,64 @@ INSERT INTO myApp_equipement (
     dateMiseEnService,
     prixAchat,
     lienImageEquipement,
-    statutEquipement,
     createurEquipement_id,
     lieu_id,
     modeleEquipement_id,
     fournisseur_id,
-    informationMaintenance_id
+    preventifGlissant,
+    joursIntervalleMaintenance
 ) VALUES
-('EQ001', '2023-01-15 10:00:00', 'Machine A', '2023-02-01', 10000.00, 'images/equipement/eq001.jpg', 'En fonctionnement', 1, 1, 1, 1, 1),
-('EQ002', '2023-02-20 14:30:00', 'Machine B', '2023-03-01', 15000.00, 'images/equipement/eq002.jpg', 'En fonctionnement', 2, 2, 2, 2, 2),
-('EQ003', '2023-03-25 09:45:00', 'Machine C', '2023-04-01', 20000.00, 'images/equipement/eq003.jpg', 'En fonctionnement', 3, 3, 3, 3, 3),
-('EQ004', '2023-04-30 12:15:00', 'Machine D', '2023-05-01', 25000.00, 'images/equipement/eq004.jpg', 'En fonctionnement', 3, 4, 4, 4, 4),
-('EQ005', '2023-05-10 16:00:00', 'Machine E', '2023-06-01', 30000.00, 'images/equipement/eq005.jpg', 'En fonctionnement', 2, 5, 5, 5, 5);
+('EQ-001', '2023-01-15 09:00:00', 'Excavatrice Quantique XQ-1000', '2023-01-20', 500000.00, 'images/equipement/excavatrice.jpg', 1, 9, 1, 1, TRUE, 30),
+('EQ-002', '2023-02-01 10:30:00', 'Foreuse Moléculaire FM-500', '2023-02-05', 350000.00, 'images/equipement/foreuse.jpg', 2, 10, 2, 2, FALSE, 60),
+('EQ-003', '2023-03-10 11:45:00', 'Compresseur Gravitationnel CG-750', '2023-03-15', 420000.00, 'images/equipement/compresseur.jpg', 3, 11, 3, 3, TRUE, 90),
+('EQ-004', '2023-04-05 14:00:00', 'Laminoir Magnétique LM-2000', '2023-04-10', 380000.00, 'images/equipement/laminoir.jpg', 1, 13, 4, 4, FALSE, 120),
+('EQ-005', '2023-05-20 16:15:00', 'Presse Hydrostatique PH-3000', '2023-05-25', 450000.00, 'images/equipement/presse.jpg', 2, 14, 5, 5, TRUE, 180),
+('EQ-006', '2023-06-07 08:30:00', 'Extrudeuse à Plasma EP-1500', '2023-06-12', 320000.00, 'images/equipement/extrudeuse.jpg', 3, 15, 6, 1, FALSE, 45),
+('EQ-007', '2023-07-18 13:45:00', 'Laser de Précision Nanométrique LPN-X', '2023-07-23', 550000.00, 'images/equipement/laser.jpg', 1, 22, 7, 2, TRUE, 75),
+('EQ-008', '2023-08-30 11:00:00', 'Scanner Holographique SH-4D', '2023-09-04', 480000.00, 'images/equipement/scanner.jpg', 2, 23, 8, 3, FALSE, 100),
+('EQ-009', '2023-09-12 15:30:00', 'Imprimante Biomoléculaire IB-3000', '2023-09-17', 620000.00, 'images/equipement/imprimante.jpg', 3, 24, 9, 4, TRUE, 150),
+('EQ-010', '2023-10-25 10:15:00', 'Robot Assembleur Intelligent RAI-5000', '2023-10-30', 700000.00, 'images/equipement/robot.jpg', 1, 25, 10, 5, FALSE, 200);
+
+
+INSERT INTO myApp_informationstatut (
+    statutEquipement,
+    dateChangement,
+    equipement_id,
+    informationStatutParent_id,
+    ModificateurStatut_id
+) VALUES
+('En fonctionnement', NULL, 'EQ-001', NULL, 1),
+('En fonctionnement', NULL, 'EQ-002', NULL, 2),
+('En fonctionnement', NULL, 'EQ-003', NULL, 3),
+('En fonctionnement', NULL, 'EQ-004', NULL, 1),
+('En fonctionnement', NULL, 'EQ-005', NULL, 2),
+('En fonctionnement', NULL, 'EQ-006', NULL, 3),
+('En fonctionnement', NULL, 'EQ-007', NULL, 1),
+('En fonctionnement', NULL, 'EQ-008', NULL, 2),
+('En fonctionnement', NULL, 'EQ-009', NULL, 3),
+('En fonctionnement', NULL, 'EQ-010', NULL, 1);
+
+
+INSERT INTO myApp_defaillance (
+    commentaireDefaillance,
+    niveau,
+    utilisateur_id,
+    equipement_id
+) VALUES
+('Problème de surchauffe dans le système de plasma', 'Majeur', 3, 'EQ-006'),
+('Dysfonctionnement du système d''alimentation', 'Critique', 3, 'EQ-009');
+
 
 
 
 INSERT INTO myApp_constituer (equipement_id, consommable_id) VALUES
-('EQ001', 1),
-('EQ001', 2),
-('EQ002', 3),
-('EQ002', 4),
-('EQ003', 5),
-('EQ004', 1),
-('EQ004', 3),
-('EQ005', 2),
-('EQ005', 4),
-('EQ005', 5);
+('EQ-001', 1),
+('EQ-001', 2),
+('EQ-002', 3),
+('EQ-002', 4),
+('EQ-003', 5),
+('EQ-004', 1),
+('EQ-004', 3),
+('EQ-005', 2),
+('EQ-005', 4),
+('EQ-005', 5);

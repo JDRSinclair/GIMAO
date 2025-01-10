@@ -19,10 +19,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'myApp',
+    'corsheaders',
 ]
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -30,6 +32,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'gimao.urls'
@@ -92,3 +95,12 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+# if not DEBUG:
+#     CORS_ALLOWED_ORIGINS = [
+#         "http://localhost:8081",
+#         "http://127.0.0.1:8081",
+#     ]
+
+CORS_ALLOW_ALL_ORIGINS = True  # Uniquement pour le développement !
+CORS_ALLOW_CREDENTIALS = True
