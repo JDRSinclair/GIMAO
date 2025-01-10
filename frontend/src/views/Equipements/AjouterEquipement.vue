@@ -280,7 +280,7 @@
                 </v-col>
                 <v-btn
                   color="transparent"
-                  @click="ajouterConsommable"
+                  @click="openConsommableModal"
                   icon
                   class="rounded-circle"
                   style="border: none; box-shadow: none;"
@@ -385,15 +385,25 @@
         </v-row>
       </v-container>
     </v-main>
+
+    <AjouterConsommableModal
+      :value="isConsommableModalOpen"
+      @input="isConsommableModalOpen = $event"
+    />
+
   </v-app>
 </template>
 
 <script>
 
+import AjouterConsommableModal from '@/views/Equipements/AjouterConsommableModal.vue';
 import '@/assets/css/global.css'; 
 
 export default {
   name: 'AjouterEquipement',
+  components: {
+    AjouterConsommableModal,
+  },
 
   
   data() {
@@ -448,6 +458,8 @@ export default {
         { text: 'État de la pièce', value: 'status' },
         { text: 'En stock', value: 'stock' }
       ],
+
+      isConsommableModalOpen: false,
     };
   },
   methods: {
@@ -523,6 +535,9 @@ export default {
         // Réinitialiser la sélection après ajout
         this.selectedConsommable = null;
       }
+    },
+    openConsommableModal() {
+      this.isConsommableModalOpen = true;
     },
     // async testConnection() {
     //   try {
