@@ -81,14 +81,14 @@
             <v-btn
               color="primary"
               class="text-white mx-2"
-              @click="reinitialiserFormulaire"
+              @click="resetForm"
             >
               Effacer
             </v-btn>
             <v-btn
               color="success"
               class="text-white mx-2"
-              @click="validerFormulaire"
+              @click="validateForm"
             >
               Valider
             </v-btn>
@@ -125,7 +125,7 @@ export default {
      * Réinitialise le formulaire en effaçant les valeurs des champs, 
      * en remettant la validation à zéro et en annulant la validation.
      */
-    reinitialiserFormulaire() {
+    resetForm() {
       this.form = {
         lieu: null,
         salle: null,
@@ -144,7 +144,7 @@ export default {
      * Si le formulaire est valide, affiche un message de confirmation et
      * envoie le formulaire par console. Sinon, affiche un message d'erreur.
      */
-    validerFormulaire() {
+    validateForm() {
       this.validationDeclenchee = true;
       const formulaire = this.$refs.formulaire;
 
@@ -154,7 +154,7 @@ export default {
           alert("Formulaire validé !");
           console.log("Formulaire soumis :", this.form);
 
-          this.reinitialiserFormulaire();
+          this.resetForm();
         } else {
           alert("Veuillez remplir tous les champs obligatoires.");
         }
