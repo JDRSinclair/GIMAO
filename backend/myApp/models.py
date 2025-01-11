@@ -239,14 +239,15 @@ class DocumentDefaillance(models.Model):
         return self.nomDocumentDefaillance
 
 class Intervention(models.Model):
-    nomIntervention = models.CharField(max_length=50, null=True, blank=True)
+    nomIntervention = models.CharField(max_length=500, null=True, blank=True)
     interventionCurative = models.BooleanField(null=True, blank=True)
     dateAssignation = models.DateTimeField()
-    dateCloture = models.DateTimeField()
+    dateCloture = models.DateTimeField(null=True, blank=True)
     dateDebutIntervention = models.DateTimeField(null=True, blank=True)
     dateFinIntervention = models.DateTimeField(null=True, blank=True)
     tempsEstime = models.TimeField(null=True, blank=True)
     commentaireIntervention = models.CharField(max_length=1000, null=True, blank=True)
+    commentaireRefusCloture = models.CharField(max_length=1000, null=True, blank=True)
     defaillance = models.ForeignKey(Defaillance, on_delete=models.CASCADE)
     createurIntervention = models.ForeignKey(User,
     related_name='createurIntervention', 

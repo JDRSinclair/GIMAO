@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import (
-     Role, Avoir, Fabricant, Fournisseur, Consommable,
-    StockConsommable, ModeleEquipement, EstCompatible, Lieu, Equipement,
-    Constituer, InformationStatut, DocumentTechnique, Correspondre,
-    Defaillance, DocumentDefaillance, Intervention, DocumentIntervention
+    Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable,
+    ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer,
+    InformationStatut, DocumentTechnique, Correspondre, Defaillance,
+    DocumentDefaillance, Intervention, DocumentIntervention
 )
 admin.site.register(Role)
 admin.site.register(Avoir)
