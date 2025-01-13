@@ -22,7 +22,8 @@ from .views import (
     DocumentInterventionViewSet,
 
     EquipementDetailViewSet,
-    get_lieux_hierarchy
+    get_lieux_hierarchy,
+    EquipementAffichageViewSet,
 )
 
 router = DefaultRouter()
@@ -55,4 +56,5 @@ urlpatterns = [
     path('lieux-hierarchy/', get_lieux_hierarchy, name='lieux-hierarchy'),
     path('equipements-detail/', EquipementDetailViewSet.as_view({'get': 'list'}), name='equipement-detail-list'),
     path('equipements-detail/<str:reference>/', EquipementDetailViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
+    path('equipements/<str:reference>/affichage/', EquipementAffichageViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
 ]
