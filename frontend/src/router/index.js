@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import TableauDeBord from '@/views/TableauDeBord/TableauDeBord.vue'
 import Equipements from '@/views/Equipements/Equipements.vue'
 import AjouterEquipement from '@/views/Equipements/AjouterEquipement.vue'
-import VisualiserEquipement from '@/views/Equipements/VisualiserEquipement.vue'
+import AfficherEquipement from '@/views/Equipements/AfficherEquipement.vue'
 import Maintenances from '@/views/Maintenances/Maintenances.vue'
 import Techniciens from '@/views/Techniciens/Techniciens.vue'
 import GestionComptes from '@/views/GestionComptes/GestionComptes.vue'
@@ -28,13 +28,14 @@ const routes = [
     path: '/ajouterEquipement',
     name: 'AjouterEquipement',
     component: AjouterEquipement,
-    meta: { title: 'AjouterEquipement' }
+    meta: { title: 'Ajouter Equipement' }
   },
   {
-    path: '/equipement/:id',
-    name: 'VisualiserEquipement',
-    component: VisualiserEquipement,
-    meta: { title: 'VisualiserEquipement' }
+    path: '/equipement/:reference',
+    name: 'AfficherEquipement',
+    component: AfficherEquipement,
+    props: true, 
+    meta: { title: 'Afficher Equipement' }
   },
   {
     path: '/maintenances',

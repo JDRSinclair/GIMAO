@@ -82,6 +82,13 @@
           :sort-by="['designation']"
           :sort-desc="[false]"
         >
+          <template v-slot:item="{ item }">
+            <tr @click="ouvrirAfficherEquipement(item.reference)" style="cursor: pointer;">
+              <td>{{ item.modeleEquipement.nomModeleEquipement }}</td>
+              <td>{{ item.lieu.nomLieu }}</td>
+              <td>{{ item.statut.statutEquipement }}</td>
+            </tr>
+          </template>
         </v-data-table>
 
         <v-pagination v-model="page" :length="pageCount" class="text-center pt-2"></v-pagination>
@@ -208,6 +215,10 @@ export default {
       router.push('/ajouter-equipement');
     };
 
+    const ouvrirAfficherEquipement = (reference) => {
+      router.push({ name: 'AfficherEquipement', params: { reference: reference } });
+    };
+
     onMounted(fetchData);
 
     return {
@@ -217,6 +228,7 @@ export default {
       onSelectLieu,
       handleTypeEquipementSelected,
       ouvrirPageAjoutEquipement,
+      ouvrirAfficherEquipement,
       isTypeEquipementSelected,
       toggleNode,
     };

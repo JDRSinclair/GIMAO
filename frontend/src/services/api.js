@@ -2,6 +2,8 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/api/';  
 
+export const BASE_URL = 'http://localhost:8000';
+
 export default {
 
   getEquipements() {
@@ -18,5 +20,9 @@ export default {
 
   getEquipementsVue(){
     return axios.get(`${API_URL}equipements-detail/`);
-  }
+  },
+
+  getEquipement(reference) {
+    return axios.get(`${API_URL}equipements/${reference}/affichage/`);
+  },
 };

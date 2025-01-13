@@ -240,7 +240,7 @@ class EquipementAffichageSerializer(serializers.ModelSerializer):
                 "tempsEstime": intervention.tempsEstime,
                 "commentaireIntervention": intervention.commentaireIntervention,
                 "commentaireRefusCloture": intervention.commentaireRefusCloture,
-                "defaillance": intervention.defaillance.id,  # Changed to return the ID of the defaillance
+                "defaillance": intervention.defaillance.id,
                 "createurIntervention": intervention.createurIntervention.id if intervention.createurIntervention else None,
                 "responsable": intervention.responsable.id if intervention.responsable else None,
             }
@@ -254,7 +254,14 @@ class EquipementAffichageSerializer(serializers.ModelSerializer):
                 "id": relation.consommable.id,
                 "designation": relation.consommable.designation,
                 "lienImageConsommable": relation.consommable.lienImageConsommable.url if relation.consommable.lienImageConsommable else None,
-                "fabricant": relation.consommable.fabricant.id if relation.consommable.fabricant else None,
+                "fabricant": {
+                    "id": relation.consommable.fabricant.id,
+                    "nomFabricant": relation.consommable.fabricant.nomFabricant,
+                    "paysFabricant": relation.consommable.fabricant.paysFabricant,
+                    "mailFabricant": relation.consommable.fabricant.mailFabricant,
+                    "numTelephoneFabricant": relation.consommable.fabricant.numTelephoneFabricant,
+                    "serviceApresVente": relation.consommable.fabricant.serviceApresVente
+                } if relation.consommable.fabricant else None,
                 "constituer_id": relation.id
             }
             for relation in constituer_relations
