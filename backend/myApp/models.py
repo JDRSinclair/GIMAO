@@ -265,7 +265,7 @@ class Intervention(models.Model):
         return self.nomIntervention
 
 class DocumentIntervention(models.Model):
-    nomDocumentIntervention = models.CharField(max_length=50)
+    nomDocumentIntervention = models.CharField(max_length=500)
     lienDocumentIntervention = models.FileField(upload_to='documents/documentIntervention', null=False) 
     intervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
 

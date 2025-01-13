@@ -319,7 +319,26 @@ INSERT INTO myApp_constituer (equipement_id, consommable_id) VALUES
 ('EQ-003', 3), ('EQ-003', 8), ('EQ-003', 13),
 ('EQ-004', 4), ('EQ-004', 9), ('EQ-004', 14),
 ('EQ-005', 5), ('EQ-005', 10), ('EQ-005', 15),
-('EQ-006', 1), ('EQ-006', 16), ('EQ-006', 11);
+('EQ-006', 1), ('EQ-006', 16), ('EQ-006', 11),
+('EQ-007', 2),  -- Cristal de Focalisation Quantique
+('EQ-007', 8),  -- Condensateur de Tachyons
+('EQ-007', 13), -- Capteur de Fluctuations Temporelles
+('EQ-007', 17), -- Amplificateur de Résonance Neutrino
+('EQ-007', 20); -- Modulateur de Phase Quantique
+
+
+-- Insertion des documents de défaillance pour EQ-007
+INSERT INTO myApp_documentdefaillance (nomDocumentDefaillance, lienDocumentDefaillance, defaillance_id)
+VALUES
+('Rapport fluctuations laser EQ-007', 'documents/documentDefaillance/rapport_fluctuations_laser_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Fluctuations de puissance du laser' AND equipement_id = 'EQ-007')),
+('Analyse fluctuations laser EQ-007', 'documents/documentDefaillance/analyse_fluctuations_laser_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Fluctuations de puissance du laser' AND equipement_id = 'EQ-007')),
+('Rapport défaillance refroidissement EQ-007', 'documents/documentDefaillance/rapport_defaillance_refroidissement_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Défaillance du système de refroidissement optique' AND equipement_id = 'EQ-007')),
+('Diagnostic système refroidissement EQ-007', 'documents/documentDefaillance/diagnostic_systeme_refroidissement_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Défaillance du système de refroidissement optique' AND equipement_id = 'EQ-007'));
+
 
 
 -- Association des consommables compatibles avec les équipements
@@ -334,3 +353,35 @@ INSERT INTO myApp_estcompatible (modeleEquipement_id, consommable_id) VALUES
 (8, 3), (8, 18), (8, 13), -- Scanner Holographique SH-4D
 (9, 4), (9, 19), (9, 14), -- Imprimante Biomoléculaire IB-3000
 (10, 5), (10, 20), (10, 15); -- Robot Assembleur Intelligent RAI-5000
+
+
+-- Insertion des documents techniques
+INSERT INTO myApp_documenttechnique (nomDocumentTechnique, lienDocumentTechnique) VALUES
+('Manuel d''utilisation LPN-X', 'documents/documentTecnique/manuel_utilisation_LPN-X.pdf'),
+('Guide de maintenance LPN-X', 'documents/documentTecnique/guide_maintenance_LPN-X.pdf');
+
+-- Association des documents techniques au modèle d'équipement (ID 7)
+INSERT INTO myApp_correspondre (documentTechnique_id, modeleEquipement_id) VALUES
+((SELECT id FROM myApp_documenttechnique WHERE nomDocumentTechnique = 'Manuel d''utilisation LPN-X'), 7),
+((SELECT id FROM myApp_documenttechnique WHERE nomDocumentTechnique = 'Guide de maintenance LPN-X'), 7);
+
+
+-- Insertion des documents de défaillance pour EQ-007
+INSERT INTO myApp_documentdefaillance (nomDocumentDefaillance, lienDocumentDefaillance, defaillance_id)
+VALUES
+('Rapport fluctuations laser EQ-007', 'documents/documentDefaillance/rapport_fluctuations_laser_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Fluctuations de puissance du laser' AND equipement_id = 'EQ-007')),
+('Analyse fluctuations laser EQ-007', 'documents/documentDefaillance/analyse_fluctuations_laser_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Fluctuations de puissance du laser' AND equipement_id = 'EQ-007')),
+('Rapport défaillance refroidissement EQ-007', 'documents/documentDefaillance/rapport_defaillance_refroidissement_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Défaillance du système de refroidissement optique' AND equipement_id = 'EQ-007')),
+('Diagnostic système refroidissement EQ-007', 'documents/documentDefaillance/diagnostic_systeme_refroidissement_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Défaillance du système de refroidissement optique' AND equipement_id = 'EQ-007'));
+
+
+ -- Insertion des documents d'intervention pour l'intervention avec id = 1 (EQ-007)
+INSERT INTO myApp_documentintervention (nomDocumentIntervention, lienDocumentIntervention, intervention_id) VALUES
+('Procédure de réparation du système de refroidissement LPN-X', 'documents/documentIntervention/procedure_reparation_refroidissement_LPN-X.pdf', 1),
+('Rapport d''intervention sur le système de refroidissement LPN-X', 'documents/documentIntervention/rapport_intervention_refroidissement_LPN-X.pdf', 1),
+('Checklist de maintenance du système de refroidissement LPN-X', 'documents/documentIntervention/checklist_maintenance_refroidissement_LPN-X.pdf', 1),
+('Schéma du système de refroidissement LPN-X', 'documents/documentIntervention/schema_systeme_refroidissement_LPN-X.pdf', 1);

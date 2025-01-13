@@ -172,7 +172,7 @@ class Migration(migrations.Migration):
             name='DocumentIntervention',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('nomDocumentIntervention', models.CharField(max_length=50)),
+                ('nomDocumentIntervention', models.CharField(max_length=500)),
                 ('lienDocumentIntervention', models.FileField(upload_to='documents/documentIntervention')),
                 ('intervention', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='myApp.intervention')),
             ],

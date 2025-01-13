@@ -160,32 +160,35 @@ class EquipementAffichageSerializer(serializers.ModelSerializer):
     fabricant = serializers.SerializerMethodField()
     dernier_statut = InformationStatutSerializer(read_only=True)
 
-    list_defaillances = serializers.SerializerMethodField()
-    list_interventions = serializers.SerializerMethodField()
+    liste_defaillances = serializers.SerializerMethodField()
+    liste_interventions = serializers.SerializerMethodField()
     liste_consommables = serializers.SerializerMethodField()
-    liste_consommables_compatibles = serializers.SerializerMethodField()
-    list_documents_techniques = serializers.SerializerMethodField()
-    list_documents_defaillance = serializers.SerializerMethodField()
-    list_documents_intervention = serializers.SerializerMethodField()
+
+    liste_documents_techniques = serializers.SerializerMethodField()
+    liste_documents_defaillance = serializers.SerializerMethodField()
+    liste_documents_intervention = serializers.SerializerMethodField()
 
     class Meta:
         model = Equipement
         fields = [
             # Valeurs de base
-            'reference', 'designation', 'dateCreation', 'dateMiseEnService', 
-            'prixAchat', 'lienImageEquipement', 'createurEquipement', 
+            'reference', 'dateCreation', 'designation', 'dateMiseEnService', 
+            'prixAchat', 'lienImageEquipement',
+            'preventifGlissant', 'joursIntervalleMaintenance','createurEquipement', 
             'lieu', 'modeleEquipement', 'fournisseur',
-            'preventifGlissant', 'joursIntervalleMaintenance',
+            
             
             # Valeurs à recuperation simple
             'fabricant', 'dernier_statut',
             
             # Valeurs à recuperation complexes/multiples
-            'list_defaillances','list_interventions', 'liste_consommables', 'liste_consommables_compatibles',
-            'list_documents_techniques', 'list_documents_defaillance', 'list_documents_intervention'
+            'liste_defaillances','liste_interventions','liste_consommables',
+
+            #Documets
+            'liste_documents_techniques','liste_documents_defaillance','liste_documents_intervention'
         ]
 
-        depth = 1
+
 
     def get_fabricant(self, obj):
         if obj.modeleEquipement and obj.modeleEquipement.fabricant:
@@ -210,7 +213,7 @@ class EquipementAffichageSerializer(serializers.ModelSerializer):
             }
         return None
 
-    def get_list_defaillances(self, obj):
+    def get_liste_defaillances(self, obj):
         defaillances = Defaillance.objects.filter(equipement=obj)
         return [
             {
@@ -223,71 +226,77 @@ class EquipementAffichageSerializer(serializers.ModelSerializer):
             for defaillance in defaillances
         ]
     
-    def get_list_interventions(self, obj):
-    interventions = Intervention.objects.filter(defaillance__equipement=obj).select_related('defaillance', 'createurIntervention', 'responsable')
-    return [
-        {
-            "id": intervention.id,
-            "nomIntervention": intervention.nomIntervention,
-            "interventionCurative": intervention.interventionCurative,
-            "dateAssignation": intervention.dateAssignation,
-            "dateCloture": intervention.dateCloture,
-            "dateDebutIntervention": intervention.dateDebutIntervention,
-            "dateFinIntervention": intervention.dateFinIntervention,
-            "tempsEstime": intervention.tempsEstime,
-            "commentaireIntervention": intervention.commentaireIntervention,
-            "defaillance": {
-                "id": intervention.defaillance.id,
-                "commentaireDefaillance": intervention.defaillance.commentaireDefaillance,
-                "niveau": intervention.defaillance.niveau,
-            },
-            "createurIntervention": intervention.createurIntervention.username if intervention.createurIntervention else None,
-            "responsable": intervention.responsable.username if intervention.responsable else None,
-        }
-        for intervention in interventions
-    ]
+    def get_liste_interventions(self, obj):
+        interventions = Intervention.objects.filter(defaillance__equipement=obj).select_related('defaillance', 'createurIntervention', 'responsable')
+        return [
+            {
+                "id": intervention.id,
+                "nomIntervention": intervention.nomIntervention,
+                "interventionCurative": intervention.interventionCurative,
+                "dateAssignation": intervention.dateAssignation,
+                "dateCloture": intervention.dateCloture,
+                "dateDebutIntervention": intervention.dateDebutIntervention,
+                "dateFinIntervention": intervention.dateFinIntervention,
+                "tempsEstime": intervention.tempsEstime,
+                "commentaireIntervention": intervention.commentaireIntervention,
+                "commentaireRefusCloture": intervention.commentaireRefusCloture,
+                "defaillance": intervention.defaillance.id,  # Changed to return the ID of the defaillance
+                "createurIntervention": intervention.createurIntervention.id if intervention.createurIntervention else None,
+                "responsable": intervention.responsable.id if intervention.responsable else None,
+            }
+            for intervention in interventions
+        ]
 
     def get_liste_consommables(self, obj):
-        consommables = Consommable.objects.filter(
-            constituer__equipement__reference=obj.reference
-        ).select_related('constituer')
+        constituer_relations = Constituer.objects.filter(equipement=obj).select_related('consommable__fabricant')
         return [
             {
-                "id": consommable.id,
-                "nomConsommable": consommable.nomConsommable,
-                "descriptionConsommable": consommable.descriptionConsommable,
-                "quantite": consommable.constituer_set.get(equipement__reference=obj.reference).quantite
+                "id": relation.consommable.id,
+                "designation": relation.consommable.designation,
+                "lienImageConsommable": relation.consommable.lienImageConsommable.url if relation.consommable.lienImageConsommable else None,
+                "fabricant": relation.consommable.fabricant.id if relation.consommable.fabricant else None,
+                "constituer_id": relation.id
             }
-            for consommable in consommables
+            for relation in constituer_relations
         ]
 
-    def get_liste_consommables_compatibles(self, obj):
-        consommables_compatibles = Consommable.objects.filter(
-            estcompatible__modeleEquipement=obj.modeleEquipement
-        ).select_related('estcompatible')
+    def get_liste_documents_techniques(self, obj):
+        correspondances = Correspondre.objects.filter(modeleEquipement=obj.modeleEquipement).select_related('documentTechnique')
         return [
             {
-                "id": consommable.id,
-                "nomConsommable": consommable.nomConsommable,
-                "descriptionConsommable": consommable.descriptionConsommable,
-                "quantiteMinimale": consommable.quantiteMinimale,
-                "quantiteMaximale": consommable.quantiteMaximale,
-                "unite": consommable.unite
+                "id": correspondance.documentTechnique.id,
+                "nomDocumentTechnique": correspondance.documentTechnique.nomDocumentTechnique,
+                "lienDocumentTechnique": correspondance.documentTechnique.lienDocumentTechnique.url if correspondance.documentTechnique.lienDocumentTechnique else None
             }
-            for consommable in consommables_compatibles
+            for correspondance in correspondances
         ]
 
-    def get_documents_techniques(self, obj):
-        correspondances = Correspondre.objects.filter(modeleEquipement=obj.modeleEquipement)
-        documents_techniques = [correspondance.documentTechnique for correspondance in correspondances]
-        return DocumentTechniqueSerializer(documents_techniques, many=True).data
+    def get_liste_documents_defaillance(self, obj):
+        documents_defaillance = DocumentDefaillance.objects.filter(defaillance__equipement=obj)
+        return [
+            {
+                "id": doc.id,
+                "nomDocumentDefaillance": doc.nomDocumentDefaillance,
+                "lienDocumentDefaillance": doc.lienDocumentDefaillance.url if doc.lienDocumentDefaillance else None,
+                "defaillance": doc.defaillance.id
+            }
+            for doc in documents_defaillance
+        ]
 
-    def get_documents_defaillance(self, obj):
-        return DocumentDefaillanceSerializer(DocumentDefaillance.objects.filter(defaillance__equipement=obj), many=True).data
-
-    def get_documents_intervention(self, obj):
-        return DocumentInterventionSerializer(DocumentIntervention.objects.filter(intervention__defaillance__equipement=obj), many=True).data
-
+    def get_liste_documents_intervention(self, obj):
+        documents_intervention = DocumentIntervention.objects.filter(
+            intervention__defaillance__equipement=obj
+        ).select_related('intervention')
+        
+        return [
+            {
+                "id": doc.id,
+                "nomDocumentIntervention": doc.nomDocumentIntervention,
+                "lienDocumentIntervention": doc.lienDocumentIntervention.url if doc.lienDocumentIntervention else None,
+                "intervention": doc.intervention.id
+            }
+            for doc in documents_intervention
+        ]
     
     
     

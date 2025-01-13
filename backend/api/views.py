@@ -139,16 +139,27 @@ def get_lieux_hierarchy(request):
     serializer = LieuHierarchySerializer(top_level_lieux, many=True, context={'request': request})
     return Response(serializer.data)
 
-class EquipementAffichageViewSet(viewsets.ModelViewSet):
+
+class EquipementAffichageViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    ViewSet pour l'affichage détaillé des informations d'un équipement.
+    """
     queryset = Equipement.objects.all()
     lookup_field = 'reference'
-    
+
     def get_serializer_class(self):
+        """
+        Utilise EquipementAffichageSerializer pour la vue détaillée, 
+        sinon utilise EquipementSerializer.
+        """
         if self.action == 'retrieve':
             return EquipementAffichageSerializer
         return EquipementSerializer
 
     def get_queryset(self):
+        """
+        Optimise la requête avec select_related et prefetch_related pour la vue détaillée.
+        """
         if self.action == 'retrieve':
             return Equipement.objects.select_related(
                 'lieu', 
@@ -156,30 +167,56 @@ class EquipementAffichageViewSet(viewsets.ModelViewSet):
                 'fournisseur', 
                 'createurEquipement'
             ).prefetch_related(
-                Prefetch('informationstatut_set', 
-                         queryset=InformationStatut.objects.order_by('-dateChangement'),
-                         to_attr='statuts'),
-                Prefetch('defaillance_set', 
-                         queryset=Defaillance.objects.prefetch_related(
-                             'intervention_set',
-                             'documentdefaillance_set',
-                             'intervention_set__documentintervention_set'
-                         )),
-                Prefetch('modeleEquipement__estcompatible_set__consommable', 
-                         queryset=Consommable.objects.all()),
-                Prefetch('modeleEquipement__correspondre_set__documentTechnique',
-                         queryset=DocumentTechnique.objects.all()),
+                self._prefetch_statuts(),
+                self._prefetch_defaillances(),
+                self._prefetch_consommables(),
+                self._prefetch_documents_techniques(),
             )
         return Equipement.objects.all()
 
+    def _prefetch_statuts(self):
+        """Méthode auxiliaire pour précharger les statuts."""
+        return Prefetch(
+            'informationstatut_set', 
+            queryset=InformationStatut.objects.order_by('-dateChangement'),
+            to_attr='statuts'
+        )
+
+    def _prefetch_defaillances(self):
+        """Méthode auxiliaire pour précharger les défaillances et les données associées."""
+        return Prefetch(
+            'defaillance_set', 
+            queryset=Defaillance.objects.prefetch_related(
+                'intervention_set',
+                'documentdefaillance_set',
+                'intervention_set__documentintervention_set'
+            )
+        )
+
+    def _prefetch_consommables(self):
+        """Méthode auxiliaire pour précharger les consommables compatibles."""
+        return Prefetch(
+            'modeleEquipement__estcompatible_set__consommable', 
+            queryset=Consommable.objects.all()
+        )
+
+    def _prefetch_documents_techniques(self):
+        """Méthode auxiliaire pour précharger les documents techniques."""
+        return Prefetch(
+            'modeleEquipement__correspondre_set__documentTechnique',
+            queryset=DocumentTechnique.objects.all()
+        )
+
     def get_object(self):
+        """
+        Récupère l'objet équipement et ajoute le dernier statut.
+        """
         reference = self.kwargs.get('reference')
+        queryset = self.get_queryset()
         try:
-            obj = self.get_queryset().get(reference=reference)
-            if hasattr(obj, 'statuts') and obj.statuts:
-                obj.dernier_statut = obj.statuts[0]
-            else:
-                obj.dernier_statut = obj.informationstatut_set.order_by('-dateChangement').first()
+            obj = queryset.get(reference=reference)
+            self.check_object_permissions(self.request, obj)
+            obj.dernier_statut = obj.statuts[0] if hasattr(obj, 'statuts') and obj.statuts else None
             return obj
         except Equipement.DoesNotExist:
             raise NotFound(f"Aucun équipement trouvé avec la référence {reference}")
