@@ -9,56 +9,65 @@
             <!-- Colonne de gauche avec les informations -->
             <v-col cols="6">
               <v-row>
-                <!-- Champ NomIntervention  -->
+                <!-- Champ NomIntervention -->
                 <v-col cols="12">
-                  <p><strong>Nom Intervention :</strong> {{ form.nomIntervention }}</p>
+                  <p><strong>Nom Intervention :</strong> {{ intervention.nomIntervention }}</p>
                 </v-col>
-                <!-- Switch Champ interventionCurative Affiche Oui si intervventionCurative est 1 , Non sinon -->
+                <!-- Switch Champ interventionCurative -->
                 <v-col cols="12">
-                  <p><strong>Intervention Curative ? :</strong> {{ form.interventionCurative === '1' ? 'Oui' : 'Non' }}</p>
+                  <p><strong>Intervention Curative ? :</strong> {{ intervention.interventionCurative ? 'Oui' : 'Non' }}</p>
                 </v-col>
-                <!-- Champ InterventionCurative  -->
+                <!-- Champ DateAssignation -->
                 <v-col cols="12">
-                  <p><strong>Date Assignation :</strong> {{ form.dateAssignation }}</p>
+                  <p><strong>Date Assignation :</strong> {{ intervention.dateAssignation }}</p>
                 </v-col>
-                <!-- Champ DateCloture  -->
+                <!-- Champ DateCloture -->
                 <v-col cols="12">
-                  <p><strong>Date clôture :</strong> {{ form.dateCloture }}</p>
+                  <p><strong>Date clôture :</strong> {{ intervention.dateCloture }}</p>
                 </v-col>
-                <!-- Champ DebutIntervention  -->
+                <!-- Champ DebutIntervention -->
                 <v-col cols="12">
-                  <p><strong>Date début Intervention :</strong> {{ form.dateDebutIntervention }}</p>
+                  <p><strong>Date début Intervention :</strong> {{ intervention.dateDebutIntervention || 'Non spécifié' }}</p>
                 </v-col>
-                <!-- Champ FinIntervention  -->
+                <!-- Champ FinIntervention -->
                 <v-col cols="12">
-                  <p><strong>Date fin Intervention :</strong> {{ form.dateFinIntervention }}</p>
+                  <p><strong>Date fin Intervention :</strong> {{ intervention.dateFinIntervention || 'Non spécifié' }}</p>
                 </v-col>
-                <!-- Champ TempsEstime  -->
+                <!-- Champ TempsEstime -->
                 <v-col cols="12">
-                  <p><strong>Temps Estimé :</strong> {{ form.tempsEstime }}</p>
+                  <p><strong>Temps Estimé :</strong> {{ intervention.tempsEstime }}</p>
                 </v-col>
               </v-row>
             </v-col>
 
-            <!-- Champ Commentaire  -->
+            <!-- Colonne de droite avec le commentaire et le créateur -->
             <v-col cols="6">
               <p><strong>Commentaire :</strong></p>
-              <p>{{ form.commentaire }}</p>
+              <p>{{ intervention.commentaireIntervention }}</p>
+
+              <!-- Champ Créateur de l'intervention -->
+              <p><strong>Créateur de l'intervention :</strong></p>
+              <p>{{ intervention.createurIntervention || 'Non spécifié' }}</p>
+
+              <!-- Champ ID de la défaillance -->
+              <p><strong>ID de la défaillance :</strong></p>
+              <p>{{ intervention.defaillance || 'Non spécifié' }}</p>
+
+              <!-- Champ Responsable -->
+              <p><strong>Responsable :</strong></p>
+              <p>{{ intervention.responsable || 'Non spécifié' }}</p>
             </v-col>
           </v-row>
 
-          <!-- Boutons  -->
+          <!-- Boutons -->
           <v-row justify="center" class="mt-4">
-            <!-- Bouton Annuler  -->
-            <v-btn color="primary" class="text-white mx-2" @click="annulerCloture">
+            <v-btn color="primary" class="text-white mx-2" @click="cancelCloture">
               Annuler
             </v-btn>
-            <!-- Bouton Valider  -->
-            <v-btn color="error" class="text-white mx-2" @click="validerCloture">
+            <v-btn color="error" class="text-white mx-2" @click="refuseCloture">
               Refuser
             </v-btn>
-            <!-- Bouton Valider  -->
-            <v-btn color="success" class="text-white mx-2" @click="validerCloture">
+            <v-btn color="success" class="text-white mx-2" @click="validationCloture">
               Valider
             </v-btn>
           </v-row>
@@ -69,38 +78,68 @@
 </template>
 
 <script>
+import { reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import api from '@/services/api';
+
 export default {
   name: 'CloturerIntervention',
-  data() {
-    return {
-      form: {
-        nomIntervention: "Lieu 1",
-        interventionCurative: "1", 
-        dateAssignation: "01/01/2025", 
-        dateCloture: "08/01/2025", 
-        dateDebutIntervention: "2024-01-01", 
-        dateFinIntervention: "2024-01-01",
-        tempsEstime: "2h00",
-        commentaire: "Ceci est un commentaire.",
-      },
+  setup() {
+    const router = useRouter();
+    const intervention = reactive({
+      nomIntervention: "",
+      interventionCurative: false,
+      dateAssignation: "",
+      dateCloture: "",
+      dateDebutIntervention: null,
+      dateFinIntervention: null,
+      tempsEstime: "",
+      commentaireIntervention: "",
+      createurIntervention: "", // Ajout de la propriété pour le créateur
+      defaillance: "", // Ajout de la propriété pour l'ID de la défaillance
+      responsable: "", // Ajout de la propriété pour le responsable
+    });
+
+    const fetchData = async () => {
+      try {
+        const interventionsRes = await api.getInterventions();
+
+        console.log('Données récupérées de l\'API:', interventionsRes);
+
+        if (interventionsRes && interventionsRes.data && interventionsRes.data.length > 0) {
+          // Assigner les données du premier élément du tableau intervention
+          Object.assign(intervention, interventionsRes.data[0]);
+        } else {
+          console.error('Aucune donnée reçue de l\'API');
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données:', error);
+      }
     };
-  },
 
-  //Methode pour annuler la fin d'intervention
-  methods: {
-    annulerCloture() {
-      this.$router.push({ name: 'TableauDeBord' });
-    },
-    
-    
-    refuserCloture() {
-      this.$router.push({ name: 'TableauDeBord' });
-    },
+    // Annuler la cloture du bon de travail
+    const cancelCloture = () => {
+      router.push('/');
+    };
 
-    //Methode pour valider la fin de l'intervention
-    validerCloture() {
-      this.$router.push({ name: 'TableauDeBord' });
-    },
+    // Refuser la cloture du bon de travail
+    const refuseCloture = () => {
+      router.push('/');
+    };
+
+    // Valider la cloture du bon de travail
+    const validationCloture = () => {
+      router.push('/');
+    };
+
+    onMounted(fetchData);
+
+    return {
+      intervention, // Exposez l'objet intervention
+      cancelCloture,
+      refuseCloture,
+      validationCloture,
+    };
   },
 };
 </script>
