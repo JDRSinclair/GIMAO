@@ -8,24 +8,63 @@
             Structure des lieux
           </v-card-title>
           <v-divider></v-divider>
-          <LieuxExplorer :lieux="lieuxAvecTous" @select-lieu="handleLieuSelected" />
+          <div>
+            <p v-if="!lieuxAvecTous || lieuxAvecTous.length === 0">Aucune donnée disponible.</p>
+            <v-treeview
+              v-else
+              :items="lieuxAvecTous"
+              item-key="id"
+              :open-on-click="false"
+              item-text="nomLieu"
+              rounded
+              hoverable
+              activatable
+              dense
+              @update:active="onSelectLieu"
+            >
+              <template v-slot:prepend="{ item, open }">
+                <v-icon
+                  v-if="item.children && item.children.length > 0 && item.nomLieu !== 'Tous'"
+                  @click.stop="toggleNode(item)"
+                  :class="{ 'rotate-icon': open }"
+                >
+                  {{ open ? 'mdi-triangle-down' : 'mdi-triangle-right' }}
+                </v-icon>
+                <span v-else class="tree-icon-placeholder"></span>
+                {{ item.nomLieu }}
+              </template>
+              <template v-slot:label="{ item }">
+                <span class="text-caption ml-2">{{ item.typeLieu }}</span>
+              </template>
+            </v-treeview>
+          </div>
         </v-card>
-
+        
         <!-- Types d'équipements -->
         <v-card elevation="1" class="rounded-lg pa-2">
           <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
           <v-divider></v-divider>
           <v-list dense>
-            <v-list-item link @click="handleTypeEquipementSelected(null)">
+            <v-list-item
+              link
+              @click="handleTypeEquipementSelected(null)"
+              :class="{ 'selected-item': selectedTypeEquipements.length === 0 }"
+            >
               <v-list-item-title>Tous</v-list-item-title>
             </v-list-item>
-            <v-list-item v-for="(modele, index) in modeleEquipements" :key="index" link @click="handleTypeEquipementSelected(modele)">
+            <v-list-item
+              v-for="(modele, index) in modeleEquipements"
+              :key="index"
+              link
+              @click="handleTypeEquipementSelected(modele)"
+              :class="{ 'selected-item': isTypeEquipementSelected(modele) }"
+            >
               <v-list-item-title>{{ modele.nomModeleEquipement }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card>
       </v-col>
-
+      
       <v-col cols="8">
         <!-- Bouton d'ajout d'équipement -->
         <v-btn color="primary" @click="ouvrirPageAjoutEquipement" class="mb-4">
@@ -54,22 +93,23 @@
 <script>
 import { ref, computed, onMounted, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-import LieuxExplorer from '@/components/LieuxExplorer.vue';
+import { VTreeview } from 'vuetify/labs/VTreeview';
 import api from '@/services/api';
 
 export default {
   name: 'Equipements',
   components: {
-    LieuxExplorer,
+    VTreeview,
   },
   setup() {
     const router = useRouter();
+
     const state = reactive({
       equipements: [],
       lieux: [],
       modeleEquipements: [],
       selectedLieu: null,
-      selectedTypeEquipement: null,
+      selectedTypeEquipements: [],
       page: 1,
       pageCount: 0,
       itemsPerPage: 5,
@@ -83,6 +123,7 @@ export default {
           }
         },
       ],
+      openNodes: new Set(),
     });
 
     const fetchData = async () => {
@@ -92,7 +133,7 @@ export default {
           api.getLieux(),
           api.getModeleEquipements()
         ]);
-        
+
         state.equipements = equipementsRes.data;
         state.lieux = lieuxRes.data;
         state.modeleEquipements = modeleEquipementsRes.data;
@@ -102,24 +143,66 @@ export default {
     };
 
     const lieuxAvecTous = computed(() => {
-      return [{ id: null, nomLieu: 'Tous', children: [] }, ...state.lieux];
+      return [{ id: null, nomLieu: 'Tous' }, ...state.lieux];
     });
+
+    const onSelectLieu = (items) => {
+      if (items.length > 0) {
+        const selectedItem = findItem(lieuxAvecTous.value, items[0]);
+        if (selectedItem) {
+          state.selectedLieu = selectedItem.nomLieu;
+        }
+      }
+    };
+
+    const findItem = (items, id) => {
+      for (const item of items) {
+        if (item.id === id) {
+          return item;
+        }
+        if (item.children) {
+          const found = findItem(item.children, id);
+          if (found) {
+            return found;
+          }
+        }
+      }
+      return null;
+    };
+
+    const toggleNode = (item) => {
+      if (state.openNodes.has(item.id)) {
+        state.openNodes.delete(item.id);
+      } else {
+        state.openNodes.add(item.id);
+      }
+    };
+
+    const handleTypeEquipementSelected = (modele) => {
+      if (modele === null) {
+        state.selectedTypeEquipements = [];
+      } else {
+        const index = state.selectedTypeEquipements.findIndex(m => m.nomModeleEquipement === modele.nomModeleEquipement);
+        if (index > -1) {
+          state.selectedTypeEquipements.splice(index, 1);
+        } else {
+          state.selectedTypeEquipements.push(modele);
+        }
+      }
+    };
+
+    const isTypeEquipementSelected = (modele) => {
+      return state.selectedTypeEquipements.some(m => m.nomModeleEquipement === modele.nomModeleEquipement);
+    };
 
     const filteredEquipements = computed(() => {
       return state.equipements.filter(e => {
         const lieuMatch = !state.selectedLieu || state.selectedLieu === 'Tous' || e.lieu.nomLieu === state.selectedLieu;
-        const typeMatch = !state.selectedTypeEquipement || e.modeleEquipement.nomModeleEquipement === state.selectedTypeEquipement;
+        const typeMatch = state.selectedTypeEquipements.length === 0 ||
+                          state.selectedTypeEquipements.some(m => m.nomModeleEquipement === e.modeleEquipement.nomModeleEquipement);
         return lieuMatch && typeMatch;
       });
     });
-
-    const handleLieuSelected = (lieu) => {
-      state.selectedLieu = lieu.nomLieu;
-    };
-
-    const handleTypeEquipementSelected = (modele) => {
-      state.selectedTypeEquipement = modele ? modele.nomModeleEquipement : null;
-    };
 
     const ouvrirPageAjoutEquipement = () => {
       router.push('/ajouter-equipement');
@@ -131,9 +214,11 @@ export default {
       ...toRefs(state),
       lieuxAvecTous,
       filteredEquipements,
-      handleLieuSelected,
+      onSelectLieu,
       handleTypeEquipementSelected,
       ouvrirPageAjoutEquipement,
+      isTypeEquipementSelected,
+      toggleNode,
     };
   }
 };
@@ -151,5 +236,34 @@ export default {
 
 .v-data-table th {
   color: black !important;
+}
+
+.selected-item {
+  background-color: #7577e9 !important;
+  color: white !important;
+}
+
+.selected-item:hover {
+  background-color: #5658c7 !important;
+}
+
+.text-caption {
+  color: #666;
+  font-size: 0.75rem;
+}
+
+.tree-icon-placeholder {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+}
+
+.rotate-icon {
+  transform: rotate(180deg);
+}
+
+.v-icon {
+  transition: transform 0.3s ease;
 }
 </style>
