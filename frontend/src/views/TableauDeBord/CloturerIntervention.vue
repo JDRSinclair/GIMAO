@@ -21,10 +21,6 @@
                 <v-col cols="12">
                   <p><strong>Date Assignation :</strong> {{ intervention.dateAssignation }}</p>
                 </v-col>
-                <!-- Champ DateCloture -->
-                <v-col cols="12">
-                  <p><strong>Date clôture :</strong> {{ intervention.dateCloture }}</p>
-                </v-col>
                 <!-- Champ DebutIntervention -->
                 <v-col cols="12">
                   <p><strong>Date début Intervention :</strong> {{ intervention.dateDebutIntervention || 'Non spécifié' }}</p>
@@ -33,29 +29,17 @@
                 <v-col cols="12">
                   <p><strong>Date fin Intervention :</strong> {{ intervention.dateFinIntervention || 'Non spécifié' }}</p>
                 </v-col>
-                <!-- Champ TempsEstime -->
+                <!-- Champ Responsable -->
                 <v-col cols="12">
-                  <p><strong>Temps Estimé :</strong> {{ intervention.tempsEstime }}</p>
+                  <p><strong>Nom du Responsable :</strong> {{ intervention.responsable || 'Non spécifié' }}</p>
                 </v-col>
               </v-row>
             </v-col>
 
-            <!-- Colonne de droite avec le commentaire et le créateur -->
+            <!-- Colonne de droite avec le commentaire -->
             <v-col cols="6">
               <p><strong>Commentaire :</strong></p>
               <p>{{ intervention.commentaireIntervention }}</p>
-
-              <!-- Champ Créateur de l'intervention -->
-              <p><strong>Créateur de l'intervention :</strong></p>
-              <p>{{ intervention.createurIntervention || 'Non spécifié' }}</p>
-
-              <!-- Champ ID de la défaillance -->
-              <p><strong>ID de la défaillance :</strong></p>
-              <p>{{ intervention.defaillance || 'Non spécifié' }}</p>
-
-              <!-- Champ Responsable -->
-              <p><strong>Responsable :</strong></p>
-              <p>{{ intervention.responsable || 'Non spécifié' }}</p>
             </v-col>
           </v-row>
 
@@ -90,27 +74,19 @@ export default {
       nomIntervention: "",
       interventionCurative: false,
       dateAssignation: "",
-      dateCloture: "",
       dateDebutIntervention: null,
       dateFinIntervention: null,
-      tempsEstime: "",
-      commentaireIntervention: "",
-      createurIntervention: "", // Ajout de la propriété pour le créateur
-      defaillance: "", // Ajout de la propriété pour l'ID de la défaillance
       responsable: "", // Ajout de la propriété pour le responsable
+      commentaireIntervention: "",
     });
 
     const fetchData = async () => {
       try {
         const interventionsRes = await api.getInterventions();
 
-        console.log('Données récupérées de l\'API:', interventionsRes);
-
         if (interventionsRes && interventionsRes.data && interventionsRes.data.length > 0) {
           // Assigner les données du premier élément du tableau intervention
           Object.assign(intervention, interventionsRes.data[0]);
-        } else {
-          console.error('Aucune donnée reçue de l\'API');
         }
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
