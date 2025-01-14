@@ -3,8 +3,7 @@
     <v-main>
       <v-container class="py-5">
         <v-card class="pa-4">
-          <h1 class="text-primary text-center">Prévoir une maintenance</h1>
-
+          <h1 class="text-primary text-center">Signaler une défaillance</h1>
           <v-row>
             <!-- Colonne de gauche avec les champs -->
             <v-col cols="6">
@@ -17,7 +16,7 @@
                       :items="lieux"
                       outlined
                       dense
-                      :rules="[v => !!v || (validationTriggered && 'Lieu requis')]"
+                      :rules="[v => !!v || (validationDeclenchee && 'Lieu requis')]"
                     ></v-select>
                   </v-col>
                   <v-col cols="12">
@@ -27,7 +26,7 @@
                       :items="salles"
                       outlined
                       dense
-                      :rules="[v => !!v || (validationTriggered && 'Salle requise')]"
+                      :rules="[v => !!v || (validationDeclenchee && 'Salle requise')]"
                     ></v-select>
                   </v-col>
                   <v-col cols="12">
@@ -37,34 +36,31 @@
                       :items="equipements"
                       outlined
                       dense
-                      :rules="[v => !!v || (validationTriggered && 'Équipement requis')]"
+                      :rules="[v => !!v || (validationDeclenchee && 'Équipement requis')]"
                     ></v-select>
                   </v-col>
-                  <v-col cols="12">
-                    <v-select
-                      v-model="form.technicien"
-                      label="Technicien"
-                      :items="techniciens"
-                      outlined
-                      dense
-                      :rules="[v => !!v || (validationTriggered && 'Technicien requis')]"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
-                      v-model="form.dateDebut"
-                      label="Date début"
-                      type="date"
-                      outlined
-                      dense
-                      :rules="[v => !!v || (validationTriggered && 'Date début requise')]"
-                    ></v-text-field>
-                  </v-col>
+              <!-- Groupe de boutons radio pour l'état -->
+              <v-radio-group
+                v-model="form.etat"
+                class="mt-4"
+                row
+                :rules="[v => !!v || (validationDeclenchee && 'État requis')]"
+              >
+                <v-radio
+                  label="Fonctionnement en mode dégradé"
+                  value="Fonctionnement en mode dégradé"
+                  color="primary"
+                ></v-radio>
+                <v-radio
+                  label="À l'arrêt"
+                  value="À l'arrêt"
+                  color="primary"
+                ></v-radio>
+              </v-radio-group>
                 </v-row>
               </v-form>
             </v-col>
-
-            <!-- Colonne de droite avec le champ commentaire -->
+            <!-- Colonne de droite : Champ commentaire + Boutons radio -->
             <v-col cols="6">
               <v-textarea
                 v-model="form.commentaire"
@@ -75,12 +71,20 @@
             </v-col>
           </v-row>
 
-          <!-- Boutons en bas -->
+          <!-- Boutons du bas -->
           <v-row justify="center" class="mt-4">
-            <v-btn color="primary" class="text-white mx-2" @click="reinitialiserFormulaire">
-              Annuler
+            <v-btn
+              color="primary"
+              class="text-white mx-2"
+              @click="resetForm"
+            >
+              Effacer
             </v-btn>
-            <v-btn color="success" class="text-white mx-2" @click="validerFormulaire">
+            <v-btn
+              color="success"
+              class="text-white mx-2"
+              @click="validateForm"
+            >
               Valider
             </v-btn>
           </v-row>
@@ -91,60 +95,59 @@
 </template>
 
 <script>
+import '@/assets/css/global.css';
+
 export default {
   data() {
     return {
       lieux: ["Lieu 1", "Lieu 2", "Lieu 3"],
       salles: ["Salle 1", "Salle 2", "Salle 3"],
       equipements: ["Equipement 1", "Equipement 2", "Equipement 3"],
-      techniciens: ["Technicien 1", "Technicien 2", "Technicien 3"],
       form: {
         lieu: null,
         salle: null,
         equipement: null,
-        technicien: null,
-        dateDebut: null,
         commentaire: "",
+        etat: null,
       },
       formulaireValide: false,
-      validationTriggered: false, // Contrôle de l'affichage des messages d'erreur
+      validationDeclenchee: false,
     };
   },
 
   methods: {
     /**
-     * Réinitialise le formulaire en mettant toutes les valeurs à leur état initial.
+     * Réinitialise le formulaire en effaçant les valeurs des champs, 
+     * en remettant la validation à zéro et en annulant la validation.
      */
-    reinitialiserFormulaire() {
+    resetForm() {
       this.form = {
         lieu: null,
         salle: null,
         equipement: null,
-        technicien: null,
-        dateDebut: null,
         commentaire: "",
+        etat: null,
       };
-      this.validationTriggered = false; // Réinitialise les messages d'erreur
+      this.validationDeclenchee = false;
       if (this.$refs.formulaire) {
-        this.$refs.formulaire.resetValidation(); // Réinitialise les validations
+        this.$refs.formulaire.resetValidation();
       }
     },
 
     /**
-     * Valide le formulaire et réinitialise les champs après validation réussie.
+     * Valide le formulaire et le soumet si tous les champs sont valides.
+     * Si le formulaire est valide, affiche un message de confirmation.
+     * Sinon, affiche un message d'erreur.
      */
-    validerFormulaire() {
-      this.validationTriggered = true; // Active les messages d'erreur
+    validateForm() {
+      this.validationDeclenchee = true;
       const formulaire = this.$refs.formulaire;
 
       if (formulaire) {
-        formulaire.validate(); // Déclenche la validation
+        formulaire.validate();
         if (this.formulaireValide) {
           alert("Formulaire validé !");
-          console.log("Formulaire soumis :", this.form);
-
-          // Réinitialiser le formulaire après validation
-          this.reinitialiserFormulaire();
+          this.resetForm();
         } else {
           alert("Veuillez remplir tous les champs obligatoires.");
         }
@@ -153,5 +156,3 @@ export default {
   },
 };
 </script>
-
-

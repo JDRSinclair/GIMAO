@@ -6,9 +6,11 @@ import AfficherEquipement from '@/views/Equipements/AfficherEquipement.vue'
 import Maintenances from '@/views/Maintenances/Maintenances.vue'
 import Techniciens from '@/views/Techniciens/Techniciens.vue'
 import GestionComptes from '@/views/GestionComptes/GestionComptes.vue'
+import CreerBonTravail from '@/views/Maintenances/CreerBonTravail.vue'
 import Commandes from '@/views/Commandes/Commandes.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
 import Signalements from '@/views/Signalements/Signalements.vue'
+import CloturerIntervention from '@/views/TableauDeBord/CloturerIntervention.vue'
 
 
 const routes = [
@@ -50,6 +52,12 @@ const routes = [
     meta: { title: 'Techniciens' }
   },
   {
+    path: '/creerBonTravail',
+    name: 'CreerBonTravail',
+    component: CreerBonTravail,
+    meta: { title: 'Créer un bon de travail' }
+  },
+  {
     path: '/gestion-comptes',
     name: 'GestionComptes',
     component: GestionComptes,
@@ -73,6 +81,13 @@ const routes = [
     name: 'Signalements',
     component: Signalements,
     meta: { title: 'Signalements' }
+  },
+
+  {
+    path: '/cloturer-interventions',
+    name: 'CloturerIntervention',
+    component: CloturerIntervention,
+    meta: { title: 'CloturerIntervention' }
   }
 ]
 
