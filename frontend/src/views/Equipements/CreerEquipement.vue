@@ -390,7 +390,7 @@
 import '@/assets/css/global.css'; 
 
 export default {
-  name: 'AjouterEquipement',
+  name: 'CreerEquipement',
 
   
   data() {

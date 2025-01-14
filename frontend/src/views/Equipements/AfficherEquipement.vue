@@ -111,15 +111,15 @@
                 class="elevation-1 rounded-lg"
                 hide-default-footer
               >
-                <template v-slot:item.dateAssignation="{ item }">
-                  {{ formatDate(item.dateAssignation) }}
-                </template>
-                <template v-slot:item.action="{ item }">
-                  <v-btn icon @click="voirIntervention(item)">
-                    <v-icon>mdi-eye</v-icon>
-                  </v-btn>
-                </template>
-              </v-data-table>
+              <template v-slot:item.dateAssignation="{ item }">
+                {{ formatDate(item.dateAssignation) }}
+              </template>
+              <template v-slot:item.action="{ item }">
+                <v-btn icon @click="voirIntervention(item)">
+                  <v-icon>mdi-eye</v-icon>
+                </v-btn>
+              </template>
+            </v-data-table>
             </v-card>
 
             <!-- Bouton d'action -->
@@ -143,10 +143,17 @@
 
 <script>
 import api , { BASE_URL } from '@/services/api';
+import { useRouter } from 'vue-router';
+
 
 export default {
   name: 'AfficherEquipement',
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
   data() {
+    
     return {
       isLoading: true,
       equipement: {},
@@ -166,7 +173,7 @@ export default {
       interventionsHeaders: [
         { title: "Nom", value: "nomIntervention" },
         { title: "Date d'assignation", value: "dateAssignation" },
-        { title: "Télécharger", value: "action" }
+        { title: "Visualiser", value: "action" }
       ]
     };
   },
@@ -261,8 +268,10 @@ export default {
     },
 
     voirIntervention(intervention) {
-      // Implémenter la logique pour voir les détails de l'intervention
-      console.log("Voir intervention:", intervention);
+      this.router.push({
+        name: 'AfficherIntervention',
+        params: { id: intervention.id }
+      });
     },
 
     modifierEquipement() {

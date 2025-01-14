@@ -1,16 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import TableauDeBord from '@/views/TableauDeBord/TableauDeBord.vue'
 import Equipements from '@/views/Equipements/Equipements.vue'
-import AjouterEquipement from '@/views/Equipements/AjouterEquipement.vue'
-import AfficherEquipement from '@/views/Equipements/AfficherEquipement.vue'
 import Maintenances from '@/views/Maintenances/Maintenances.vue'
 import Techniciens from '@/views/Techniciens/Techniciens.vue'
 import GestionComptes from '@/views/GestionComptes/GestionComptes.vue'
-import CreerBonTravail from '@/views/Maintenances/CreerBonTravail.vue'
 import Commandes from '@/views/Commandes/Commandes.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
 import Signalements from '@/views/Signalements/Signalements.vue'
-import CloturerIntervention from '@/views/TableauDeBord/CloturerIntervention.vue'
+
+
+// ---------------------------------------------------------------
+import AfficherIntervention from '@/views/Interventions/AfficherIntervention.vue'
+import CreerIntervention from '@/views/Interventions/CreerIntervention.vue'
+
+import AfficherEquipement from '@/views/Equipements/AfficherEquipement.vue'
+import CreerEquipement from '@/views/Equipements/CreerEquipement.vue'
+
 
 
 const routes = [
@@ -27,19 +32,6 @@ const routes = [
     meta: { title: 'Equipement' }
   },
   {
-    path: '/ajouterEquipement',
-    name: 'AjouterEquipement',
-    component: AjouterEquipement,
-    meta: { title: 'Ajouter Equipement' }
-  },
-  {
-    path: '/equipement/:reference',
-    name: 'AfficherEquipement',
-    component: AfficherEquipement,
-    props: true, 
-    meta: { title: 'Afficher Equipement' }
-  },
-  {
     path: '/maintenances',
     name: 'Maintenances',
     component: Maintenances,
@@ -50,12 +42,6 @@ const routes = [
     name: 'Techniciens',
     component: Techniciens,
     meta: { title: 'Techniciens' }
-  },
-  {
-    path: '/creerBonTravail',
-    name: 'CreerBonTravail',
-    component: CreerBonTravail,
-    meta: { title: 'Créer un bon de travail' }
   },
   {
     path: '/gestion-comptes',
@@ -83,12 +69,41 @@ const routes = [
     meta: { title: 'Signalements' }
   },
 
+
+
+
+// ---------------------------------------------------------------
+
   {
-    path: '/cloturer-interventions',
-    name: 'CloturerIntervention',
-    component: CloturerIntervention,
-    meta: { title: 'CloturerIntervention' }
-  }
+    path: '/intervention/:id',
+    name: 'AfficherIntervention',
+    component: AfficherIntervention,
+    props: true, 
+    meta: { title: 'Détailes de l\'intervention' }
+  },
+
+  {
+    path: '/equipement/:reference',
+    name: 'AfficherEquipement',
+    component: AfficherEquipement,
+    props: true, 
+    meta: { title: 'Afficher Equipement' }
+  },
+
+  {
+    path: '/creerIntervention',
+    name: 'CreerIntervention',
+    component: CreerIntervention,
+    meta: { title: 'Créer un bon de travail' }
+  },
+
+  {
+    path: '/creerEquipement',
+    name: 'CreerEquipement',
+    component: CreerEquipement,
+    meta: { title: 'Ajouter Equipement' }
+  },
+
 ]
 
 const router = createRouter({

@@ -172,7 +172,7 @@ import { useRouter } from 'vue-router';
 import api from '@/services/api';
 
 export default {
-  name: 'CreerBonTravail',
+  name: 'CreerIntervention',
   
   setup() {
     const routeur = useRouter();

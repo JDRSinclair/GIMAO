@@ -12,9 +12,6 @@
               <v-card-title class="font-weight-bold text-uppercase text-primary">
                 Listes des défaillances signalées
                 <v-spacer></v-spacer>
-                <v-btn color="success" @click="convertToWorkOrder">
-                  Transformer en bon de travail
-                </v-btn>
               </v-card-title>
               <v-divider></v-divider>
               <v-data-table
@@ -39,9 +36,6 @@
               <v-card-title class="font-weight-bold text-uppercase text-primary">
                 Listes des interventions terminées
                 <v-spacer></v-spacer>
-                <v-btn color="success" @click="cloturerFicheIntervention">
-                  Clôturer la fiche d'intervention
-                </v-btn>
               </v-card-title>
               <v-divider></v-divider>
               <v-data-table
