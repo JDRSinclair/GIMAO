@@ -1,63 +1,19 @@
 <template>
   <v-app>
-
-    <NavigationDrawer 
-      :logo="require('@/assets/images/LogoGIMAO.png')"
-      :items="menuItems" 
-      @item-selected="handleItemSelected"
-    />
-    <TopNavBar />
-
-    <!-- Contenu principal -->
+    <NavigationDrawer :items="menuItems" />
+    <TopNavBar :pageTitle="currentPageTitle" />
     <v-main>
-      <v-container>
-        <!-- Filtres et tableau -->
-        <v-row>
-        <!-- Colonne contenant Liste des salles et Types d'équipements -->
-        <v-col cols="3"> <!-- Réduit la largeur à 3/12 -->
-          <v-card elevation="1" class="rounded-lg pa-2 mb-4">
-            <v-card-title class="font-weight-bold text-uppercase text-primary">Liste des salles</v-card-title>
-            <v-divider></v-divider>
-            <v-list dense>
-              <v-list-item v-for="(salle, index) in salles" :key="index" link>
-                <v-list-item-title>{{ salle }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-card>
-
-          <v-card elevation="1" class="rounded-lg pa-2">
-            <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
-            <v-divider></v-divider>
-            <v-list dense>
-              <v-list-item v-for="(type, index) in typesEquipements" :key="index" link>
-                <v-list-item-title>{{ type }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-col>
-
-        <!-- Tableau des équipements -->
-        <v-col cols="9"> <!-- Augmente la largeur à 9/12 -->
-          <v-data-table
-            :headers="headers"
-            :items="equipements"
-            item-value="name"
-            class="elevation-1 rounded-lg"
-            hide-default-footer
-          ></v-data-table>
-        </v-col>
-      </v-row>
-      </v-container>
+      <router-view></router-view>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import NavigationDrawer from '@/components/BarreNavigation.vue'; // Assurez-vous que le chemin est correct
-import TopNavBar from "@/components/TopNavBar.vue";
-import '@/assets/css/global.css'; // Importation du fichier CSS global
+import NavigationDrawer from '@/components/BarreNavigation.vue';
+import TopNavBar from "@/components/BarreNavigationHaut.vue";
 
 export default {
+  name: 'App',
   components: {
     NavigationDrawer,
     TopNavBar,
@@ -65,39 +21,26 @@ export default {
   
   data() {
     return {
+      currentPageTitle: '',
       menuItems: [
-        { name: 'Tableau de bord', icon: require('@/assets/images/Graphe.svg') },
-        { name: 'Equipements', icon: require('@/assets/images/Outils.svg') },
-        { name: 'Maintenances', icon: require('@/assets/images/Maintenance.svg') },
-        { name: 'Techniciens', icon: require('@/assets/images/Techniciens.svg') },
-      ],
-      salles: ["Tous", "Salle 1", "Salle 2", "Salle 3", "Salle 4"],
-      typesEquipements: ["Tous", "Type 1", "Type 2", "Type 3", "Type 4"],
-      headers: [
-        { text: "Équipement", value: "equipement", align: "start" },
-        { text: "Salle", value: "salle" },
-        { text: "État", value: "etat" },
-      ],
-      equipements: [
-        { equipement: "Équipement 1", salle: "Salle 1", etat: "À l'arrêt" },
-        { equipement: "Équipement 2", salle: "Salle 1", etat: "Rebuté" },
-        { equipement: "Équipement 3", salle: "Salle 1", etat: "Fonctionnel" },
-        { equipement: "Équipement 4", salle: "Salle 2", etat: "Fonctionnel" },
-        { equipement: "Équipement 5", salle: "Salle 2", etat: "Fonctionnel" },
-        { equipement: "Équipement 6", salle: "Salle 3", etat: "À l'arrêt" },
-        { equipement: "Équipement 7", salle: "Salle 4", etat: "Fonctionnel" },
-        { equipement: "Équipement 8", salle: "Salle 4", etat: "Fonctionnel" },
+        { name: 'Tableau de bord', icon: require('@/assets/images/Graphe.svg'), routeName: 'TableauDeBord' },
+        { name: 'Equipements', icon: require('@/assets/images/Outils.svg'), routeName: 'Equipements' },
+        { name: 'Maintenances', icon: require('@/assets/images/Maintenance.svg'), routeName: 'Maintenances' },
+        { name: 'Techniciens', icon: require('@/assets/images/Techniciens.svg'), routeName: 'Techniciens' },
       ],
     };
   },
-  methods: {
-    handleItemSelected(item) {
-      console.log('Selected item:', item);
-    },
-  },
+  
+  watch: {
+    $route: {
+      immediate: true,
+      handler(to) {
+        this.currentPageTitle = to.meta.title || 'GIMAO';
+      }
+    }
+  }
 };
 </script>
-
 
 <style scoped>
 .text-primary {
