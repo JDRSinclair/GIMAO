@@ -10,6 +10,10 @@ export default {
     return axios.get(`${API_URL}equipements/`);
   },
 
+  getInterventions() {
+    return axios.get(`${API_URL}interventions/`);
+  },
+
   getLieux() {
     return axios.get(`${API_URL}lieux-hierarchy/`);
   },

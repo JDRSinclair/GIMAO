@@ -10,6 +10,7 @@ import CreerBonTravail from '@/views/Maintenances/CreerBonTravail.vue'
 import Commandes from '@/views/Commandes/Commandes.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
 import Signalements from '@/views/Signalements/Signalements.vue'
+import CloturerIntervention from '@/views/TableauDeBord/CloturerIntervention.vue'
 
 
 const routes = [
@@ -80,6 +81,13 @@ const routes = [
     name: 'Signalements',
     component: Signalements,
     meta: { title: 'Signalements' }
+  },
+
+  {
+    path: '/cloturer-interventions',
+    name: 'CloturerIntervention',
+    component: CloturerIntervention,
+    meta: { title: 'CloturerIntervention' }
   }
 ]
 

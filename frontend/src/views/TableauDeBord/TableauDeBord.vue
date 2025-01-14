@@ -49,9 +49,10 @@
                 :items="interventions"
                 :items-per-page="5"
                 :page.sync="interventionsPage"
-                item-value="name"
+                item-value="nom"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
+                @click:row="cloturerIntervention"
               ></v-data-table>
               <v-pagination
                 v-model="interventionsPage"
@@ -125,6 +126,10 @@ export default {
     },
     cloturerFicheIntervention() {
       console.log('Clôturer la fiche d\'intervention');
+    },
+    cloturerIntervention() {
+      // Rediriger vers la page de clôture d'intervention sans paramètres
+      this.$router.push({ name: 'CloturerIntervention' });
     },
   },
 };
