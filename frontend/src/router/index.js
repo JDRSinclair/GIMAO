@@ -17,6 +17,10 @@ import AfficherEquipement from '@/views/Equipements/AfficherEquipement.vue'
 import CreerEquipement from '@/views/Equipements/CreerEquipement.vue'
 
 
+import CreerSignalement from '@/views/Signalements/CreerSignalement.vue'
+import AfficherSignalement from '@/views/Signalements/AfficherSignalement.vue'
+
+
 
 const routes = [
   {
@@ -36,6 +40,12 @@ const routes = [
     name: 'Maintenances',
     component: Maintenances,
     meta: { title: 'Maintenances' }
+  },
+  {
+    path: '/signalements',
+    name: 'Signalements',
+    component: Signalements,
+    meta: { title: 'Liste des signalements' }
   },
   {
     path: '/techniciens',
@@ -62,18 +72,14 @@ const routes = [
     component: Stocks,
     meta: { title: 'Stocks' }
   },
-  {
-    path: '/signalements',
-    name: 'Signalements',
-    component: Signalements,
-    meta: { title: 'Signalements' }
-  },
+
 
 
 
 
 // ---------------------------------------------------------------
 
+// Interventions
   {
     path: '/intervention/:id',
     name: 'AfficherIntervention',
@@ -83,6 +89,14 @@ const routes = [
   },
 
   {
+    path: '/creerIntervention',
+    name: 'CreerIntervention',
+    component: CreerIntervention,
+    meta: { title: 'Créer un bon de travail' }
+  },
+
+  // Equipements
+  {
     path: '/equipement/:reference',
     name: 'AfficherEquipement',
     component: AfficherEquipement,
@@ -91,17 +105,25 @@ const routes = [
   },
 
   {
-    path: '/creerIntervention',
-    name: 'CreerIntervention',
-    component: CreerIntervention,
-    meta: { title: 'Créer un bon de travail' }
-  },
-
-  {
     path: '/creerEquipement',
     name: 'CreerEquipement',
     component: CreerEquipement,
     meta: { title: 'Ajouter Equipement' }
+  },
+
+  // Signalement
+  {
+    path: '/creerSignalement',
+    name: 'CreerSignalement',
+    component: CreerSignalement,
+    meta: { title: 'Faire un signalement' }
+  },
+
+  {
+    path: '/AfficherSignalement',
+    name: 'AfficherSignalement',
+    component: AfficherSignalement,
+    meta: { title: 'Détailes du signalement' }
   },
 
 ]
