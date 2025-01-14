@@ -12,7 +12,7 @@
               <v-card-title class="font-weight-bold text-uppercase text-primary">
                 Listes des défaillances signalées
                 <v-spacer></v-spacer>
-                <v-btn color="success" @click="transformerEnBonDeTravail">
+                <v-btn color="success" @click="convertToWorkOrder">
                   Transformer en bon de travail
                 </v-btn>
               </v-card-title>
@@ -25,6 +25,7 @@
                 item-value="name"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
+                @click:row="convertToWorkOrder"
               ></v-data-table>
               <v-pagination
                 v-model="defaillancesPage"
@@ -119,8 +120,8 @@ export default {
     handleItemSelected(item) {
       console.log('Selected item:', item);
     },
-    transformerEnBonDeTravail() {
-      console.log('Transformer en bon de travail');
+    convertToWorkOrder() {
+      this.$router.push({ name: 'CreerBonTravail' });
     },
     cloturerFicheIntervention() {
       console.log('Clôturer la fiche d\'intervention');
