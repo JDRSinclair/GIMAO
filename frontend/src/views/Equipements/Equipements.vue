@@ -1,27 +1,30 @@
 <template>
   <v-container>
     <v-row>
+      <!-- Colonne de gauche -->
       <v-col cols="4">
-        <!-- Structure des lieux -->
+        <!-- Carte : Structure des lieux -->
         <v-card elevation="1" class="rounded-lg pa-2 mb-4">
           <v-card-title class="font-weight-bold text-uppercase text-primary">
             Structure des lieux
           </v-card-title>
           <v-divider></v-divider>
           <div>
+            <!-- Message si aucune donnée n'est disponible -->
             <p v-if="!lieuxAvecTous || lieuxAvecTous.length === 0">Aucune donnée disponible.</p>
+            <!-- Arborescence des lieux -->
             <v-treeview
               v-else
-              :items="lieuxAvecTous"
-              item-key="id"
-              :open-on-click="false"
-              item-text="nomLieu"
-              rounded
-              hoverable
-              activatable
+              v-model:selected="selectedTreeNodes"
+              :items="lieux"
+              item-title="nomLieu"
+              item-value="id"
+              select-strategy="selectionType"
+              selectable
               dense
-              @update:active="onSelectLieu"
+              @update:selected="onSelectLieu"
             >
+              <!-- Slot pour l'icône de préfixe (flèche pour ouvrir/fermer les nœuds) -->
               <template v-slot:prepend="{ item, open }">
                 <v-icon
                   v-if="item.children && item.children.length > 0 && item.nomLieu !== 'Tous'"
@@ -30,9 +33,10 @@
                 >
                   {{ open ? 'mdi-triangle-down' : 'mdi-triangle-right' }}
                 </v-icon>
+                <!-- Espace réservé pour les éléments sans enfants -->
                 <span v-else class="tree-icon-placeholder"></span>
-                {{ item.nomLieu }}
               </template>
+              <!-- Slot pour le label personnalisé (affichage du type de lieu) -->
               <template v-slot:label="{ item }">
                 <span class="text-caption ml-2">{{ item.typeLieu }}</span>
               </template>
@@ -40,11 +44,15 @@
           </div>
         </v-card>
         
-        <!-- Types d'équipements -->
+        <!-- Carte : Types d'équipements -->
         <v-card elevation="1" class="rounded-lg pa-2">
-          <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
+          <v-card-title class="font-weight-bold text-uppercase text-primary">
+            Types d'équipements
+          </v-card-title>
           <v-divider></v-divider>
+          <!-- Liste des types d'équipements -->
           <v-list dense>
+            <!-- Option "Tous" pour sélectionner tous les types d'équipements -->
             <v-list-item
               link
               @click="handleTypeEquipementSelected(null)"
@@ -52,6 +60,7 @@
             >
               <v-list-item-title>Tous</v-list-item-title>
             </v-list-item>
+            <!-- Boucle pour afficher chaque type d'équipement -->
             <v-list-item
               v-for="(modele, index) in modeleEquipements"
               :key="index"
@@ -65,13 +74,14 @@
         </v-card>
       </v-col>
       
+      <!-- Colonne de droite -->
       <v-col cols="8">
-        <!-- Bouton d'ajout d'équipement -->
+        <!-- Bouton pour rediriger vers la page d'ajout d'équipement -->
         <v-btn color="primary" @click="ouvrirPageAjoutEquipement" class="mb-4">
           Aller à l'ajout d'équipement
         </v-btn>
 
-        <!-- Table des équipements -->
+        <!-- Tableau des équipements -->
         <v-data-table
           :headers="header"
           :items="filteredEquipements"
@@ -82,7 +92,9 @@
           :sort-by="['designation']"
           :sort-desc="[false]"
         >
+          <!-- Template personnalisé pour chaque ligne du tableau -->
           <template v-slot:item="{ item }">
+            <!-- Ligne cliquable pour afficher les détails de l'équipement -->
             <tr @click="ouvrirAfficherEquipement(item.reference)" style="cursor: pointer;">
               <td>{{ item.modeleEquipement.nomModeleEquipement }}</td>
               <td>{{ item.lieu.nomLieu }}</td>
@@ -90,8 +102,6 @@
             </tr>
           </template>
         </v-data-table>
-
-        <v-pagination v-model="page" :length="pageCount" class="text-center pt-2"></v-pagination>
       </v-col>
     </v-row>
   </v-container>
@@ -111,15 +121,17 @@ export default {
   setup() {
     const router = useRouter();
 
+    // État réactif pour gérer les données et l'état du composant
     const state = reactive({
       equipements: [],
       lieux: [],
       modeleEquipements: [],
-      selectedLieu: null,
+      selectedLieu: [],
       selectedTypeEquipements: [],
+      selectedTreeNodes: [],
       page: 1,
       pageCount: 0,
-      itemsPerPage: 5,
+      itemsPerPage: 10,
       header: [
         { title: 'Désignation', value: 'modeleEquipement.nomModeleEquipement', sortable: true, align: 'center' },
         { title: 'Lieu', value: 'lieu.nomLieu', sortable: true, align: 'center' },
@@ -133,6 +145,7 @@ export default {
       openNodes: new Set(),
     });
 
+    // Fonction pour récupérer les données depuis l'API
     const fetchData = async () => {
       try {
         const [equipementsRes, lieuxRes, modeleEquipementsRes] = await Promise.all([
@@ -149,19 +162,24 @@ export default {
       }
     };
 
+    // Calcul des lieux avec l'option "Tous"
     const lieuxAvecTous = computed(() => {
       return [{ id: null, nomLieu: 'Tous' }, ...state.lieux];
     });
 
+    // Gestion de la sélection d'un lieu dans l'arborescence
     const onSelectLieu = (items) => {
       if (items.length > 0) {
-        const selectedItem = findItem(lieuxAvecTous.value, items[0]);
-        if (selectedItem) {
-          state.selectedLieu = selectedItem.nomLieu;
-        }
+        state.selectedLieu = items.map(id => {
+          const selectedItem = findItem(lieuxAvecTous.value, id);
+          return selectedItem?.nomLieu;
+        }).filter(Boolean);
+      } else {
+        state.selectedLieu = [];
       }
     };
 
+    // Fonction pour trouver un élément dans l'arborescence
     const findItem = (items, id) => {
       for (const item of items) {
         if (item.id === id) {
@@ -177,6 +195,7 @@ export default {
       return null;
     };
 
+    // Fonction pour basculer l'état d'un nœud dans l'arborescence
     const toggleNode = (item) => {
       if (state.openNodes.has(item.id)) {
         state.openNodes.delete(item.id);
@@ -185,6 +204,7 @@ export default {
       }
     };
 
+    // Gestion de la sélection d'un type d'équipement
     const handleTypeEquipementSelected = (modele) => {
       if (modele === null) {
         state.selectedTypeEquipements = [];
@@ -198,27 +218,36 @@ export default {
       }
     };
 
+    // Vérifie si un type d'équipement est sélectionné
     const isTypeEquipementSelected = (modele) => {
       return state.selectedTypeEquipements.some(m => m.nomModeleEquipement === modele.nomModeleEquipement);
     };
 
+    // Filtrage des équipements en fonction des sélections
     const filteredEquipements = computed(() => {
       return state.equipements.filter(e => {
-        const lieuMatch = !state.selectedLieu || state.selectedLieu === 'Tous' || e.lieu.nomLieu === state.selectedLieu;
+        const lieuMatch = state.selectedLieu.length === 0 || 
+                         state.selectedLieu.includes('Tous') || 
+                         state.selectedLieu.includes(e.lieu.nomLieu);
         const typeMatch = state.selectedTypeEquipements.length === 0 ||
-                          state.selectedTypeEquipements.some(m => m.nomModeleEquipement === e.modeleEquipement.nomModeleEquipement);
+                         state.selectedTypeEquipements.some(m => 
+                           m.nomModeleEquipement === e.modeleEquipement.nomModeleEquipement
+                         );
         return lieuMatch && typeMatch;
       });
     });
 
+    // Redirection vers la page d'ajout d'équipement
     const ouvrirPageAjoutEquipement = () => {
       router.push('/ajouter-equipement');
     };
 
+    // Redirection vers la page d'affichage d'un équipement
     const ouvrirAfficherEquipement = (reference) => {
       router.push({ name: 'AfficherEquipement', params: { reference: reference } });
     };
 
+    // Chargement des données au montage du composant
     onMounted(fetchData);
 
     return {
@@ -248,6 +277,15 @@ export default {
 
 .v-data-table th {
   color: black !important;
+}
+
+.v-treeview-node--active {
+  background-color: #7577e9 !important;
+  color: white !important;
+}
+
+.v-treeview-node--active:hover {
+  background-color: #5658c7 !important;
 }
 
 .selected-item {
