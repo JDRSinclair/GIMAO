@@ -10,7 +10,7 @@ export default {
     return axios.get(`${API_URL}equipements/`);
   },
 
-  getLieux() {
+  getLieuxHierarchy() {
     return axios.get(`${API_URL}lieux-hierarchy/`);
   },
 
@@ -22,7 +22,20 @@ export default {
     return axios.get(`${API_URL}equipements-detail/`);
   },
 
-  getEquipement(reference) {
-    return axios.get(`${API_URL}equipements/${reference}/affichage/`);
+  getEquipementAffichage(reference) {
+    return axios.get(`${API_URL}equipement/${reference}/affichage/`);
   },
+
+  getInterventionAffichage(id) {
+    return axios.get(`${API_URL}intervention/${id}/affichage/`);
+  },
+
+  getUtilisateurs() {
+    return axios.get(`${API_URL}utilisateurs/`);
+  },
+
+  createIntervention(interventionData) {
+    return axios.post(`${API_URL}interventions/`, interventionData);
+  },
+
 };

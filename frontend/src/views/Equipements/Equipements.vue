@@ -137,7 +137,7 @@ export default {
       try {
         const [equipementsRes, lieuxRes, modeleEquipementsRes] = await Promise.all([
           api.getEquipementsVue(),
-          api.getLieux(),
+          api.getLieuxHierarchy(),
           api.getModeleEquipements()
         ]);
 

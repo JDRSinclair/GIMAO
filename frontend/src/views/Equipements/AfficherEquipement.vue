@@ -208,7 +208,7 @@ export default {
   methods: {
     async fetchEquipementData() {
       try {
-        const response = await api.getEquipement(this.$route.params.reference);
+        const response = await api.getEquipementAffichage(this.$route.params.reference);
         this.equipement = response.data;
         this.isLoading = false;
       } catch (error) {

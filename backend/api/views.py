@@ -4,6 +4,7 @@ from django.db.models import Prefetch
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.contrib.auth import get_user_model
 from myApp.models import (
     Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable,
     ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer,
@@ -11,6 +12,7 @@ from myApp.models import (
     DocumentDefaillance, Intervention, DocumentIntervention
 )
 from .serializers import (
+    UserSerializer,
     RoleSerializer,
     AvoirSerializer,
     FabricantSerializer,
@@ -33,7 +35,14 @@ from .serializers import (
     EquipementDetailSerializer,
     LieuHierarchySerializer,
     EquipementAffichageSerializer,
+    InterventionAfficherSerializer,
 )
+
+User = get_user_model()
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Role.objects.all()
@@ -220,3 +229,8 @@ class EquipementAffichageViewSet(viewsets.ReadOnlyModelViewSet):
             return obj
         except Equipement.DoesNotExist:
             raise NotFound(f"Aucun équipement trouvé avec la référence {reference}")
+
+
+class InterventionAfficherViewSet(viewsets.ModelViewSet):
+    queryset = Intervention.objects.all()
+    serializer_class = InterventionAfficherSerializer

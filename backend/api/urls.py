@@ -2,6 +2,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
+    UserViewSet,
     RoleViewSet,
     AvoirViewSet,
     FabricantViewSet,
@@ -24,9 +25,11 @@ from .views import (
     EquipementDetailViewSet,
     get_lieux_hierarchy,
     EquipementAffichageViewSet,
+    InterventionAfficherViewSet,
 )
 
 router = DefaultRouter()
+router.register(r'utilsateurs', UserViewSet)
 router.register(r'roles', RoleViewSet)
 router.register(r'avoir', AvoirViewSet)
 router.register(r'fabricants', FabricantViewSet)
@@ -51,10 +54,13 @@ router.register(r'document-interventions', DocumentInterventionViewSet)
 
 
 
+
 urlpatterns = [
     path('', include(router.urls)),
     path('lieux-hierarchy/', get_lieux_hierarchy, name='lieux-hierarchy'),
     path('equipements-detail/', EquipementDetailViewSet.as_view({'get': 'list'}), name='equipement-detail-list'),
     path('equipements-detail/<str:reference>/', EquipementDetailViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
-    path('equipements/<str:reference>/affichage/', EquipementAffichageViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
+    path('equipement/<str:reference>/affichage/', EquipementAffichageViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
+    path('intervention/<int:pk>/affichage/', InterventionAfficherViewSet.as_view({'get': 'retrieve'}), name='intervention-detail'),
+
 ]
