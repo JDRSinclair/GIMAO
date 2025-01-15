@@ -27,7 +27,6 @@ from .views import (
     EquipementAffichageViewSet,
     InterventionAfficherViewSet,
 
-    LieuCreateView,
 )
 
 router = DefaultRouter()
@@ -64,7 +63,5 @@ urlpatterns = [
     path('equipements-detail/<str:reference>/', EquipementDetailViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
     path('equipement/<str:reference>/affichage/', EquipementAffichageViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
     path('intervention/<int:pk>/affichage/', InterventionAfficherViewSet.as_view({'get': 'retrieve'}), name='intervention-detail'),
-
-    path('creer-lieu/', LieuCreateView.as_view(), name='creer-lieu'),
 
 ]

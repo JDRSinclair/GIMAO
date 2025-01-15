@@ -44,7 +44,15 @@ export default {
   },
 
   createLieu(data) {
-    return axios.post(`${API_URL}creer-lieu/`, data);
+    return axios.post(`${API_URL}lieux/`, data);
+  },
+
+  getFabricant() {
+    return axios.get(`${API_URL}fabricants/`);
+  },
+
+  createFabricant(data) {
+    return axios.post(`${API_URL}fabricants/`, data);
   },
 
 };

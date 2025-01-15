@@ -242,15 +242,3 @@ class InterventionAfficherViewSet(viewsets.ModelViewSet):
     queryset = Intervention.objects.all()
     serializer_class = InterventionAfficherSerializer
 
-
-#---------------------------------------------------------------
-
-class LieuCreateView(APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = LieuSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Création réussie", "data": serializer.data}, status=HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
