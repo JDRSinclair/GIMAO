@@ -2,46 +2,48 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8000/api/';  
 
+export const BASE_URL = 'http://localhost:8000';
+
 export default {
 
   getEquipements() {
     return axios.get(`${API_URL}equipements/`);
   },
 
-  getLieux() {
+  getLieuxHierarchy() {
     return axios.get(`${API_URL}lieux-hierarchy/`);
   },
 
+  getLieux() {
+    return axios.get(`${API_URL}lieux/`);
+  },
+
   getModeleEquipements() {
-    return axios.get(`${API_URL}modeleequipements/`);
+    return axios.get(`${API_URL}modele-equipements/`);
   },
 
-  getFournisseurs() {
-    return axios.get(`${API_URL}fournisseurs/`);
+  getEquipementsVue(){
+    return axios.get(`${API_URL}equipements-detail/`);
   },
 
-  getUsers() {
-    return axios.get(`${API_URL}users/`);
-  },
-  
-  getDocumentationTech() {
-    return axios.get(`${API_URL}documentstechniques/`);
+  getEquipementAffichage(reference) {
+    return axios.get(`${API_URL}equipement/${reference}/affichage/`);
   },
 
-  getDernierDocumentationTech() {
-    return axios.get(`${API_URL}dernier-document-technique/`);
+  getInterventionAffichage(id) {
+    return axios.get(`${API_URL}intervention/${id}/affichage/`);
   },
 
-  createEquipement(data) {
-    return axios.post(`${API_URL}creer-equipement/`, data);
+  getUtilisateurs() {
+    return axios.get(`${API_URL}utilisateurs/`);
   },
 
-  createDocumentation(data) {
-    return axios.post(`${API_URL}creer-document-technique/`, data);
+  createIntervention(interventionData) {
+    return axios.post(`${API_URL}interventions/`, interventionData);
   },
 
-  joinEquipementDocumentation(data) {
-    return axios.post(`${API_URL}jointure-equipement-document/`, data);
+  createLieu(data) {
+    return axios.post(`${API_URL}creer-lieu/`, data);
   },
 
 };

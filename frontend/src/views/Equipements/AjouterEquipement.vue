@@ -280,7 +280,7 @@
                 </v-col>
                 <v-btn
                   color="transparent"
-                  @click="openConsommableModal"
+                  @click="ajouterConsommable"
                   icon
                   class="rounded-circle"
                   style="border: none; box-shadow: none;"
@@ -377,33 +377,20 @@
               <v-btn color="primary" class="mt-4 rounded" style="border-radius: 0 ;margin-right: 35px;" large>
                 Confirmer
               </v-btn>
-              <v-btn color="primary" class="mt-4 rounded" @click="test" style="border-radius: 0 ;margin-right: 35px;" large>
-                Test
-              </v-btn>
             </v-row>
           </v-col>
         </v-row>
       </v-container>
     </v-main>
-
-    <AjouterConsommableModal
-      :value="isConsommableModalOpen"
-      @input="isConsommableModalOpen = $event"
-    />
-
   </v-app>
 </template>
 
 <script>
 
-import AjouterConsommableModal from '@/views/Equipements/AjouterConsommableModal.vue';
 import '@/assets/css/global.css'; 
 
 export default {
   name: 'AjouterEquipement',
-  components: {
-    AjouterConsommableModal,
-  },
 
   
   data() {
@@ -458,8 +445,6 @@ export default {
         { text: 'État de la pièce', value: 'status' },
         { text: 'En stock', value: 'stock' }
       ],
-
-      isConsommableModalOpen: false,
     };
   },
   methods: {
@@ -536,17 +521,6 @@ export default {
         this.selectedConsommable = null;
       }
     },
-    openConsommableModal() {
-      this.isConsommableModalOpen = true;
-    },
-    // async testConnection() {
-    //   try {
-    //     const response = await axios.get("http://127.0.0.1:8000/api/test/");
-    //     console.log(response.data.message);
-    //   } catch (error) {
-    //     console.log("Erreur de connexion avec le serveur.")
-    //   }
-    // },
   }
 
 };

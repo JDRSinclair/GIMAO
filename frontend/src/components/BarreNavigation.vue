@@ -5,6 +5,8 @@
         lines="two"
         :prepend-avatar="logo"
         :class="[$style.logoContainer, 'd-flex justify-center']"
+        @click="goToDashboard"
+        style="cursor: pointer;"
       >
         <v-list-item-title :class="[$style.logoTitle, 'font-weight-bold text-center']">
           {{ appTitle }}
@@ -34,16 +36,17 @@
   </v-navigation-drawer>
 </template>
 
+
 <script>
 export default {
   props: {
     logo: {
       type: String,
-      default: () => require('@/assets/images/LogoGIMAO.png')
+      default: () => require('@/assets/images/LogoGIMAO.png'),
     },
     appTitle: {
       type: String,
-      default: 'GIMAO'
+      default: 'GIMAO',
     },
     navigationItems: {
       type: Array,
@@ -56,8 +59,9 @@ export default {
         { name: 'Commandes', icon: 'Commande.svg', title: 'Commandes' },
         { name: 'Stocks', icon: 'Stocks.svg', title: 'Stocks' },
         { name: 'Signalements', icon: 'Signalements.svg', title: 'Signalements' },
-      ]
-    }
+        { name: 'Lieux', icon: 'lieux.svg', title: 'Lieux' },
+      ],
+    },
   },
   methods: {
     isActive(routeName) {
@@ -70,12 +74,17 @@ export default {
         'inner-shadow': true,
       };
     },
+    goToDashboard() {
+      this.$router.push({ name: 'TableauDeBord' });
+    },
   },
 };
 </script>
 
+
 <style module>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
 
 :root {
   --primary-color: #5D5FEF;
@@ -86,6 +95,11 @@ export default {
 
 .logoContainer {
   height: 100px;
+}
+
+.logoContainer:active {
+  transform: scale(0.95);
+  transition: transform 0.2s;
 }
 
 .logoTitle {

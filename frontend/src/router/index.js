@@ -2,15 +2,17 @@ import { createRouter, createWebHistory } from 'vue-router'
 import TableauDeBord from '@/views/TableauDeBord/TableauDeBord.vue'
 import Equipements from '@/views/Equipements/Equipements.vue'
 import AjouterEquipement from '@/views/Equipements/AjouterEquipement.vue'
-import VisualiserEquipement from '@/views/Equipements/VisualiserEquipement.vue'
+import AfficherEquipement from '@/views/Equipements/AfficherEquipement.vue'
 import Maintenances from '@/views/Maintenances/Maintenances.vue'
 import Techniciens from '@/views/Techniciens/Techniciens.vue'
 import GestionComptes from '@/views/GestionComptes/GestionComptes.vue'
+import CreerBonTravail from '@/views/Maintenances/CreerBonTravail.vue'
 import Commandes from '@/views/Commandes/Commandes.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
 import Signalements from '@/views/Signalements/Signalements.vue'
-import testInsertionEquipement from '@/views/Equipements/testInsertionEquipement.vue'
-import test from '@/views/Equipements/test.vue'
+import CloturerIntervention from '@/views/TableauDeBord/CloturerIntervention.vue'
+import AjouterLieu from '@/views/Lieux/AjouterLieu.vue'
+import Lieux from '@/views/Lieux/Lieux.vue'
 
 
 const routes = [
@@ -30,25 +32,26 @@ const routes = [
     path: '/ajouterEquipement',
     name: 'AjouterEquipement',
     component: AjouterEquipement,
-    meta: { title: 'AjouterEquipement' }
+    meta: { title: 'Ajouter Equipement' }
   },
   {
-    path: '/testInsertionEquipement',
-    name: 'testInsertionEquipement',
-    component: testInsertionEquipement,
-    meta: { title: 'testInsertionEquipement' }
+    path: '/ajouterLieu',
+    name: 'AjouterLieu',
+    component: AjouterLieu,
+    meta: { title: 'Ajouter un lieu' }
   },
   {
-    path: '/test',
-    name: 'test',
-    component: test,
-    meta: { title: 'test' }
+    path: '/lieux',
+    name: 'Lieux',
+    component: Lieux,
+    meta: { title: 'Lieux' }
   },
   {
-    path: '/equipement/:id',
-    name: 'VisualiserEquipement',
-    component: VisualiserEquipement,
-    meta: { title: 'VisualiserEquipement' }
+    path: '/equipement/:reference',
+    name: 'AfficherEquipement',
+    component: AfficherEquipement,
+    props: true, 
+    meta: { title: 'Afficher Equipement' }
   },
   {
     path: '/maintenances',
@@ -61,6 +64,12 @@ const routes = [
     name: 'Techniciens',
     component: Techniciens,
     meta: { title: 'Techniciens' }
+  },
+  {
+    path: '/creerBonTravail',
+    name: 'CreerBonTravail',
+    component: CreerBonTravail,
+    meta: { title: 'Créer un bon de travail' }
   },
   {
     path: '/gestion-comptes',
@@ -86,6 +95,13 @@ const routes = [
     name: 'Signalements',
     component: Signalements,
     meta: { title: 'Signalements' }
+  },
+
+  {
+    path: '/cloturer-interventions',
+    name: 'CloturerIntervention',
+    component: CloturerIntervention,
+    meta: { title: 'CloturerIntervention' }
   }
 ]
 
