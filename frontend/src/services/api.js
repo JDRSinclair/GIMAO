@@ -38,6 +38,10 @@ export default {
     return axios.post(`${API_URL}interventions/`, interventionData);
   },
 
+  getFournisseurs() {
+    return axios.get(`${API_URL}fournisseurs/`);
+  },
+
   // -----------------------
   getLieux() {
     return axios.get(`${API_URL}lieux/`);
