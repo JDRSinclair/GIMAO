@@ -20,6 +20,9 @@ import CreerEquipement from '@/views/Equipements/CreerEquipement.vue'
 import CreerSignalement from '@/views/Signalements/CreerSignalement.vue'
 import AfficherSignalement from '@/views/Signalements/AfficherSignalement.vue'
 
+// ------------------------------------------------------------------
+import CreerLieu from '@/views/Lieux/CreerLieu.vue'
+import Lieux from '@/views/Lieux/Lieux.vue'
 
 
 const routes = [
@@ -124,6 +127,20 @@ const routes = [
     name: 'AfficherSignalement',
     component: AfficherSignalement,
     meta: { title: 'Détailes du signalement' }
+  },
+
+  //Lieux
+  {
+    path: '/creerLieu',
+    name: 'CreerLieu',
+    component: CreerLieu,
+    meta: { title: 'Creer un lieu' }
+  },
+  {
+    path: '/lieux',
+    name: 'Lieux',
+    component: Lieux,
+    meta: { title: 'Lieux' }
   },
 
 ]

@@ -1,10 +1,17 @@
 # api/serializers.py
 from rest_framework import viewsets
 from django.db.models import Prefetch
+from rest_framework import status
+from rest_framework.views import APIView
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth import get_user_model
+
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+
+
 from myApp.models import (
     Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable,
     ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer,
@@ -234,3 +241,16 @@ class EquipementAffichageViewSet(viewsets.ReadOnlyModelViewSet):
 class InterventionAfficherViewSet(viewsets.ModelViewSet):
     queryset = Intervention.objects.all()
     serializer_class = InterventionAfficherSerializer
+
+
+#---------------------------------------------------------------
+
+class LieuCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = LieuSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Création réussie", "data": serializer.data}, status=HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
