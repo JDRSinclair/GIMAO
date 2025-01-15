@@ -38,4 +38,13 @@ export default {
     return axios.post(`${API_URL}interventions/`, interventionData);
   },
 
+  // -----------------------
+  getLieux() {
+    return axios.get(`${API_URL}lieux/`);
+  },
+
+  createLieu(data) {
+    return axios.post(`${API_URL}creer-lieu/`, data);
+  },
+
 };

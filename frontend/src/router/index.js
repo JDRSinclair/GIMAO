@@ -11,17 +11,21 @@ import Signalements from '@/views/Signalements/Signalements.vue';
 import Fournisseurs from '@/views/GestionDonnees/Fournisseurs.vue';
 import Fabricants from '@/views/GestionDonnees/Fabricants.vue';
 import Consommables from '@/views/GestionDonnees/Consommables.vue';
-import Lieux from '@/views/GestionDonnees/Lieux.vue';
 import ModelesEquipements from '@/views/GestionDonnees/ModelesEquipements.vue';
 import CreerFournisseurs from '@/views/GestionDonnees/CreerFournisseurs.vue';
 import CreerFabricants from '@/views/GestionDonnees/CreerFabricants.vue';
 import CreerConsommables from '@/views/GestionDonnees/CreerConsommables.vue';
-import CreerLieux from '@/views/GestionDonnees/CreerLieux.vue';
 import CreerModelesEquipements from '@/views/GestionDonnees/CreerModelesEquipements.vue';
 import CreerIntervention from '@/views/Interventions/CreerIntervention.vue';
 import AfficherIntervention from '@/views/Interventions/AfficherIntervention.vue';
 import AfficherEquipement from '@/views/Equipements/AfficherEquipement.vue';
 import CreerEquipement from '@/views/Equipements/CreerEquipement.vue';
+
+
+// ------------------------------------------------------------------
+import CreerLieu from '@/views/Lieux/CreerLieu.vue'
+import Lieux from '@/views/Lieux/Lieux.vue'
+
 
 const routes = [
   // Tableau de Bord
@@ -121,18 +125,6 @@ const routes = [
     meta: { title: 'Créer Consommables' }
   },
   {
-    path: '/lieux',
-    name: 'Lieux',
-    component: Lieux,
-    meta: { title: 'Lieux' }
-  },
-  {
-    path: '/creer-lieux',
-    name: 'CreerLieux',
-    component: CreerLieux,
-    meta: { title: 'Créer Lieux' }
-  },
-  {
     path: '/modeles-equipements',
     name: 'ModelesEquipements',
     component: ModelesEquipements,
@@ -182,6 +174,20 @@ const routes = [
     name: 'Signalements',
     component: Signalements,
     meta: { title: 'Liste des signalements' }
+  },
+
+  //Lieux
+  {
+    path: '/creerLieu',
+    name: 'CreerLieu',
+    component: CreerLieu,
+    meta: { title: 'Creer un lieu' }
+  },
+  {
+    path: '/lieux',
+    name: 'Lieux',
+    component: Lieux,
+    meta: { title: 'Lieux' }
   },
 ];
 
