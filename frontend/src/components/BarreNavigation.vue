@@ -60,6 +60,7 @@ export default {
         { name: 'Commandes', icon: 'Commande.svg', title: 'Commandes', disabled: true },
         { name: 'Stocks', icon: 'Stocks.svg', title: 'Stocks' },
         { name: 'Signalements', icon: 'Signalements.svg', title: 'Signalements' },
+        { name: 'GestionDonnees', icon: 'GestionDonnees.svg', title: 'Gestion des <br>données' }
       ],
     },
   },
