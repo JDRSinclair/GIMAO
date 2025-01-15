@@ -42,13 +42,17 @@ export default {
     const itemsPerPage = ref(5);
     const fournisseurs = ref([]);
 
-    const headers = [
+    const headers = ref([
       { text: 'Nom', value: 'nomFournisseur' },
+      { text: 'Numéro de Rue', value: 'numRue' },
+      { text: 'Nom de Rue', value: 'nomRue' },
+      { text: 'Code Postal', value: 'codePostal' },
       { text: 'Ville', value: 'ville' },
       { text: 'Pays', value: 'paysFournisseur' },
       { text: 'Email', value: 'mailFournisseur' },
       { text: 'Téléphone', value: 'numTelephoneFournisseur' },
-    ];
+      { text: 'Service Après Vente', value: 'serviceApresVente' },
+    ]);
 
     const fetchFournisseurs = async () => {
       try {

@@ -17,95 +17,95 @@
                 <v-row>
                   <v-col cols="6">
                     <v-text-field
-                      v-model="form.NomFournisseur"
+                      v-model="form.nomFournisseur"
                       label="Nom du Fournisseur"
                       type="text"
                       outlined
                       dense
-                      :rules="[v => !!v || 'Nom du Fournisseur requis']"
+                      :rules="[v => !!v || 'Nom du Fournisseur requis', v => v.length <= 50 || 'Max 50 caractères']"
                     ></v-text-field>
                   </v-col>
 
                   <v-col cols="6">
                     <v-text-field
-                      v-model="form.NumRue"
+                      v-model="form.numRue"
                       label="Numéro de Rue"
-                      type="text"
+                      type="number"
                       outlined
                       dense
-                      :rules="[v => !!v || 'Numéro de Rue requis']"
+                      :rules="[v => !!v || 'Numéro de Rue requis', v => Number.isInteger(Number(v)) || 'Doit être un nombre entier']"
                     ></v-text-field>
                   </v-col>
 
                   <v-col cols="6">
                     <v-text-field
-                      v-model="form.NomRue"
+                      v-model="form.nomRue"
                       label="Nom de la Rue"
                       type="text"
                       outlined
                       dense
-                      :rules="[v => !!v || 'Nom de la Rue requis']"
+                      :rules="[v => !!v || 'Nom de la Rue requis', v => v.length <= 50 || 'Max 50 caractères']"
                     ></v-text-field>
                   </v-col>
 
                   <v-col cols="6">
                     <v-text-field
-                      v-model="form.CodePostal"
+                      v-model="form.codePostal"
                       label="Code Postal"
                       type="text"
                       outlined
                       dense
-                      :rules="[v => !!v || 'Code Postal requis']"
+                      :rules="[v => !!v || 'Code Postal requis', v => v.length <= 50 || 'Max 50 caractères']"
                     ></v-text-field>
                   </v-col>
 
                   <v-col cols="6">
                     <v-text-field
-                      v-model="form.Ville"
+                      v-model="form.ville"
                       label="Ville"
                       type="text"
                       outlined
                       dense
-                      :rules="[v => !!v || 'Ville requise']"
+                      :rules="[v => !!v || 'Ville requise', v => v.length <= 50 || 'Max 50 caractères']"
                     ></v-text-field>
                   </v-col>
 
                   <v-col cols="6">
                     <v-text-field
-                      v-model="form.PaysFournisseur"
+                      v-model="form.paysFournisseur"
                       label="Pays"
                       type="text"
                       outlined
                       dense
-                      :rules="[v => !!v || 'Pays requis']"
+                      :rules="[v => !!v || 'Pays requis', v => v.length <= 50 || 'Max 50 caractères']"
                     ></v-text-field>
                   </v-col>
 
                   <v-col cols="6">
                     <v-text-field
-                      v-model="form.MailFournisseur"
+                      v-model="form.mailFournisseur"
                       label="Email"
                       type="email"
                       outlined
                       dense
-                      :rules="[v => !!v || 'Email requis']"
+                      :rules="[v => !v || isValidEmail(v) || 'Email invalide', v => !v || v.length <= 50 || 'Max 50 caractères']"
                     ></v-text-field>
                   </v-col>
 
                   <v-col cols="6">
                     <v-text-field
-                      v-model="form.NumTelephoneFournisseur"
+                      v-model="form.numTelephoneFournisseur"
                       label="Numéro de Téléphone"
                       type="text"
                       outlined
                       dense
-                      :rules="[v => !!v || 'Numéro de Téléphone requis']"
+                      :rules="[v => !v || isValidPhone(v) || 'Numéro de Téléphone invalide', v => !v || v.length <= 15 || 'Max 15 caractères']"
                     ></v-text-field>
                   </v-col>
 
                   <v-col cols="6">
                     <v-checkbox
-                      v-model="form.ServiceApresVente"
+                      v-model="form.serviceApresVente"
                       label="Service Après Vente"
                       outlined
                       dense
@@ -143,18 +143,28 @@ export default {
     const routeur = useRouter();
 
     const form = reactive({
-      NomFournisseur: "",        
-      NumRue: "",              
-      NomRue: "",             
-      CodePostal: "",   
-      Ville: "",          
-      PaysFournisseur: "",   
-      MailFournisseur: "",    
-      NumTelephoneFournisseur: "",    
-      ServiceApresVente: false,    
+      nomFournisseur: "",        
+      numRue: "",              
+      nomRue: "",             
+      codePostal: "",   
+      ville: "",          
+      paysFournisseur: "",   
+      mailFournisseur: "",    
+      numTelephoneFournisseur: "",    
+      serviceApresVente: false,    
     });
 
     const formulaireValide = ref(null);
+
+    const isValidEmail = (email) => {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailPattern.test(email);
+    };
+
+    const isValidPhone = (phone) => {
+      const phonePattern = /^\+?1?\d{9,15}$/;
+      return phonePattern.test(phone);
+    };
 
     const backPreviousPage = () => {
       routeur.push({ name: 'Fournisseurs' });
@@ -180,6 +190,8 @@ export default {
       backPreviousPage,
       validateForm,
       formulaireValide,
+      isValidEmail,
+      isValidPhone
     };
   },
 };

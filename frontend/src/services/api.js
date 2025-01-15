@@ -42,6 +42,10 @@ export default {
     return axios.get(`${API_URL}fournisseurs/`);
   },
 
+  createFournisseur(data) {
+    return axios.post(`${API_URL}fournisseurs/`, data);
+  },
+
   // -----------------------
   getLieux() {
     return axios.get(`${API_URL}lieux/`);
