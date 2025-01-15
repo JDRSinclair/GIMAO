@@ -5,6 +5,8 @@
         lines="two"
         :prepend-avatar="logo"
         :class="[$style.logoContainer, 'd-flex justify-center']"
+        @click="goToDashboard"
+        style="cursor: pointer;"
       >
         <v-list-item-title :class="[$style.logoTitle, 'font-weight-bold text-center']">
           {{ appTitle }}
@@ -18,8 +20,9 @@
       <v-list-item
         v-for="item in navigationItems"
         :key="item.name"
-        :to="{ name: item.name }"
-        :class="[getItemClasses(item.name), $style.itemSize]"
+        :to="!item.disabled ? { name: item.name } : null"
+        :class="[getItemClasses(item.name), $style.itemSize, { 'disabled-item': item.disabled }]"
+        @click="item.disabled ? $event.preventDefault() : null"
       >
         <template v-slot:prepend>
           <img
@@ -34,16 +37,17 @@
   </v-navigation-drawer>
 </template>
 
+
 <script>
 export default {
   props: {
     logo: {
       type: String,
-      default: () => require('@/assets/images/LogoGIMAO.png')
+      default: () => require('@/assets/images/LogoGIMAO.png'),
     },
     appTitle: {
       type: String,
-      default: 'GIMAO'
+      default: 'GIMAO',
     },
     navigationItems: {
       type: Array,
@@ -51,13 +55,13 @@ export default {
         { name: 'TableauDeBord', icon: 'Graphe.svg', title: 'Tableau de bord' },
         { name: 'Equipements', icon: 'Outils.svg', title: 'Equipements' },
         { name: 'Maintenances', icon: 'Maintenance.svg', title: 'Maintenances' },
-        { name: 'Techniciens', icon: 'Techniciens.svg', title: 'Techniciens' },
-        { name: 'GestionComptes', icon: 'GestionComptes.svg', title: 'Gestion des <br>comptes' },
-        { name: 'Commandes', icon: 'Commande.svg', title: 'Commandes' },
+        { name: 'Techniciens', icon: 'Techniciens.svg', title: 'Techniciens', disabled: true },
+        { name: 'GestionComptes', icon: 'GestionComptes.svg', title: 'Gestion des <br>comptes', disabled: true },
+        { name: 'Commandes', icon: 'Commande.svg', title: 'Commandes', disabled: true },
         { name: 'Stocks', icon: 'Stocks.svg', title: 'Stocks' },
         { name: 'Signalements', icon: 'Signalements.svg', title: 'Signalements' },
-      ]
-    }
+      ],
+    },
   },
   methods: {
     isActive(routeName) {
@@ -70,12 +74,17 @@ export default {
         'inner-shadow': true,
       };
     },
+    goToDashboard() {
+      this.$router.push({ name: 'TableauDeBord' });
+    },
   },
 };
 </script>
 
+
 <style module>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
 
 :root {
   --primary-color: #5D5FEF;
@@ -86,6 +95,11 @@ export default {
 
 .logoContainer {
   height: 100px;
+}
+
+.logoContainer:active {
+  transform: scale(0.95);
+  transition: transform 0.2s;
 }
 
 .logoTitle {
@@ -132,5 +146,10 @@ export default {
 
 .inner-shadow {
   box-shadow: inset 0 20px 50px rgba(55, 69, 87, 0.1);
+}
+
+.disabled-item {
+  pointer-events: none;
+  opacity: 0.5;
 }
 </style>

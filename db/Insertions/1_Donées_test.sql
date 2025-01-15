@@ -88,13 +88,28 @@ INSERT INTO myApp_fabricant (nomFabricant, paysFabricant, mailFabricant, numTele
 ('Delta Solutions', 'Japan', 'sales@deltasolutions.jp', '+811234567890', True),
 ('Epsilon Innovations', 'UK', 'enquiries@epsiloninnovations.co.uk', '+441234567890', False);
 
-
+-- Ajout de nouveaux consommables/pièces
 INSERT INTO myApp_consommable (designation, lienImageConsommable, fabricant_id) VALUES
-('Vis A', 'images/consomable/vis.jpg', 1),
-('Ecrou B', 'images/consomable/ecrou.jpg', 2),
-('Rondelle C', 'images/consomable/rondelle.jpg', 3),
-('Boulon D', 'images/consomable/boulon.jpg', 4),
-('Joint E', 'images/consomable/joint.jpg', 5);
+('Cellule de Plasma Confiné', 'images/consomable/cellule_plasma.jpg', 1),
+('Cristal de Focalisation Quantique', 'images/consomable/cristal_quantique.jpg', 2),
+('Nanofiltre Gravitationnel', 'images/consomable/nanofiltre.jpg', 3),
+('Bobine de Confinement Magnétique', 'images/consomable/bobine_magnetique.jpg', 4),
+('Gel de Refroidissement Moléculaire', 'images/consomable/gel_refroidissement.jpg', 5),
+('Catalyseur de Fusion Froide', 'images/consomable/catalyseur_fusion.jpg', 1),
+('Membrane de Filtrage Dimensionnel', 'images/consomable/membrane_dimensionnelle.jpg', 2),
+('Condensateur de Tachyons', 'images/consomable/condensateur_tachyons.jpg', 3),
+('Stabilisateur d''Antimatière', 'images/consomable/stabilisateur_antimatiere.jpg', 4),
+('Module d''Intelligence Quantique', 'images/consomable/module_ia_quantique.jpg', 5),
+('Injecteur de Particules Subatomiques', 'images/consomable/injecteur_particules.jpg', 1),
+('Filtre à Ondes Gravitationnelles', 'images/consomable/filtre_ondes.jpg', 2),
+('Capteur de Fluctuations Temporelles', 'images/consomable/capteur_temporel.jpg', 3),
+('Générateur de Champ de Stase', 'images/consomable/generateur_stase.jpg', 4),
+('Matrice de Calcul Quantique', 'images/consomable/matrice_quantique.jpg', 5),
+('Régulateur de Flux Dimensionnel', 'images/consomable/regulateur_flux.jpg', 1),
+('Amplificateur de Résonance Neutrino', 'images/consomable/amplificateur_neutrino.jpg', 2),
+('Convertisseur d''Énergie du Vide', 'images/consomable/convertisseur_vide.jpg', 3),
+('Stabilisateur de Singularité', 'images/consomable/stabilisateur_singularite.jpg', 4),
+('Modulateur de Phase Quantique', 'images/consomable/modulateur_phase.jpg', 5);
 
 
 
@@ -199,20 +214,174 @@ INSERT INTO myApp_defaillance (
     utilisateur_id,
     equipement_id
 ) VALUES
-('Problème de surchauffe dans le système de plasma', 'Majeur', 3, 'EQ-006'),
-('Dysfonctionnement du système d''alimentation', 'Critique', 3, 'EQ-009');
+('Usure anormale des rouleaux magnétiques', 'Mineur', 2, 'EQ-004'),
+('Problème de surchauffe dans le système de plasma', 'Critique', 3, 'EQ-006'),
+('Perte de précision dans la focalisation du laser', 'Mineur', 1, 'EQ-007'),
+('Dysfonctionnement du système d''alimentation', 'Majeur', 3, 'EQ-009');
+
+-- Insert pour EQ-004
+INSERT INTO myApp_informationstatut (
+    statutEquipement,
+    dateChangement,
+    equipement_id,
+    informationStatutParent_id,
+    ModificateurStatut_id
+) SELECT 'Dégradé', CURRENT_TIMESTAMP, 'EQ-004',
+(SELECT id FROM (SELECT id FROM myApp_informationstatut WHERE equipement_id = 'EQ-004' ORDER BY dateChangement DESC LIMIT 1) AS temp),
+3;
+
+-- Insert pour EQ-006
+INSERT INTO myApp_informationstatut (
+    statutEquipement,
+    dateChangement,
+    equipement_id,
+    informationStatutParent_id,
+    ModificateurStatut_id
+) SELECT 'A l''arret', CURRENT_TIMESTAMP, 'EQ-006',
+(SELECT id FROM (SELECT id FROM myApp_informationstatut WHERE equipement_id = 'EQ-006' ORDER BY dateChangement DESC LIMIT 1) AS temp),
+3;
+
+-- Insert pour EQ-007
+INSERT INTO myApp_informationstatut (
+    statutEquipement,
+    dateChangement,
+    equipement_id,
+    informationStatutParent_id,
+    ModificateurStatut_id
+) SELECT 'Dégradé', CURRENT_TIMESTAMP, 'EQ-007',
+(SELECT id FROM (SELECT id FROM myApp_informationstatut WHERE equipement_id = 'EQ-007' ORDER BY dateChangement DESC LIMIT 1) AS temp),
+3;
+
+-- Insert pour EQ-009
+INSERT INTO myApp_informationstatut (
+    statutEquipement,
+    dateChangement,
+    equipement_id,
+    informationStatutParent_id,
+    ModificateurStatut_id
+) SELECT 'A l''arret', CURRENT_TIMESTAMP, 'EQ-009',
+(SELECT id FROM (SELECT id FROM myApp_informationstatut WHERE equipement_id = 'EQ-009' ORDER BY dateChangement DESC LIMIT 1) AS temp),
+3;
 
 
 
 
+INSERT INTO myApp_defaillance (
+    commentaireDefaillance,
+    niveau,
+    utilisateur_id,
+    equipement_id
+) VALUES
+('Fluctuations de puissance du laser', 'Mineur', 2, 'EQ-007'),
+('Défaillance du système de refroidissement optique', 'Critique', 3, 'EQ-007');
+
+
+
+
+-- Insert pour EQ-007
+INSERT INTO myApp_informationstatut (
+    statutEquipement,
+    dateChangement,
+    equipement_id,
+    informationStatutParent_id,
+    ModificateurStatut_id
+) SELECT 'Dégradé', CURRENT_TIMESTAMP, 'EQ-007',
+(SELECT id FROM (SELECT id FROM myApp_informationstatut WHERE equipement_id = 'EQ-007' ORDER BY dateChangement DESC LIMIT 1) AS temp),
+3;
+
+
+
+-- Insert pour EQ-007
+INSERT INTO myApp_informationstatut (
+    statutEquipement,
+    dateChangement,
+    equipement_id,
+    informationStatutParent_id,
+    ModificateurStatut_id
+) SELECT 'A l''arret', CURRENT_TIMESTAMP, 'EQ-007',
+(SELECT id FROM (SELECT id FROM myApp_informationstatut WHERE equipement_id = 'EQ-007' ORDER BY dateChangement DESC LIMIT 1) AS temp),
+3;
+
+
+INSERT INTO myApp_intervention
+(nomIntervention, interventionCurative, dateAssignation, dateCloture, dateDebutIntervention,
+dateFinIntervention, tempsEstime, commentaireIntervention, commentaireRefusCloture, 
+createurIntervention_id, defaillance_id, responsable_id) 
+VALUES 
+('Maintenance curative du système de refroidissement optique', True, CURRENT_TIMESTAMP, NULL, NULL, NULL, '03:30:00', NULL,NULL,1, 6, 3),
+('Maintenance curative du système de plasma', True, CURRENT_TIMESTAMP, NULL, NULL, NULL, '07:00:00', NULL,NULL,1, 2, 3);
+
+
+-- Association des consommables aux équipements
 INSERT INTO myApp_constituer (equipement_id, consommable_id) VALUES
-('EQ-001', 1),
-('EQ-001', 2),
-('EQ-002', 3),
-('EQ-002', 4),
-('EQ-003', 5),
-('EQ-004', 1),
-('EQ-004', 3),
-('EQ-005', 2),
-('EQ-005', 4),
-('EQ-005', 5);
+('EQ-001', 1), ('EQ-001', 6), ('EQ-001', 11),
+('EQ-002', 2), ('EQ-002', 7), ('EQ-002', 12),
+('EQ-003', 3), ('EQ-003', 8), ('EQ-003', 13),
+('EQ-004', 4), ('EQ-004', 9), ('EQ-004', 14),
+('EQ-005', 5), ('EQ-005', 10), ('EQ-005', 15),
+('EQ-006', 1), ('EQ-006', 16), ('EQ-006', 11),
+('EQ-007', 2),  -- Cristal de Focalisation Quantique
+('EQ-007', 8),  -- Condensateur de Tachyons
+('EQ-007', 13), -- Capteur de Fluctuations Temporelles
+('EQ-007', 17), -- Amplificateur de Résonance Neutrino
+('EQ-007', 20); -- Modulateur de Phase Quantique
+
+
+-- Insertion des documents de défaillance pour EQ-007
+INSERT INTO myApp_documentdefaillance (nomDocumentDefaillance, lienDocumentDefaillance, defaillance_id)
+VALUES
+('Rapport fluctuations laser EQ-007', 'documents/documentDefaillance/rapport_fluctuations_laser_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Fluctuations de puissance du laser' AND equipement_id = 'EQ-007')),
+('Analyse fluctuations laser EQ-007', 'documents/documentDefaillance/analyse_fluctuations_laser_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Fluctuations de puissance du laser' AND equipement_id = 'EQ-007')),
+('Rapport défaillance refroidissement EQ-007', 'documents/documentDefaillance/rapport_defaillance_refroidissement_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Défaillance du système de refroidissement optique' AND equipement_id = 'EQ-007')),
+('Diagnostic système refroidissement EQ-007', 'documents/documentDefaillance/diagnostic_systeme_refroidissement_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Défaillance du système de refroidissement optique' AND equipement_id = 'EQ-007'));
+
+
+
+-- Association des consommables compatibles avec les équipements
+INSERT INTO myApp_estcompatible (modeleEquipement_id, consommable_id) VALUES
+(1, 1), (1, 6), (1, 11),  -- Excavatrice Quantique XQ-1000
+(2, 2), (2, 7), (2, 12),  -- Foreuse Moléculaire FM-500
+(3, 3), (3, 8), (3, 13),  -- Compresseur Gravitationnel CG-750
+(4, 4), (4, 9), (4, 14),  -- Laminoir Magnétique LM-2000
+(5, 5), (5, 10), (5, 15), -- Presse Hydrostatique PH-3000
+(6, 1), (6, 16), (6, 11), -- Extrudeuse à Plasma EP-1500
+(7, 2), (7, 17), (7, 12), -- Laser de Précision Nanométrique LPN-X
+(8, 3), (8, 18), (8, 13), -- Scanner Holographique SH-4D
+(9, 4), (9, 19), (9, 14), -- Imprimante Biomoléculaire IB-3000
+(10, 5), (10, 20), (10, 15); -- Robot Assembleur Intelligent RAI-5000
+
+
+-- Insertion des documents techniques
+INSERT INTO myApp_documenttechnique (nomDocumentTechnique, lienDocumentTechnique) VALUES
+('Manuel d''utilisation LPN-X', 'documents/documentTecnique/manuel_utilisation_LPN-X.pdf'),
+('Guide de maintenance LPN-X', 'documents/documentTecnique/guide_maintenance_LPN-X.pdf');
+
+-- Association des documents techniques au modèle d'équipement (ID 7)
+INSERT INTO myApp_correspondre (documentTechnique_id, modeleEquipement_id) VALUES
+((SELECT id FROM myApp_documenttechnique WHERE nomDocumentTechnique = 'Manuel d''utilisation LPN-X'), 7),
+((SELECT id FROM myApp_documenttechnique WHERE nomDocumentTechnique = 'Guide de maintenance LPN-X'), 7);
+
+
+-- Insertion des documents de défaillance pour EQ-007
+INSERT INTO myApp_documentdefaillance (nomDocumentDefaillance, lienDocumentDefaillance, defaillance_id)
+VALUES
+('Rapport fluctuations laser EQ-007', 'documents/documentDefaillance/rapport_fluctuations_laser_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Fluctuations de puissance du laser' AND equipement_id = 'EQ-007')),
+('Analyse fluctuations laser EQ-007', 'documents/documentDefaillance/analyse_fluctuations_laser_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Fluctuations de puissance du laser' AND equipement_id = 'EQ-007')),
+('Rapport défaillance refroidissement EQ-007', 'documents/documentDefaillance/rapport_defaillance_refroidissement_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Défaillance du système de refroidissement optique' AND equipement_id = 'EQ-007')),
+('Diagnostic système refroidissement EQ-007', 'documents/documentDefaillance/diagnostic_systeme_refroidissement_EQ-007.pdf', 
+ (SELECT id FROM myApp_defaillance WHERE commentaireDefaillance = 'Défaillance du système de refroidissement optique' AND equipement_id = 'EQ-007'));
+
+
+ -- Insertion des documents d'intervention pour l'intervention avec id = 1 (EQ-007)
+INSERT INTO myApp_documentintervention (nomDocumentIntervention, lienDocumentIntervention, intervention_id) VALUES
+('Procédure de réparation du système de refroidissement LPN-X', 'documents/documentIntervention/procedure_reparation_refroidissement_LPN-X.pdf', 1),
+('Rapport d''intervention sur le système de refroidissement LPN-X', 'documents/documentIntervention/rapport_intervention_refroidissement_LPN-X.pdf', 1),
+('Checklist de maintenance du système de refroidissement LPN-X', 'documents/documentIntervention/checklist_maintenance_refroidissement_LPN-X.pdf', 1),
+('Schéma du système de refroidissement LPN-X', 'documents/documentIntervention/schema_systeme_refroidissement_LPN-X.pdf', 1);

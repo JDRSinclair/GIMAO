@@ -12,9 +12,6 @@
               <v-card-title class="font-weight-bold text-uppercase text-primary">
                 Listes des défaillances signalées
                 <v-spacer></v-spacer>
-                <v-btn color="success" @click="transformerEnBonDeTravail">
-                  Transformer en bon de travail
-                </v-btn>
               </v-card-title>
               <v-divider></v-divider>
               <v-data-table
@@ -25,6 +22,7 @@
                 item-value="name"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
+                @click:row="convertToWorkOrder"
               ></v-data-table>
               <v-pagination
                 v-model="defaillancesPage"
@@ -38,9 +36,6 @@
               <v-card-title class="font-weight-bold text-uppercase text-primary">
                 Listes des interventions terminées
                 <v-spacer></v-spacer>
-                <v-btn color="success" @click="cloturerFicheIntervention">
-                  Clôturer la fiche d'intervention
-                </v-btn>
               </v-card-title>
               <v-divider></v-divider>
               <v-data-table
@@ -48,9 +43,10 @@
                 :items="interventions"
                 :items-per-page="5"
                 :page.sync="interventionsPage"
-                item-value="name"
+                item-value="nom"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
+                @click:row="cloturerIntervention"
               ></v-data-table>
               <v-pagination
                 v-model="interventionsPage"
@@ -119,11 +115,15 @@ export default {
     handleItemSelected(item) {
       console.log('Selected item:', item);
     },
-    transformerEnBonDeTravail() {
-      console.log('Transformer en bon de travail');
+    convertToWorkOrder() {
+      this.$router.push({ name: 'CreerBonTravail' });
     },
     cloturerFicheIntervention() {
       console.log('Clôturer la fiche d\'intervention');
+    },
+    cloturerIntervention() {
+      // Rediriger vers la page de clôture d'intervention sans paramètres
+      this.$router.push({ name: 'CloturerIntervention' });
     },
   },
 };

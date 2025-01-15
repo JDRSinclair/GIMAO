@@ -1,11 +1,11 @@
 <template>
   <div>
-    <p v-if="!lieux || lieux.length === 0">Aucune donnée de localisation disponible.</p>
+    <p v-if="!lieux || lieux.length === 0">Aucune donnée disponible.</p>
     <v-treeview
       v-else
       :items="lieux"
       item-key="id"
-      open-on-click
+      :open-on-click="false"
       item-text="nomLieu"
       rounded
       hoverable
@@ -13,12 +13,20 @@
       dense
       @update:active="onSelect"
     >
-      <template v-slot:prepend="{ item,open }">
-        {{item.nomLieu}}
-      </template>
+    <template v-slot:prepend="{ item, open }">
+      <v-icon
+        v-if="item.children && item.children.length > 0 && item.nomLieu !== 'Tous'"
+        @click.stop="toggleNode(item)"
+        :class="{ 'rotate-icon': open }"
+      >
+        {{ open ? 'mdi-triangle-down' : 'mdi-triangle-right' }}
+      </v-icon>
+      <span v-else class="tree-icon-placeholder"></span>
+      {{ item.nomLieu }}
+    </template>
       <template v-slot:label="{ item }">
+        <span class="text-caption ml-2">{{ item.typeLieu }}</span>
       </template>
-      
     </v-treeview>
   </div>
 </template>
@@ -33,8 +41,14 @@ export default {
   },
   props: {
     lieux: {
+      type: Array,
       required: true
     }
+  },
+  data() {
+    return {
+      openNodes: new Set(),
+    };
   },
   methods: {
     onSelect(items) {
@@ -60,7 +74,15 @@ export default {
         }
       }
       return null;
-    }
+    },
+    toggleNode(item) {
+      if (this.openNodes.has(item.id)) {
+        this.openNodes.delete(item.id);
+      } else {
+        this.openNodes.add(item.id);
+      }
+      this.$forceUpdate();
+    },
   }
 }
 </script>
@@ -69,5 +91,20 @@ export default {
 .text-caption {
   color: #666;
   font-size: 0.75rem;
+}
+
+.tree-icon-placeholder {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+}
+
+.rotate-icon {
+  transform: rotate(180deg);
+}
+
+.v-icon {
+  transition: transform 0.3s ease;
 }
 </style>

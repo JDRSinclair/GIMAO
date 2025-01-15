@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api/';
+const API_URL = 'http://localhost:8000/api/';  
+
+export const BASE_URL = 'http://localhost:8000';
 
 export default {
 
@@ -8,20 +10,32 @@ export default {
     return axios.get(`${API_URL}equipements/`);
   },
 
-  getLieux() {
+  getLieuxHierarchy() {
     return axios.get(`${API_URL}lieux-hierarchy/`);
   },
 
   getModeleEquipements() {
-    return axios.get(`${API_URL}modeleequipements/`);
+    return axios.get(`${API_URL}modele-equipements/`);
   },
 
-  getInformationStatus() {
-    return axios.get(`${API_URL}informationStatus/`);
+  getEquipementsVue(){
+    return axios.get(`${API_URL}equipements-detail/`);
   },
 
-  getEquipementById(id) {
-    return axios.get(`${API_URL}equipements/${id}/`);
+  getEquipementAffichage(reference) {
+    return axios.get(`${API_URL}equipement/${reference}/affichage/`);
   },
+
+  getInterventionAffichage(id) {
+    return axios.get(`${API_URL}intervention/${id}/affichage/`);
+  },
+
+  getUtilisateurs() {
+    return axios.get(`${API_URL}utilisateurs/`);
+  },
+
+  createIntervention(interventionData) {
+    return axios.post(`${API_URL}interventions/`, interventionData);
+  },
+
 };
-
