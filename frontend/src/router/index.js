@@ -37,9 +37,9 @@ import CreerFournisseur from '@/views/GestionDonnees/Fournisseurs/CreerFournisse
 import Fournisseurs from '@/views/GestionDonnees/Fournisseurs/Fournisseurs.vue'
 import AfficherFournisseur from '@/views/GestionDonnees/Fournisseurs/AfficherFournisseur.vue'
 
-// import CreerFabricant from '@/views/GestionDonnees/Fabricants/CreerFabricant.vue'
-// import Fabricants from '@/views/GestionDonnees/Fabricants/Fabricants.vue'
-// import AfficherFabricant from '@/views/GestionDonnees/Fabricants/AfficherFabricants.vue'
+import CreerFabricant from '@/views/GestionDonnees/Fabricants/CreerFabricant.vue'
+import Fabricants from '@/views/GestionDonnees/Fabricants/Fabricants.vue'
+import AfficherFabricant from '@/views/GestionDonnees/Fabricants/AfficherFabricant.vue'
 
 
 
@@ -116,27 +116,27 @@ const routes = [
 
     // Fabricants ------------------------------------------------------------------
 
-  // {
-  //   path: '/fabricants',
-  //   name: 'Fabricants',
-  //   component: Fabricants,
-  //   meta: { title: 'Fabricants' }
-  // },
+  {
+    path: '/fabricants',
+    name: 'Fabricants',
+    component: Fabricants,
+    meta: { title: 'Fabricants' }
+  },
   
-  // {
-  //   path: '/creer-fabricant',
-  //   name: 'CreerFabricant',
-  //   component: CreerFabricant,
-  //   meta: { title: 'Creer un Fabricant' }
-  // },
+  {
+    path: '/creer-fabricant',
+    name: 'CreerFabricant',
+    component: CreerFabricant,
+    meta: { title: 'Creer un Fabricant' }
+  },
 
-  // {
-  //   path: '/afficher-fabricant/:id',
-  //   name: 'AfficherFabricant',
-  //   component: AfficherFabricant,
-  //   props: true,
-  //   meta: { title: 'Détails d\'un fabricant' }
-  // },
+  {
+    path: '/afficher-fabricant/:id',
+    name: 'AfficherFabricant',
+    component: AfficherFabricant,
+    props: true,
+    meta: { title: 'Détails d\'un fabricant' }
+  },
 
 
     // Fournisseurs ------------------------------------------------------------------

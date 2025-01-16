@@ -24,7 +24,7 @@
                     </v-col>
                     <v-col cols="12">
                       <p class="mb-4">
-                        <v-row align="center" justify="start">
+                        <v-row  justify="start">
                           <v-col cols="auto">
                             <strong>Etat :</strong> {{ infosRecuperes.statutEquipement }}
                           </v-col>
