@@ -154,6 +154,10 @@ export default {
     });
   },
 
+  deleteInterventionDocument(documentId) {
+    return axios.delete(`${API_URL}document-interventions/${documentId}/`);
+  },
+
   // Utilisateur-----------------------
 
   getUtilisateur(){

@@ -161,6 +161,7 @@ export default {
   setup() {
     const router = useRouter();
     const route = useRoute();
+    const actionMode = ref('download');
     const intervention = ref(null);
     const showDefaillanceDetails = ref(false);
     const showDocumentsDetails = ref(false);
@@ -236,6 +237,10 @@ export default {
       return intervention.value && !intervention.value.dateCloture;
     });
 
+    const toggleActionMode = () => {
+      actionMode.value = actionMode.value === 'download' ? 'delete' : 'download';
+    };
+
     const supprimerIntervention = async () => {
       if (confirm('Êtes-vous sûr de vouloir supprimer cette intervention ?')) {
         try {
@@ -288,17 +293,17 @@ export default {
     };
 
   const supprimerDocument = async (item) => {
-      if (confirm(`Êtes-vous sûr de vouloir supprimer le document "${item.nomDocumentDefaillance}" ?`)) {
+      if (confirm(`Êtes-vous sûr de vouloir supprimer le document "${item.nomDocumentIntervention}" ?`)) {
         try {
           console.log('Tentative de suppression du document:', item);
-          await api.deleteDefaillanceDocument(item.id);
+          await api.deleteInterventionDocument(item.id);
           console.log('Document supprimé avec succès');
           
           // Rafraîchir la liste des documents après la suppression
           await fetchData();
           
           // Afficher un message de succès
-          alert(`Le document "${item.nomDocumentDefaillance}" a été supprimé avec succès.`);
+          alert(`Le document "${item.nomDocumentIntervention}" a été supprimé avec succès.`);
         } catch (error) {
           console.error('Erreur détaillée lors de la suppression du document:', error);
           let errorMessage = 'Une erreur est survenue lors de la suppression du document.';
@@ -368,7 +373,9 @@ export default {
       telechargerDocument,
       ajouterDocument,
       defaillanceId,
-      supprimerDocument
+      supprimerDocument,
+      actionMode,
+      toggleActionMode
     };
   }
 };
