@@ -33,11 +33,15 @@ import CreerLieu from '@/views/GestionDonnees/Lieux/CreerLieu.vue'
 import Lieux from '@/views/GestionDonnees/Lieux/Lieux.vue'
 import AfficherLieu from '@/views/GestionDonnees/Lieux/AfficherLieu.vue'
 
-// import CreerFournisseur from '@/views/GestionDonnees/Fournisseurs/CreerFournisseur.vue'
-// import Fournisseurs from '@/views/GestionDonnees/Fournisseurs/Fournisseurs.vue'
+import CreerFournisseur from '@/views/GestionDonnees/Fournisseurs/CreerFournisseur.vue'
+import Fournisseurs from '@/views/GestionDonnees/Fournisseurs/Fournisseurs.vue'
+import AfficherFournisseur from '@/views/GestionDonnees/Fournisseurs/AfficherFournisseur.vue'
 
 // import CreerFabricant from '@/views/GestionDonnees/Fabricants/CreerFabricant.vue'
 // import Fabricants from '@/views/GestionDonnees/Fabricants/Fabricants.vue'
+// import AfficherFabricant from '@/views/GestionDonnees/Fabricants/AfficherFabricants.vue'
+
+
 
 import Consommables from '@/views/GestionDonnees/Consommables/Consommables.vue'
 import CreerConsommable from '@/views/GestionDonnees/Consommables/CreerConsommable.vue'
@@ -109,6 +113,55 @@ const routes = [
     meta: { title: 'Détails d\'un consommable' }
   },
 
+
+    // Fabricants ------------------------------------------------------------------
+
+  // {
+  //   path: '/fabricants',
+  //   name: 'Fabricants',
+  //   component: Fabricants,
+  //   meta: { title: 'Fabricants' }
+  // },
+  
+  // {
+  //   path: '/creer-fabricant',
+  //   name: 'CreerFabricant',
+  //   component: CreerFabricant,
+  //   meta: { title: 'Creer un Fabricant' }
+  // },
+
+  // {
+  //   path: '/afficher-fabricant/:id',
+  //   name: 'AfficherFabricant',
+  //   component: AfficherFabricant,
+  //   props: true,
+  //   meta: { title: 'Détails d\'un fabricant' }
+  // },
+
+
+    // Fournisseurs ------------------------------------------------------------------
+
+  {
+    path: '/fournisseurs',
+    name: 'Fournisseurs',
+    component: Fournisseurs,
+    meta: { title: 'Fournisseurs' }
+  },
+
+  {
+    path: '/creer-fournisseur',
+    name: 'CreerFournisseur',
+    component: CreerFournisseur,
+    meta: { title: 'Creer un Fournisseur' }
+  },
+
+  {
+    path: '/afficher-fournisseur/:id',
+    name: 'AfficherFournisseur',
+    component: AfficherFournisseur,
+    props: true,
+    meta: { title: 'Détails d\'un Fournisseur' }
+  },
 
 
 
