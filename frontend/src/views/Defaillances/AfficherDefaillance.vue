@@ -81,7 +81,7 @@
                     elevation="2"
                   >
                     <v-card-title class="text-h6 d-flex align-center">
-                      Documents de défaillance
+                      Documents de la défaillance
                       <v-spacer></v-spacer>
                       <v-btn
                         color="primary"

@@ -146,6 +146,13 @@ export default {
     return axios.post(`${API_URL}interventions/`, data);
   },
 
+  postInterventionDocument(data) {
+    return axios.post(`${API_URL}document-interventions/`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
 
   // Utilisateur-----------------------
 

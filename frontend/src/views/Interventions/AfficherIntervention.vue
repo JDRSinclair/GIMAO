@@ -37,14 +37,15 @@
                       <v-btn
                         color="primary"
                         class="ml-2"
-                        @click="ouvrirDefaillance"
+                        @click.stop="ouvrirDefaillance"
                         :disabled="!defaillanceId"
                       >
-                      Ouvrir
+                        Ouvrir
                       </v-btn> 
-                      <v-icon class="ml-2">
-                        {{ showDefaillanceDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
-                      </v-icon>
+                     
+                        <v-icon>
+                          {{ showDefaillanceDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                        </v-icon>
                     </v-card-title>
                     <v-expand-transition>
                       <div v-show="showDefaillanceDetails">
@@ -61,28 +62,28 @@
                   </v-card>
                 </v-col>
                 
-                <!-- Nouvelle section pour les Documents d'intervention -->
+                <!-- Section pour les Documents d'intervention -->
                 <v-col cols="12">
                   <v-card 
                     class="mt-4 pa-4" 
-                    elevation="2" 
-                    @click="toggleDocumentsDetails"
-                    :class="{ 'expanded': showDocumentsDetails }"
+                    elevation="2"
                   >
                     <v-card-title class="text-h6 d-flex align-center">
-                      Documents d'intervention
+                      Documents de l'intervention
                       <v-spacer></v-spacer>
                       <v-btn
                         color="primary"
                         small
                         class="mr-2"
-                        @click.stop="ajouterDocument"
+                        @click="ajouterDocument"
                       >
                         Ajouter
                       </v-btn>
-                      <v-icon class="ml-2">
-                        {{ showDocumentsDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
-                      </v-icon>
+                      <v-btn icon @click="toggleDocumentsDetails">
+                        <v-icon>
+                          {{ showDocumentsDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                        </v-icon>
+                      </v-btn>
                     </v-card-title>
                     <v-expand-transition>
                       <div v-show="showDocumentsDetails">
@@ -95,17 +96,26 @@
                             hide-default-footer
                             :items-per-page="-1"
                           >
-                            <template v-slot:item.actions="{ item }">
-                              <td>
-                                <v-btn
-                                  icon
-                                  small
-                                  color="primary"
-                                  @click="telechargerDocument(item)"
-                                >
-                                  <v-icon size="small">mdi-download</v-icon>
+                            <template v-slot:top>
+                              <v-toolbar flat>
+                                <v-spacer></v-spacer>
+                                <v-btn color="primary" small @click="toggleActionMode">
+                                  {{ actionMode === 'download' ? 'Mode suppression' : 'Mode téléchargement' }}
                                 </v-btn>
-                              </td>
+                              </v-toolbar>
+                            </template>
+
+                            <template v-slot:item.actions="{ item }">
+                              <v-btn
+                                icon
+                                small
+                                :color="actionMode === 'download' ? 'primary' : 'error'"
+                                @click="actionMode === 'download' ? telechargerDocument(item) : supprimerDocument(item)"
+                              >
+                                <v-icon small>
+                                  {{ actionMode === 'download' ? 'mdi-download' : 'mdi-delete' }}
+                                </v-icon>
+                              </v-btn>
                             </template>
                           </v-data-table>
                         </v-card-text> 
@@ -128,7 +138,7 @@
             </v-btn>
             
             <v-btn color="warning" class="text-white mx-2" @click="reouvrirIntervention" :disabled="!canSupprimer">
-              Reouvrir l'intervention
+              Rouvrir l'intervention
             </v-btn>
 
             <v-btn color="success" class="text-white mx-2" @click="cloturerIntervention" :disabled="!canCloturer">
@@ -174,7 +184,6 @@ export default {
       }
     };
 
-
     const fetchData = async () => {
       try {
         const response = await api.getInterventionAffichage(route.params.id);
@@ -206,8 +215,6 @@ export default {
         'Date de fin de l\'intervention': formatDate(intervention.value.dateFinIntervention),
         'Temps estimé': intervention.value.tempsEstime,
         'Intervention curative' : intervention.value.interventionCurative ? 'Oui' : 'Non',
-        // 'Créateur de l\'intervention': intervention.value.createurIntervention.username,
-        // 'Responsable': intervention.value.responsable.username
       };
     });
 
@@ -251,29 +258,6 @@ export default {
       }
     };
 
-    const cloturerIntervention = async () => {
-      if (confirm('Êtes-vous sûr de vouloir clôturer cette intervention ?')) {
-        try {
-          await api.cloturerIntervention(intervention.value.id);
-          fetchData(); // Recharger les données après la clôture
-        } catch (error) {
-          console.error('Erreur lors de la clôture de l\'intervention:', error);
-        }
-      }
-    };
-    
-    const ajouterDocument = () => {
-      console.log("Ajouter un nouveau document");
-    };
-
-    const toggleDefaillanceDetails = () => {
-      showDefaillanceDetails.value = !showDefaillanceDetails.value;
-    };
-
-    const toggleDocumentsDetails = () => {
-      showDocumentsDetails.value = !showDocumentsDetails.value;
-    };
-
     const telechargerDocument = (item) => {
       const cleanedLink = item.lienDocumentIntervention.startsWith('/media/') 
         ? item.lienDocumentIntervention 
@@ -303,6 +287,66 @@ export default {
         });
     };
 
+  const supprimerDocument = async (item) => {
+      if (confirm(`Êtes-vous sûr de vouloir supprimer le document "${item.nomDocumentDefaillance}" ?`)) {
+        try {
+          console.log('Tentative de suppression du document:', item);
+          await api.deleteDefaillanceDocument(item.id);
+          console.log('Document supprimé avec succès');
+          
+          // Rafraîchir la liste des documents après la suppression
+          await fetchData();
+          
+          // Afficher un message de succès
+          alert(`Le document "${item.nomDocumentDefaillance}" a été supprimé avec succès.`);
+        } catch (error) {
+          console.error('Erreur détaillée lors de la suppression du document:', error);
+          let errorMessage = 'Une erreur est survenue lors de la suppression du document.';
+          
+          if (error.response) {
+            console.error('Réponse d\'erreur du serveur:', error.response);
+            if (error.response.data && error.response.data.message) {
+              errorMessage = error.response.data.message;
+            } else {
+              errorMessage = `Erreur ${error.response.status}: ${error.response.statusText}`;
+            }
+          } else if (error.request) {
+            console.error('Pas de réponse reçue:', error.request);
+            errorMessage = "Le serveur ne répond pas. Veuillez réessayer plus tard.";
+          } else {
+            console.error('Erreur de configuration de la requête:', error.message);
+          }
+          
+          // Afficher l'erreur à l'utilisateur
+          alert(errorMessage);
+        }
+      }
+    };
+
+    const cloturerIntervention = async () => {
+      if (confirm('Êtes-vous sûr de vouloir clôturer cette intervention ?')) {
+        try {
+          await api.cloturerIntervention(intervention.value.id);
+          fetchData(); // Recharger les données après la clôture
+        } catch (error) {
+          console.error('Erreur lors de la clôture de l\'intervention:', error);
+        }
+      }
+    };
+
+    const toggleDefaillanceDetails = () => {
+      showDefaillanceDetails.value = !showDefaillanceDetails.value;
+    };
+
+    const toggleDocumentsDetails = () => {
+      showDocumentsDetails.value = !showDocumentsDetails.value;
+    };
+
+    const ajouterDocument = () => {
+      router.push({ name: 'AjouterDocumentIntervention', params: { id: intervention.value.id } });
+    };
+
+
     onMounted(fetchData);
 
     return {
@@ -311,38 +355,21 @@ export default {
       formatLabelDefaillance,
       canSupprimer,
       canCloturer,
+      retour,
       supprimerIntervention,
-      cloturerIntervention,
       reouvrirIntervention,
+      cloturerIntervention,
       showDefaillanceDetails,
       showDocumentsDetails,
       toggleDefaillanceDetails,
       toggleDocumentsDetails,
+      ouvrirDefaillance,
       headers,
       telechargerDocument,
-      ouvrirDefaillance,
-      defaillanceId,
-      retour,
       ajouterDocument,
+      defaillanceId,
+      supprimerDocument
     };
   }
 };
 </script>
-
-<style scoped>
-.v-card {
-  transition: all 0.3s ease-in-out;
-}
-
-.v-card.expanded {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.v-card-title {
-  cursor: pointer;
-}
-
-.v-btn {
-  text-transform: none;
-}
-</style>
