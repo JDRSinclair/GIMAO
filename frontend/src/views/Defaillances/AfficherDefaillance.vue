@@ -395,14 +395,15 @@ export default {
       }
     };
 
-    const creerIntervention = async () => {
-      if (confirm('Êtes-vous sûr de vouloir traiter cette défaillance ?')) {
-        try {
-          await api.creerIntervention(defaillance.value.id);
-          fetchData();
-        } catch (error) {
-          console.error('Erreur lors du traitement de la défaillance:', error);
-        }
+    const creerIntervention = () => {
+      if (defaillance.value && defaillance.value.id) {
+        router.push({ 
+          name: 'CreerIntervention', 
+          params: { id: defaillance.value.id }
+        });
+      } else {
+        console.error("ID de défaillance manquant");
+        alert("Impossible de créer une intervention. Données de défaillance manquantes.");
       }
     };
 

@@ -178,6 +178,10 @@ export default {
     return axios.get(`${API_URL}defaillances/`);
   },
 
+  getDefaillance(id) {
+    return axios.get(`${API_URL}defaillances/${id}/`);
+  },
+
   getDefaillanceAffichage(id) {
     return axios.get(`${API_URL}defaillance/${id}/affichage/`);
   },

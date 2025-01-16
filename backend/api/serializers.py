@@ -161,6 +161,7 @@ class LieuHierarchySerializer(serializers.ModelSerializer):
 
 class EquipementAvecDernierStatutSerializer(serializers.ModelSerializer):
     dernier_statut = serializers.SerializerMethodField()
+    lieu = LieuSerializer(read_only=True)
 
     class Meta:
         model = Equipement

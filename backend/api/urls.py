@@ -31,7 +31,7 @@ from .views import (
 )
 
 router = DefaultRouter()
-router.register(r'utilsateurs', UserViewSet)
+router.register(r'utilisateurs', UserViewSet)
 router.register(r'roles', RoleViewSet)
 router.register(r'avoir', AvoirViewSet)
 router.register(r'fabricants', FabricantViewSet)

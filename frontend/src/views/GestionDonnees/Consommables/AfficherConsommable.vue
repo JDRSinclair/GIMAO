@@ -119,8 +119,8 @@ export default {
         router.push({ name: 'ListeConsommables' }); 
       } catch (error) {
         console.error('Error deleting consommable:', error);
-        errorMessage.value = 'Erreur lors de la suppression du consommable.';
       }
+      goBack();
     };
 
     onMounted(() => {

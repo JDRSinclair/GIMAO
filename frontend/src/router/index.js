@@ -41,8 +41,6 @@ import CreerFabricant from '@/views/GestionDonnees/Fabricants/CreerFabricant.vue
 import Fabricants from '@/views/GestionDonnees/Fabricants/Fabricants.vue'
 import AfficherFabricant from '@/views/GestionDonnees/Fabricants/AfficherFabricant.vue'
 
-
-
 import Consommables from '@/views/GestionDonnees/Consommables/Consommables.vue'
 import CreerConsommable from '@/views/GestionDonnees/Consommables/CreerConsommable.vue'
 import AfficherConsommable from '@/views/GestionDonnees/Consommables/AfficherConsommable.vue'
@@ -192,7 +190,7 @@ const routes = [
   },
 
   {
-    path: '/creerIntervention',
+    path: '/defaillance/:id/creer-intervention/',
     name: 'CreerIntervention',
     component: CreerIntervention,
     meta: { title: 'Créer un bon de travail' }
