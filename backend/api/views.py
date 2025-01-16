@@ -1,17 +1,12 @@
 # api/serializers.py
-from rest_framework import viewsets
+import os
+from rest_framework import viewsets, status
+from django.conf import settings
 from django.db.models import Prefetch
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
+from django.apps import apps
 from rest_framework.decorators import api_view
 from django.contrib.auth import get_user_model
-
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
-
-
 from myApp.models import (
     Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable,
     ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer,
@@ -39,10 +34,12 @@ from .serializers import (
     InterventionSerializer,
     DocumentInterventionSerializer,
 
+    EquipementAvecDernierStatutSerializer,
     EquipementDetailSerializer,
     LieuHierarchySerializer,
     EquipementAffichageSerializer,
     InterventionAfficherSerializer,
+    DefaillanceAfficherSerializer,
 )
 
 User = get_user_model()
@@ -124,9 +121,62 @@ class DocumentInterventionViewSet(viewsets.ModelViewSet):
     serializer_class = DocumentInterventionSerializer
 
 
+@api_view(['DELETE'])
+def delete_document(request, model_name, pk):
+    try:
+        # Obtenir le modèle dynamiquement
+        model = apps.get_model('myApp', model_name)
+        
+        # Vérifier si le modèle existe
+        if model is None:
+            return Response({"message": f"Modèle {model_name} non trouvé"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Obtenir le document
+        document = model.objects.get(pk=pk)
+        
+        # Supprimer le fichier physique
+        if hasattr(document, 'lienDocumentDefaillance'):
+            file_path = os.path.join(settings.MEDIA_ROOT, str(document.lienDocumentDefaillance))
+        elif hasattr(document, 'lienDocumentIntervention'):
+            file_path = os.path.join(settings.MEDIA_ROOT, str(document.lienDocumentIntervention))
+        else:
+            file_path = None
 
+        if file_path and os.path.exists(file_path):
+            os.remove(file_path)
+        
+        # Supprimer l'entrée de la base de données
+        document.delete()
+        
+        return Response({"message": "Document supprimé avec succès"}, status=status.HTTP_204_NO_CONTENT)
+    except model.DoesNotExist:
+        return Response({"message": "Document non trouvé"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 # --------------------------------------------------------------------------
 
+
+class EquipementAvecDernierStatutViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Equipement.objects.all()
+    serializer_class = EquipementAvecDernierStatutSerializer
+    lookup_field = 'reference'
+
+    def get_queryset(self):
+        return Equipement.objects.prefetch_related(
+            Prefetch('informationstatut_set', 
+                     queryset=InformationStatut.objects.order_by('-dateChangement'),
+                     to_attr='statuts')
+        )
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 # Affichage des equipemnts de la page Equipements.vue
 class EquipementDetailViewSet(viewsets.ModelViewSet):
@@ -242,15 +292,34 @@ class InterventionAfficherViewSet(viewsets.ModelViewSet):
     queryset = Intervention.objects.all()
     serializer_class = InterventionAfficherSerializer
 
+    def get_queryset(self):
+        return Intervention.objects.select_related(
+            'defaillance__equipement',
+            'createurIntervention',
+            'responsable'
+        ).prefetch_related(
+            'documentintervention_set'
+        )
 
-#---------------------------------------------------------------
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
-class LieuCreateView(APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = LieuSerializer(data=request.data)
+class DefaillanceAfficherViewSet(viewsets.ModelViewSet):
+    queryset = Defaillance.objects.all()
+    serializer_class = DefaillanceAfficherSerializer
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Création réussie", "data": serializer.data}, status=HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    def get_queryset(self):
+        return Defaillance.objects.select_related(
+            'equipement',
+            'utilisateur'
+        ).prefetch_related(
+            'documentdefaillance_set',
+            'intervention_set'
+        )
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)

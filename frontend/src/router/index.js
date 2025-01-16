@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
+// ---------------------------------------------------------------
 import TableauDeBord from '@/views/TableauDeBord/TableauDeBord.vue'
 import Equipements from '@/views/Equipements/Equipements.vue'
 import Maintenances from '@/views/Maintenances/Maintenances.vue'
@@ -6,23 +8,42 @@ import Techniciens from '@/views/Techniciens/Techniciens.vue'
 import GestionComptes from '@/views/GestionComptes/GestionComptes.vue'
 import Commandes from '@/views/Commandes/Commandes.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
-import Signalements from '@/views/Signalements/Signalements.vue'
+import Signalements from '@/views/Defaillances/Defaillances.vue'
 
 
 // ---------------------------------------------------------------
 import AfficherIntervention from '@/views/Interventions/AfficherIntervention.vue'
 import CreerIntervention from '@/views/Interventions/CreerIntervention.vue'
+import AjouterDocumentIntervention from '@/views/Interventions/AjouterDocumentIntervention.vue'
 
+// ------------------------------------------------------------------
 import AfficherEquipement from '@/views/Equipements/AfficherEquipement.vue'
 import CreerEquipement from '@/views/Equipements/CreerEquipement.vue'
 
-
-import CreerSignalement from '@/views/Signalements/CreerSignalement.vue'
-import AfficherSignalement from '@/views/Signalements/AfficherSignalement.vue'
+// ------------------------------------------------------------------
+import CreerDefaillance from '@/views/Defaillances/CreerDefaillance.vue'
+import AfficherDefaillance from '@/views/Defaillances/AfficherDefaillance.vue'
+import AjouterDocumentDefaillance from '@/views/Defaillances/AjouterDocumentDefaillance.vue'
 
 // ------------------------------------------------------------------
-import CreerLieu from '@/views/Lieux/CreerLieu.vue'
-import Lieux from '@/views/Lieux/Lieux.vue'
+
+import GestionDonnees from '@/views/GestionDonnees/GestionDonnees.vue'
+
+import CreerLieu from '@/views/GestionDonnees/Lieux/CreerLieu.vue'
+import Lieux from '@/views/GestionDonnees/Lieux/Lieux.vue'
+import AfficherLieu from '@/views/GestionDonnees/Lieux/AfficherLieu.vue'
+
+// import CreerFournisseur from '@/views/GestionDonnees/Fournisseurs/CreerFournisseur.vue'
+// import Fournisseurs from '@/views/GestionDonnees/Fournisseurs/Fournisseurs.vue'
+
+// import CreerFabricant from '@/views/GestionDonnees/Fabricants/CreerFabricant.vue'
+// import Fabricants from '@/views/GestionDonnees/Fabricants/Fabricants.vue'
+
+import Consommables from '@/views/GestionDonnees/Consommables/Consommables.vue'
+import CreerConsommable from '@/views/GestionDonnees/Consommables/CreerConsommable.vue'
+import AfficherConsommable from '@/views/GestionDonnees/Consommables/AfficherConsommable.vue'
+
+
 
 
 const routes = [
@@ -32,36 +53,21 @@ const routes = [
     component: TableauDeBord,
     meta: { title: 'Tableau de Bord' }
   },
-  {
-    path: '/equipements',
-    name: 'Equipements',
-    component: Equipements,
-    meta: { title: 'Equipement' }
-  },
-  {
-    path: '/maintenances',
-    name: 'Maintenances',
-    component: Maintenances,
-    meta: { title: 'Maintenances' }
-  },
-  {
-    path: '/signalements',
-    name: 'Signalements',
-    component: Signalements,
-    meta: { title: 'Liste des signalements' }
-  },
+
   {
     path: '/techniciens',
     name: 'Techniciens',
     component: Techniciens,
     meta: { title: 'Techniciens' }
   },
+  
   {
     path: '/gestion-comptes',
     name: 'GestionComptes',
     component: GestionComptes,
     meta: { title: 'Gestion des Comptes' }
   },
+
   {
     path: '/commandes',
     name: 'Commandes',
@@ -69,6 +75,7 @@ const routes = [
     meta: { title: 'Commandes' }
     
   },
+
   {
     path: '/stocks',
     name: 'Stocks',
@@ -78,17 +85,57 @@ const routes = [
 
 
 
+  // Consommables ------------------------------------------------------------------
+
+  {
+    path: '/consommables',
+    name: 'Consommables',
+    component: Consommables,
+    meta: { title: 'Consommables' }
+  },
+  
+  {
+    path: '/creer-consommable',
+    name: 'CreerConsommable',
+    component: CreerConsommable,
+    meta: { title: 'Creer un Consommable' }
+  },
+
+  {
+    path: '/afficherConsommable/:id',
+    name: 'AfficherConsommable',
+    component: AfficherConsommable,
+    props: true,
+    meta: { title: 'Détails d\'un consommable' }
+  },
 
 
-// ---------------------------------------------------------------
 
-// Interventions
+
+  // GestionDonnees ---------------------------------------------------------------
+
+  {
+    path: '/gestion-donnees',
+    name: 'GestionDonnees',
+    component: GestionDonnees,
+    meta: { title: 'Gestion des données' }
+  },
+
+  // Interventions ---------------------------------------------------------------
+
+  {
+    path: '/maintenances',
+    name: 'Maintenances',
+    component: Maintenances,
+    meta: { title: 'Maintenances' }
+  },
+
   {
     path: '/intervention/:id',
     name: 'AfficherIntervention',
     component: AfficherIntervention,
     props: true, 
-    meta: { title: 'Détailes de l\'intervention' }
+    meta: { title: 'Détails de l\'intervention' }
   },
 
   {
@@ -98,7 +145,34 @@ const routes = [
     meta: { title: 'Créer un bon de travail' }
   },
 
-  // Equipements
+  {
+    path: '/intervention/:id/ajouterDocument',
+    name: 'AjouterDocumentIntervention',
+    component: AjouterDocumentIntervention,
+    props: true,
+    meta: { title: 'Détails de l\'intervention' }
+  },
+
+
+
+  // Signalements ---------------------------------------------------------------
+
+  {
+    path: '/signalements',
+    name: 'Signalements',
+    component: Signalements,
+    meta: { title: 'Liste des signalements' }
+  },
+
+  // Equipements ---------------------------------------------------------------
+
+  {
+    path: '/equipements',
+    name: 'Equipements',
+    component: Equipements,
+    meta: { title: 'Equipement' }
+  },
+
   {
     path: '/equipement/:reference',
     name: 'AfficherEquipement',
@@ -114,34 +188,58 @@ const routes = [
     meta: { title: 'Ajouter Equipement' }
   },
 
-  // Signalement
+  // Defaillance ---------------------------------------------------------------
   {
-    path: '/creerSignalement',
-    name: 'CreerSignalement',
-    component: CreerSignalement,
-    meta: { title: 'Faire un signalement' }
+    path: '/creerDefaillance/:equipementReference?',
+    name: 'CreerDefaillance',
+    component: CreerDefaillance,
+    props: true,
+    meta: { title: 'Signaler une défaillance' }
   },
 
   {
-    path: '/AfficherSignalement',
-    name: 'AfficherSignalement',
-    component: AfficherSignalement,
-    meta: { title: 'Détailes du signalement' }
+    path: '/defaillance/:id',
+    name: 'AfficherDefaillance',
+    component: AfficherDefaillance,
+    props: true,
+    meta: { title: 'Détails de la defaillance' }
   },
 
-  //Lieux
   {
-    path: '/creerLieu',
-    name: 'CreerLieu',
-    component: CreerLieu,
-    meta: { title: 'Creer un lieu' }
+    path: '/defaillance/:id/ajouterDocument',
+    name: 'AjouterDocumentDefaillance',
+    component: AjouterDocumentDefaillance,
+    props: true,
+    meta: { title: 'Ajouter un document à la défaillance' }
   },
+
+  // Lieux ---------------------------------------------------------------
+
   {
     path: '/lieux',
     name: 'Lieux',
     component: Lieux,
     meta: { title: 'Lieux' }
   },
+  
+  {
+    path: '/creerLieu',
+    name: 'CreerLieu',
+    component: CreerLieu,
+    meta: { title: 'Creer un lieu' }
+  },
+
+  {
+    path: '/afficherLieu/:id',
+    name: 'AfficherLieu',
+    component: AfficherLieu,
+    props: true,
+    meta: { title: 'Détails d\'un lieu' }
+  },
+
+
+
+  
 
 ]
 

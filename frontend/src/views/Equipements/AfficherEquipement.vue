@@ -10,7 +10,19 @@
 
               <v-row class="pa-2">
                 <v-col cols="12" v-for="(value, key) in equipementDetails" :key="key">
-                  <p><strong>{{ formatLabel(key) }} :</strong> {{ formatValue(value) }}</p>
+                  <p v-if="key !== 'statut'">
+                    <strong>{{ formatLabel(key) }} :</strong> {{ formatValue(value) }}
+                  </p>
+                  <p v-else>
+                    <strong>{{ formatLabel(key) }} :</strong>
+                    <v-chip
+                      :color="getStatusColor(value)"
+                      text-color="white"
+                      small
+                    >
+                      {{ value }}
+                    </v-chip>
+                  </p>
                 </v-col>
               </v-row>
 
@@ -38,7 +50,7 @@
                             center="center"
                             @click="telechargerDocument(item.lienDocumentTechnique, item.nomDocumentTechnique)"
                           >
-                            <v-icon>mdi-download</v-icon>
+                            <v-icon size="small">mdi-download</v-icon>
                           </v-btn>
                         </td>
                       </tr>
@@ -64,7 +76,7 @@
                             color="primary"
                             @click="telechargerDocument(item.lienDocument, item.nomDocument)"
                           >
-                            <v-icon>mdi-download</v-icon>
+                            <v-icon size="small">mdi-download</v-icon>
                           </v-btn>
                         </td>
                       </tr>
@@ -86,6 +98,19 @@
                 alt="Image de l'équipement"
               ></v-img>
             </v-card>
+
+            <!-- Bouton d'action -->
+            <v-card elevation="1" class="rounded-lg pa-2 mb-4">
+              <v-card-actions class="justify-center">
+                <v-btn color="primary" @click="modifierEquipement">
+                  Modifier l'équipemets
+                </v-btn>
+                <v-btn color="warning" @click="signalerDefaillance">
+                  Signaler une défaillance
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+
             
             <!-- Section consommables -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
@@ -116,18 +141,11 @@
               </template>
               <template v-slot:item.action="{ item }">
                 <v-btn icon @click="voirIntervention(item)">
-                  <v-icon>mdi-eye</v-icon>
+                  <v-icon size="small">mdi-eye</v-icon>
                 </v-btn>
               </template>
             </v-data-table>
             </v-card>
-
-            <!-- Bouton d'action -->
-            <v-row justify="end">
-              <v-btn color="primary" class="mt-4" large @click="modifierEquipement">
-                Modifier
-              </v-btn>
-            </v-row>
           </v-col>
         </v-row>
       </v-container>
@@ -159,12 +177,12 @@ export default {
       equipement: {},
       documentTechniquesHeaders: [
         { title: "Document technique", value: "nomDocumentTechnique", align: "start" },
-        { title: "Télécharger", value: "action", align: "center", sortable: false }
+        { title: "Télécharger", value: "action", align: "start", sortable: false }
       ],
       autresDocumentsHeaders: [
         { title: "Type", value: "type", align: "start" },
         { title: "Document", value: "nomDocument", align: "start" },
-        { title: "Télécharger", value: "action", align: "center", sortable: false }
+        { title: "Télécharger", value: "action", align: "start", sortable: false }
       ],
       consommablesHeaders: [
         { title: "Désignation", value: "designation" },
@@ -173,12 +191,14 @@ export default {
       interventionsHeaders: [
         { title: "Nom", value: "nomIntervention" },
         { title: "Date d'assignation", value: "dateAssignation" },
-        { title: "Visualiser", value: "action" }
+        { title: "Visualiser", value: "action", align: "start" }
       ]
     };
   },
   
   computed: {
+
+
     equipementDetails() {
       if (!this.equipement) return {};
       const { 
@@ -197,6 +217,8 @@ export default {
         lieu, modele, fournisseur, fabricant, statut
       };
     },
+
+
     autresDocuments() {
       const documentsDefaillance = (this.equipement.liste_documents_defaillance || []).map(doc => ({
         type: 'Défaillance',
@@ -223,6 +245,23 @@ export default {
         this.isLoading = false;
       }
     },
+
+    getStatusColor(status) {
+      switch (status) {
+        case 'En fonctionnement':
+          return 'green';
+        case 'Dégradé':
+          return 'orange';
+        case 'A l\'arret':
+          return 'red';
+        case 'Rebuté':
+          return 'grey';
+        default:
+          return 'blue';
+      }
+    },
+
+
     formatDate(dateString) {
       if (!dateString) return '';
       const date = new Date(dateString);
@@ -263,10 +302,6 @@ export default {
       return value;
     },
 
-    telechargerDocument(lien) {
-      window.open(lien, '_blank');
-    },
-
     voirIntervention(intervention) {
       this.router.push({
         name: 'AfficherIntervention',
@@ -277,6 +312,13 @@ export default {
     modifierEquipement() {
       // Implémenter la logique pour modifier l'équipement
       console.log("Modifier l'équipement");
+    },
+
+    signalerDefaillance() {
+      this.router.push({
+        name: 'CreerDefaillance',
+        params: { equipementReference: this.equipement.reference }
+      });
     },
 
     telechargerDocument(lien, nomFichier) {
@@ -331,7 +373,6 @@ export default {
 
 .v-btn {
   background-color: #F1F5FF;
-  border-radius: 50%;
 }
 
 .eye-icon {

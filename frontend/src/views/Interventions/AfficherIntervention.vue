@@ -31,20 +31,21 @@
                     @click="toggleDefaillanceDetails"
                     :class="{ 'expanded': showDefaillanceDetails }"
                   >
-                  <v-card-title class="text-h6 d-flex align-center">
-                    Défaillance
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      color="primary"
-                      @click.stop="toggleDefaillanceDetails"
-                      class="ml-2"
-                    >
-                      Détails
-                    </v-btn> 
-                    <v-icon class="ml-2">
-                      {{ showDefaillanceDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
-                    </v-icon>
-                  </v-card-title>
+                    <v-card-title class="text-h6 d-flex align-center">
+                      Défaillance
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="primary"
+                        class="ml-2"
+                        @click="ouvrirDefaillance"
+                        :disabled="!defaillanceId"
+                      >
+                      Ouvrir
+                      </v-btn> 
+                      <v-icon class="ml-2">
+                        {{ showDefaillanceDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                      </v-icon>
+                    </v-card-title>
                     <v-expand-transition>
                       <div v-show="showDefaillanceDetails">
                         <v-divider class="my-2"></v-divider>
@@ -56,7 +57,59 @@
                           </v-row>
                         </v-card-text> 
                       </div>
-                      
+                    </v-expand-transition>
+                  </v-card>
+                </v-col>
+                
+                <!-- Nouvelle section pour les Documents d'intervention -->
+                <v-col cols="12">
+                  <v-card 
+                    class="mt-4 pa-4" 
+                    elevation="2" 
+                    @click="toggleDocumentsDetails"
+                    :class="{ 'expanded': showDocumentsDetails }"
+                  >
+                    <v-card-title class="text-h6 d-flex align-center">
+                      Documents d'intervention
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="primary"
+                        small
+                        class="mr-2"
+                        @click.stop="ajouterDocument"
+                      >
+                        Ajouter
+                      </v-btn>
+                      <v-icon class="ml-2">
+                        {{ showDocumentsDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                      </v-icon>
+                    </v-card-title>
+                    <v-expand-transition>
+                      <div v-show="showDocumentsDetails">
+                        <v-divider class="my-2"></v-divider>
+                        <v-card-text>
+                          <v-data-table
+                            :headers="headers"
+                            :items="intervention.liste_documents_intervention || []"
+                            class="elevation-1"
+                            hide-default-footer
+                            :items-per-page="-1"
+                          >
+                            <template v-slot:item.actions="{ item }">
+                              <td>
+                                <v-btn
+                                  icon
+                                  small
+                                  color="primary"
+                                  @click="telechargerDocument(item)"
+                                >
+                                  <v-icon size="small">mdi-download</v-icon>
+                                </v-btn>
+                              </td>
+                            </template>
+                          </v-data-table>
+                        </v-card-text> 
+                      </div>
                     </v-expand-transition>
                   </v-card>
                 </v-col>
@@ -66,11 +119,15 @@
 
           <!-- Boutons -->
           <v-row justify="center" class="mt-4">
-            <v-btn color="primary" class="text-white mx-2" @click="goBack">
+            <v-btn color="primary" class="text-white mx-2" @click="retour">
               Retour
             </v-btn>
-            
+
             <v-btn color="error" class="text-white mx-2" @click="supprimerIntervention" :disabled="!canSupprimer">
+              Supprimer l'intervention
+            </v-btn>
+            
+            <v-btn color="warning" class="text-white mx-2" @click="reouvrirIntervention" :disabled="!canSupprimer">
               Reouvrir l'intervention
             </v-btn>
 
@@ -87,7 +144,7 @@
 <script>
 import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import api from '@/services/api';
+import api , { BASE_URL } from '@/services/api';
 
 export default {
   name: 'AfficherIntervention',
@@ -96,6 +153,27 @@ export default {
     const route = useRoute();
     const intervention = ref(null);
     const showDefaillanceDetails = ref(false);
+    const showDocumentsDetails = ref(false);
+
+    const retour = () => {
+      router.go(-1);
+    };
+
+    const headers = [
+      { title: 'Nom du document', value: 'nomDocumentIntervention' },
+      { title: 'Actions', value: 'actions', sortable: false }
+    ];
+
+    const defaillanceId = computed(() => {
+      return intervention.value?.defaillance?.id;
+    });
+
+    const ouvrirDefaillance = () => {
+      if (defaillanceId.value) {
+        router.push({ name: 'AfficherDefaillance', params: { id: defaillanceId.value } });
+      }
+    };
+
 
     const fetchData = async () => {
       try {
@@ -108,82 +186,163 @@ export default {
 
     const formatDate = (dateString) => {
       if (!dateString) return 'Non spécifié';
-      return new Date(dateString).toLocaleString('fr-FR');
+      const date = new Date(dateString);
+      return date.toLocaleString('fr-FR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
     };
 
-    const getFullName = (user) => {
-      return user ? `${user.first_name} ${user.last_name}` : 'Non spécifié';
+    const formatLabelIntervention = computed(() => {
+      if (!intervention.value) return {};
+      return {
+        'Nom de l\'intervention': intervention.value.nomIntervention,
+        'Date d\'assignation': formatDate(intervention.value.dateAssignation),
+        'Date de clôture': formatDate(intervention.value.dateCloture),
+        'Date du début de l\'intervention': formatDate(intervention.value.dateDebutIntervention),
+        'Date de fin de l\'intervention': formatDate(intervention.value.dateFinIntervention),
+        'Temps estimé': intervention.value.tempsEstime,
+        'Intervention curative' : intervention.value.interventionCurative ? 'Oui' : 'Non',
+        // 'Créateur de l\'intervention': intervention.value.createurIntervention.username,
+        // 'Responsable': intervention.value.responsable.username
+      };
+    });
+
+    const formatLabelDefaillance = computed(() => {
+      if (!intervention.value || !intervention.value.defaillance) return {};
+      const defaillance = intervention.value.defaillance;
+      return {
+        'Nom de la défaillance': defaillance.commentaireDefaillance,
+        'Date de la défaillance': formatDate(defaillance.dateDefaillance),
+        'Commentaire': defaillance.commentaireDefaillance || 'Aucun commentaire'
+      };
+    });
+
+    const canSupprimer = computed(() => {
+      return intervention.value && !intervention.value.dateCloture;
+    });
+
+    const canCloturer = computed(() => {
+      return intervention.value && !intervention.value.dateCloture;
+    });
+
+    const supprimerIntervention = async () => {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cette intervention ?')) {
+        try {
+          await api.deleteIntervention(intervention.value.id);
+          router.push({ name: 'ListeInterventions' });
+        } catch (error) {
+          console.error('Erreur lors de la suppression de l\'intervention:', error);
+        }
+      }
     };
 
-    const goBack = () => {
-      router.go(-1);
+    const reouvrirIntervention = async () => {
+      if (confirm('Êtes-vous sûr de vouloir rouvrir cette intervention ?')) {
+        try {
+          await api.reouvrirIntervention(intervention.value.id);
+          fetchData(); // Recharger les données après la réouverture
+        } catch (error) {
+          console.error('Erreur lors de la réouverture de l\'intervention:', error);
+        }
+      }
     };
 
-    const cloturerIntervention = () => {
-      console.log("Clôturer l'intervention");
+    const cloturerIntervention = async () => {
+      if (confirm('Êtes-vous sûr de vouloir clôturer cette intervention ?')) {
+        try {
+          await api.cloturerIntervention(intervention.value.id);
+          fetchData(); // Recharger les données après la clôture
+        } catch (error) {
+          console.error('Erreur lors de la clôture de l\'intervention:', error);
+        }
+      }
     };
-
-    const supprimerIntervention = () => {
-      console.log("Reouvrir l'intervention");
+    
+    const ajouterDocument = () => {
+      console.log("Ajouter un nouveau document");
     };
 
     const toggleDefaillanceDetails = () => {
       showDefaillanceDetails.value = !showDefaillanceDetails.value;
     };
 
-    const canCloturer = computed(() => {
-      return intervention.value && !intervention.value.dateCloture;
-    });
+    const toggleDocumentsDetails = () => {
+      showDocumentsDetails.value = !showDocumentsDetails.value;
+    };
 
-    const canSupprimer = computed(() => {
-      return intervention.value && intervention.value.dateCloture;
-    });
+    const telechargerDocument = (item) => {
+      const cleanedLink = item.lienDocumentIntervention.startsWith('/media/') 
+        ? item.lienDocumentIntervention 
+        : `/media/${item.lienDocumentIntervention.split('/media/').pop()}`;
+      const fullUrl = `${BASE_URL}${cleanedLink}`;
 
-    const formatLabelIntervention = computed(() => {
-      if (!intervention.value) return {};
-      return {
-        'Nom Intervention': intervention.value.nomIntervention,
-        'Intervention Curative': intervention.value.interventionCurative ? 'Oui' : 'Non',
-        'Date Assignation': formatDate(intervention.value.dateAssignation),
-        'Date début Intervention': formatDate(intervention.value.dateDebutIntervention),
-        'Date fin Intervention': formatDate(intervention.value.dateFinIntervention),
-        'Temps estimé': intervention.value.tempsEstime,
-        // 'Responsable': getFullName(intervention.value.responsable),
-        'Créateur de l\'intervention': getFullName(intervention.value.createurIntervention)
-      };
-    });
-
-    const formatLabelDefaillance = computed(() => {
-      if (!intervention.value || !intervention.value.defaillance) return {};
-      return {
-        'Commentaire': intervention.value.defaillance.commentaireDefaillance,
-        'Niveau de défaillance': intervention.value.defaillance.niveau,
-        'Équipement concerné': intervention.value.defaillance.equipement
-      };
-    });
+      fetch(fullUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.blob();
+        })
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = item.nomDocumentIntervention;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+          console.error('Erreur lors du téléchargement:', error);
+          alert('Erreur lors du téléchargement du fichier. Veuillez réessayer.');
+        });
+    };
 
     onMounted(fetchData);
 
     return {
       intervention,
-      formatDate,
-      getFullName,
-      goBack,
-      cloturerIntervention,
-      supprimerIntervention,
-      canCloturer,
-      canSupprimer,
       formatLabelIntervention,
       formatLabelDefaillance,
+      canSupprimer,
+      canCloturer,
+      supprimerIntervention,
+      cloturerIntervention,
+      reouvrirIntervention,
       showDefaillanceDetails,
-      toggleDefaillanceDetails
+      showDocumentsDetails,
+      toggleDefaillanceDetails,
+      toggleDocumentsDetails,
+      headers,
+      telechargerDocument,
+      ouvrirDefaillance,
+      defaillanceId,
+      retour,
+      ajouterDocument,
     };
-  },
+  }
 };
 </script>
 
 <style scoped>
-.expanded {
-  background-color: #f5f5f5;
+.v-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.v-card.expanded {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.v-card-title {
+  cursor: pointer;
+}
+
+.v-btn {
+  text-transform: none;
 }
 </style>

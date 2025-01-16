@@ -98,7 +98,15 @@
             <tr @click="ouvrirAfficherEquipement(item.reference)" style="cursor: pointer;">
               <td>{{ item.modeleEquipement.nomModeleEquipement }}</td>
               <td>{{ item.lieu.nomLieu }}</td>
-              <td>{{ item.statut.statutEquipement }}</td>
+              <td>
+                <v-chip
+                  :color="getStatusColor(item.statut.statutEquipement)"
+                  text-color="white"
+                  small
+                >
+                  {{ item.statut.statutEquipement }}
+                </v-chip>
+              </td>
             </tr>
           </template>
         </v-data-table>
@@ -159,6 +167,19 @@ export default {
         state.modeleEquipements = modeleEquipementsRes.data;
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
+      }
+    };
+
+    const getStatusColor = (statut) => {
+      switch (statut) {
+        case 'En fonctionnement':
+          return 'green';
+        case 'Dégradé':
+          return 'orange';
+        case 'A l\'arrêt':
+          return 'red';
+        default:
+          return 'black';
       }
     };
 
@@ -260,6 +281,7 @@ export default {
       ouvrirAfficherEquipement,
       isTypeEquipementSelected,
       toggleNode,
+      getStatusColor,
     };
   }
 };
