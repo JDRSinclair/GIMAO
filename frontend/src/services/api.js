@@ -14,16 +14,16 @@ export default {
     return axios.get(`${API_URL}fournisseurs/`);
   },
 
-  getFournisseur(reference) {
-    return axios.get(`${API_URL}fournisseurs/${reference}`);
+  getFournisseur(id) {
+    return axios.get(`${API_URL}fournisseurs/${id}`);
   },
 
   postFournisseur(data) {
     return axios.post(`${API_URL}fournisseurs/`, data);
   },
 
-  deleteFournisseur(reference) {
-    return axios.delete(`${API_URL}fournisseurs/${reference}`);
+  deleteFournisseur(id) {
+    return axios.delete(`${API_URL}fournisseurs/${id}`);
   },
 
   // Fabricants -----------------------
@@ -32,16 +32,16 @@ export default {
     return axios.get(`${API_URL}fabricants/`);
   },
 
-  getFabricant(reference) {
-    return axios.get(`${API_URL}fabricants/${reference}`);
+  getFabricant(id) {
+    return axios.get(`${API_URL}fabricants/${id}`);
   },
 
   postFabricant(data) {
     return axios.post(`${API_URL}fabricants/`, data);
   },
 
-  deleteFabricant(reference) {
-    return axios.delete(`${API_URL}fabricants/${reference}`);
+  deleteFabricant(id) {
+    return axios.delete(`${API_URL}fabricants/${id}`);
   },
 
 

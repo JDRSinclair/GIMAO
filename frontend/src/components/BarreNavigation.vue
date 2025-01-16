@@ -59,7 +59,7 @@ export default {
         { name: 'Techniciens', icon: 'mdi-account-hard-hat', title: 'Techniciens', disabled: true },
         { name: 'GestionComptes', icon: 'mdi-account-cog', title: 'Gestion des <br>comptes', disabled: true },
         { name: 'Commandes', icon: 'mdi-cart', title: 'Commandes', disabled: true },
-        { name: 'Stocks', icon: 'mdi-package-variant-closed', title: 'Stocks' },
+        { name: 'Stocks', icon: 'mdi-package-variant-closed', title: 'Stocks',disabled: true },
         { name: 'GestionDonnees', icon: 'mdi-database-cog', title: 'Gestion des <br>données' }
       ],
     },

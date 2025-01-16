@@ -102,7 +102,7 @@ const routes = [
   },
 
   {
-    path: '/afficherConsommable/:id',
+    path: '/afficher-consommable/:id',
     name: 'AfficherConsommable',
     component: AfficherConsommable,
     props: true,

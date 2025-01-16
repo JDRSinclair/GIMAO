@@ -16,7 +16,6 @@
           @click="$router.push('/creer-consommable')"
           class="ml-2"
           height="50%"
-
         >
           Créer un consommable
         </v-btn>
@@ -24,7 +23,7 @@
     </v-row>
     <v-row>
       <v-col v-for="consommable in filteredConsommables" :key="consommable.id" cols="12" sm="6" md="4">
-        <v-card>
+        <v-card @click="goToConsommableDetails(consommable.id)">
           <v-img
             :src="consommable.lienImageConsommable"
             height="200px"
@@ -88,6 +87,9 @@ export default {
       } catch (error) {
         console.error('Erreur lors de la récupération des fabricants:', error);
       }
+    },
+    goToConsommableDetails(id) {
+      this.$router.push(`/afficher-consommable/${id}`);
     }
   },
   async created() {

@@ -1,248 +1,142 @@
 <template>
-  <v-app>
-    <NavigationDrawer 
-      :logo="require('@/assets/images/LogoGIMAO.png')"
-      :items="menuItems" 
-      @item-selected="handleItemSelected"
-    />
-    <TopNavBar />
-
-    <v-main>
-      <v-container>
-        <v-row>
-          <v-col cols="12">
-            <v-card elevation="1" class="rounded-lg pa-2"> 
-              <h1 class="text-primary text-center mb-4">Demande d'intervention</h1>
-              <v-row>
-                <v-col cols="6">
-                  <v-row>
-                    <v-col cols="12">
-                      <p class="mb-4"><strong>Equipement:</strong> {{ infosRecuperes.designation }}</p>
-                    </v-col>
-                    <v-col cols="12">
-                      <p class="mb-4"><strong>Salle:</strong> {{ infosRecuperes.nomLieu }}</p>
-                    </v-col>
-                    <v-col cols="12">
-                      <p class="mb-4">
-                        <v-row align="center" justify="start">
-                          <v-col cols="auto">
-                            <strong>Etat :</strong> {{ infosRecuperes.statutEquipement }}
-                          </v-col>
-                          <v-col cols="auto">
-                            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <circle cx="5.5" cy="5.5" r="5.5" fill="#F0635D"/>
-                            </svg>
-                          </v-col>
-                        </v-row>
-                      </p>
-                    </v-col>
-                  </v-row>
-                </v-col>
-
-                <!-- Colonne de droite qui contient le champ commentaire -->
-                <v-col cols="6">
-                  <p><strong>Commentaire</strong></p>
-                  <p>{{ infosRecuperes.commentaireDefaillance }}</p>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-col>
-        </v-row>
-
-        <v-container>
-          <v-row>
-            <v-col cols="12">
-              <v-card elevation="1" class="rounded-lg pa-2">
-                <h2 class="text-primary text-center mb-4">Informations du bon de travail</h2>
-                <!-- Lier formulaireValide avec v-model -->
-                <v-form ref="formulaire" v-model="formulaireValide" @submit.prevent="validateForm">
-                  <v-row>
-                    <v-col cols="6">
-                      <p class="mb-4"><strong>Nom du bon de travail</strong></p>
-                      <v-text-field
-                        v-model="form.nomIntervention"
-                        label="Nom du bon de travail"
-                        type="text"
-                        outlined
-                        dense
-                        :rules="[v => !!v || 'Nom du bon de travail requis']"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <p class="mb-4"><strong>Date de début d'intervention</strong></p>
-                      <v-text-field
-                        v-model="form.dateDebut"
-                        type="datetime-local"
-                        outlined
-                        dense
-                        :rules="[v => !!v || 'Date de début requise']"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <p class="mb-4"><strong>Technicien</strong></p>
-                      <v-select
-                        v-model="form.technicien"
-                        label="Technicien"
-                        :items="techniciens"
-                        outlined
-                        dense
-                        :rules="[v => !!v || 'Technicien requis']"
-                      ></v-select>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <p class="mb-4"><strong>Intervention curative</strong></p>
-                      <v-select
-                        v-model="form.interventionCurative"
-                        label="Intervention Curative"
-                        :items="interventionCurative"
-                        outlined
-                        dense
-                        :rules="[v => !!v || 'Précision requise']"
-                      ></v-select>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <p class="mb-4"><strong>Temps estimé (en heures)</strong></p>
-                      <v-text-field
-                        v-model="form.tempsEstime"
-                        label="Temps estimé (facultatif)"
-                        type="number"
-                        outlined
-                        dense
-                        min="0"
-                        step="1"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <p class="mb-4"><strong>Créateur bon de travail</strong></p>
-                      <v-select
-                        v-model="form.createurIntervention"
-                        label="Créateur du bon de travail"
-                        :items="createurInterventions"
-                        outlined
-                        dense
-                        :rules="[v => !!v || 'Utilisateur requis']"
-                      ></v-select>
-                    </v-col>
-
-                    <v-row justify="center">
-                      <v-col cols="8">
-                        <v-row justify="center">
-                          <p class="mb-4"><strong>Commentaire</strong></p> 
-                        </v-row> 
-                        <v-textarea
-                          v-model="form.commentaireARentrer"
-                          rows="10"
-                          outlined
-                          :rules="[v => !!v || 'Commentaire requis']"
-                        ></v-textarea>
-                      </v-col>
-                    </v-row>
-                  </v-row>
-                </v-form>
-              </v-card>
-            </v-col>
-          </v-row>
-
-          <v-row justify="center" class="mt-4">
-            <v-btn color="primary" class="text-white mx-2" @click="backPreviousPage">
-              Annuler
+  <v-container>
+    <v-row justify="center">
+      <v-col cols="12" md="8">
+        <v-card v-if="consommable">
+          <v-card-title>Détails du consommable</v-card-title>
+          <v-card-text>
+            <v-alert v-if="errorMessage" type="error">
+              {{ errorMessage }}
+            </v-alert>
+            <v-img
+              v-if="consommable.lienImageConsommable"
+              :src="consommable.lienImageConsommable"
+              height="200"
+              contain
+            ></v-img>
+            <v-list>
+              <v-list-item>
+                <v-list-item-title>Désignation:</v-list-item-title>
+                <v-list-item-subtitle>{{ consommable.designation }}</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-title>Fabricant:</v-list-item-title>
+                <v-list-item-subtitle>{{ fabricantNom }}</v-list-item-subtitle>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" @click="goBack">
+              Retour
             </v-btn>
-            <v-btn color="error" class="text-white mx-2" @click="deleteInterventionRequest">
+            <v-spacer></v-spacer>
+            <v-btn color="error" @click="confirmDelete">
               Supprimer
             </v-btn>
-            <v-btn color="success" class="text-white mx-2" @click="validateForm">
-              Valider
-            </v-btn>
-          </v-row>
-        </v-container>
-      </v-container>
-    </v-main>
-  </v-app>
+          </v-card-actions>
+        </v-card>
+        <v-alert v-else-if="isLoading" type="info">
+          Chargement du consommable...
+        </v-alert>
+        <v-alert v-else type="warning">
+          Consommable non trouvé
+        </v-alert>
+      </v-col>
+    </v-row>
+    <v-dialog v-model="showDeleteConfirmation" max-width="300">
+      <v-card>
+        <v-card-title>Confirmer la suppression</v-card-title>
+        <v-card-text>
+          Êtes-vous sûr de vouloir supprimer ce consommable ?
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" text @click="showDeleteConfirmation = false">Annuler</v-btn>
+          <v-btn color="error" text @click="deleteConsommable">Supprimer</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script>
-import '@/assets/css/global.css'; 
-import { reactive, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import api from '@/services/api';
 
 export default {
-  name: 'CreerIntervention',
-  
   setup() {
-    const routeur = useRouter();
-    
-    const infosRecuperes = reactive({
-      designation: "",
-      nomLieu: "",
-      commentaireDefaillance: "",
-      statutEquipement: "",
+    const router = useRouter();
+    const route = useRoute();
+    const consommable = ref(null);
+    const fabricant = ref(null);
+    const errorMessage = ref('');
+    const isLoading = ref(true);
+    const showDeleteConfirmation = ref(false);
+
+    const fabricantNom = computed(() => {
+      return fabricant.value ? fabricant.value.nomFabricant : 'Non spécifié';
     });
 
-    const form = reactive({
-      nomIntervention: "",        
-      dateDebut: "",              
-      technicien: "",             
-      interventionCurative: "",   
-      tempsEstime: null,          
-      createurIntervention: "",   
-      commentaireARentrer: "",    
-    });
-
-    const techniciens = ["technicien1", "technicien2", "technicien3"];
-    const createurInterventions = ["responsableGMAO", "respGMAO"];
-    const interventionCurative = ["Oui", "Non"];
-
-    const formulaireValide = ref(null);
-
-    const fetchData = async () => {
+    const getConsommable = async () => {
+      isLoading.value = true;
+      errorMessage.value = '';
       try {
-        const interventionsRes = await api.getIntervention();
-        if (interventionsRes && interventionsRes.data) {
-          Object.assign(infosRecuperes, interventionsRes.data);
-        } else {
-          console.error('Aucune donnée reçue de l\'API');
+        const response = await api.getConsommable(route.params.id);
+        consommable.value = response.data;
+        if (consommable.value.fabricant) {
+          await getFabricant(consommable.value.fabricant);
         }
       } catch (error) {
-        console.error('Erreur lors de la récupération des données:', error);
+        console.error('Error fetching consommable:', error);
+        errorMessage.value = 'Erreur lors de la récupération du consommable.';
+      } finally {
+        isLoading.value = false;
       }
     };
 
-    const backPreviousPage = () => {
-      routeur.push({ name: 'TableauDeBord' });
-    };
-
-    const deleteInterventionRequest = () => {
-      routeur.push({ name: 'TableauDeBord' });
-    };
-
-    const validateForm = () => {
-      if (formulaireValide.value) {
-        alert("Formulaire validé avec succès !");
-        backPreviousPage();
-      } else {
-        alert("Le formulaire n'est pas complet. Veuillez remplir les champs obligatoires.");
+    const getFabricant = async (id) => {
+      try {
+        const response = await api.getFabricant(id);
+        fabricant.value = response.data;
+      } catch (error) {
+        console.error('Error fetching fabricant:', error);
+        errorMessage.value = 'Erreur lors de la récupération du fabricant.';
       }
     };
 
-    onMounted(fetchData);
+    const goBack = () => {
+      router.go(-1);
+    };
+
+    const confirmDelete = () => {
+      showDeleteConfirmation.value = true;
+    };
+
+    const deleteConsommable = async () => {
+      try {
+        await api.deleteConsommable(consommable.value.id);
+        showDeleteConfirmation.value = false;
+        router.push({ name: 'ListeConsommables' }); 
+      } catch (error) {
+        console.error('Error deleting consommable:', error);
+        errorMessage.value = 'Erreur lors de la suppression du consommable.';
+      }
+    };
+
+    onMounted(() => {
+      getConsommable();
+    });
 
     return {
-      form, 
-      infosRecuperes,
-      backPreviousPage,
-      deleteInterventionRequest,
-      validateForm,
-      formulaireValide,
-      techniciens,            
-      createurInterventions,  
-      interventionCurative  
+      consommable,
+      fabricantNom,
+      errorMessage,
+      isLoading,
+      goBack,
+      confirmDelete,
+      deleteConsommable,
+      showDeleteConfirmation
     };
-  },
+  }
 };
 </script>
