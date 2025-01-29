@@ -42,9 +42,9 @@
               Retour
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="error" @click="confirmDelete">
+            <!-- <v-btn color="error" @click="confirmDelete">
               Supprimer
-            </v-btn>
+            </v-btn> -->
           </v-card-actions>
         </v-card>
         <v-alert v-else-if="isLoading" type="info">
@@ -63,7 +63,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn color="primary" text @click="showDeleteConfirmation = false">Annuler</v-btn>
-          <v-btn color="error" text @click="deleteFabricant">Supprimer</v-btn>
+          <!-- <v-btn color="error" text @click="deleteFabricant">Supprimer</v-btn> -->
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -102,20 +102,20 @@ export default {
       router.go(-1);
     };
 
-    const confirmDelete = () => {
-      showDeleteConfirmation.value = true;
-    };
+    // const confirmDelete = () => {
+    //   showDeleteConfirmation.value = true;
+    // };
 
-    const deleteFabricant = async () => {
-      try {
-        await api.deleteFabricant(fabricant.value.id);
-        showDeleteConfirmation.value = false;
-        router.push({ name: 'ListeFabricants' });
-      } catch (error) {
-        console.error('Error deleting fabricant:', error);
-      }
-      goBack();
-    };
+    // const deleteFabricant = async () => {
+    //   try {
+    //     await api.deleteFabricant(fabricant.value.id);
+    //     showDeleteConfirmation.value = false;
+    //     router.push({ name: 'ListeFabricants' });
+    //   } catch (error) {
+    //     console.error('Error deleting fabricant:', error);
+    //   }
+    //   goBack();
+    // };
 
     onMounted(() => {
       getFabricant();
@@ -126,8 +126,8 @@ export default {
       errorMessage,
       isLoading,
       goBack,
-      confirmDelete,
-      deleteFabricant,
+      // confirmDelete,
+      // deleteFabricant,
       showDeleteConfirmation
     };
   }

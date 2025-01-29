@@ -296,7 +296,7 @@ export default {
       if (confirm(`Êtes-vous sûr de vouloir supprimer le document "${item.nomDocumentIntervention}" ?`)) {
         try {
           console.log('Tentative de suppression du document:', item);
-          await api.deleteInterventionDocument(item.id);
+          // await api.deleteInterventionDocument(item.id);
           console.log('Document supprimé avec succès');
           
           // Rafraîchir la liste des documents après la suppression

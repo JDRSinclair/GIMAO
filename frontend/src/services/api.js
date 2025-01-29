@@ -22,10 +22,6 @@ export default {
     return axios.post(`${API_URL}fournisseurs/`, data);
   },
 
-  deleteFournisseur(id) {
-    return axios.delete(`${API_URL}fournisseurs/${id}`);
-  },
-
   // Fabricants -----------------------
 
   getFabricants() {
@@ -38,10 +34,6 @@ export default {
 
   postFabricant(data) {
     return axios.post(`${API_URL}fabricants/`, data);
-  },
-
-  deleteFabricant(id) {
-    return axios.delete(`${API_URL}fabricants/${id}`);
   },
 
 
@@ -59,10 +51,6 @@ export default {
     return axios.post(`${API_URL}modele-equipements/`, data);
   },
 
-  deleteModeleEquipement(reference) {
-    return axios.delete(`${API_URL}modele-equipements/${reference}`);
-  },
-
   // Consommables -----------------------
   
   getConsommables() {
@@ -75,10 +63,6 @@ export default {
 
   postConsommable(data) {
     return axios.post(`${API_URL}consommables/`, data);
-  },
-
-  deleteConsommable(reference) {
-    return axios.delete(`${API_URL}consommables/${reference}`);
   },
 
   //Lieux -----------------------
@@ -99,10 +83,6 @@ export default {
     return axios.post(`${API_URL}lieux/`, data);
   },
 
-  deletLieu(data){
-    return axios.delete(`${API_URL}lieux/${data}/`);
-  },
-
   // Equipements -----------------------
 
   getEquipements() {
@@ -114,6 +94,10 @@ export default {
 
   getEquipementsVue(){
     return axios.get(`${API_URL}equipements-detail/`);
+  },
+
+  postEquipement(data){
+    return axios.post(`${API_URL}equipements/`, data);
   },
 
   getEquipementAffichage(reference) {
@@ -154,10 +138,6 @@ export default {
     });
   },
 
-  deleteInterventionDocument(documentId) {
-    return axios.delete(`${API_URL}document-interventions/${documentId}/`);
-  },
-
   // Utilisateur-----------------------
 
   getUtilisateur(){
@@ -194,9 +174,6 @@ export default {
     return axios.patch(`${API_URL}defaillances/${defaillanceId}/`, defaillanceData);
   },
 
-  deleteDefaillance(defaillanceId) {
-    return axios.delete(`${API_URL}defaillances/${defaillanceId}/`);
-  },
 
   postDefaillanceDocument(data) {
     return axios.post(`${API_URL}document-defaillances/`, data, {
@@ -204,10 +181,6 @@ export default {
         'Content-Type': 'multipart/form-data'
       }
     });
-  },
-
-  deleteDefaillanceDocument(documentId) {
-    return axios.delete(`${API_URL}document-defaillances/${documentId}/`);
   },
 
 };

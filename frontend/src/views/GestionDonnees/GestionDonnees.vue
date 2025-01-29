@@ -33,7 +33,6 @@ export default {
         { name: "Fournisseurs", route: "/fournisseurs", icon: "mdi-truck", color: "orange" },
         { name: "Fabricants", route: "/fabricants", icon: "mdi-factory", color: "red" },
         { name: "Modeles Equipements", route: "/modeles-equipements", icon: "mdi-cog", color: "purple" },
-        // { name: "Interventions", route: "/interventions", icon: "mdi-wrench", color: "teal" }
       ],
     };
   },

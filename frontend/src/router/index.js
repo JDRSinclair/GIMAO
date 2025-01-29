@@ -178,7 +178,7 @@ const routes = [
     path: '/maintenances',
     name: 'Maintenances',
     component: Maintenances,
-    meta: { title: 'Maintenances' }
+    meta: { title: 'Bon de travail' }
   },
 
   {
@@ -212,7 +212,7 @@ const routes = [
     path: '/signalements',
     name: 'Signalements',
     component: Signalements,
-    meta: { title: 'Liste des signalements' }
+    meta: { title: 'Demandes de bon de travail' }
   },
 
   // Equipements ---------------------------------------------------------------
@@ -221,7 +221,7 @@ const routes = [
     path: '/equipements',
     name: 'Equipements',
     component: Equipements,
-    meta: { title: 'Equipement' }
+    meta: { title: 'Équipements' }
   },
 
   {
@@ -229,11 +229,11 @@ const routes = [
     name: 'AfficherEquipement',
     component: AfficherEquipement,
     props: true, 
-    meta: { title: 'Afficher Equipement' }
+    meta: { title: 'Descriptif de l\'équipement' }
   },
 
   {
-    path: '/creerEquipement',
+    path: '/creer-Equipement',
     name: 'CreerEquipement',
     component: CreerEquipement,
     meta: { title: 'Ajouter Equipement' }
@@ -245,7 +245,7 @@ const routes = [
     name: 'CreerDefaillance',
     component: CreerDefaillance,
     props: true,
-    meta: { title: 'Signaler une défaillance' }
+    meta: { title: 'Demande de bon de travail' }
   },
 
   {
@@ -253,7 +253,7 @@ const routes = [
     name: 'AfficherDefaillance',
     component: AfficherDefaillance,
     props: true,
-    meta: { title: 'Détails de la defaillance' }
+    meta: { title: 'Details de la demande ' }
   },
 
   {

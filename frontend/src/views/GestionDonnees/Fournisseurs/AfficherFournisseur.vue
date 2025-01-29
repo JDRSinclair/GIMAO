@@ -42,9 +42,9 @@
               Retour
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="error" @click="confirmDelete">
+            <!-- <v-btn color="error" @click="confirmDelete">
               Supprimer
-            </v-btn>
+            </v-btn> -->
           </v-card-actions>
         </v-card>
         <v-alert v-else-if="isLoading" type="info">
@@ -55,7 +55,7 @@
         </v-alert>
       </v-col>
     </v-row>
-    <v-dialog v-model="showDeleteConfirmation" max-width="300">
+    <!-- <v-dialog v-model="showDeleteConfirmation" max-width="300">
       <v-card>
         <v-card-title>Confirmer la suppression</v-card-title>
         <v-card-text>
@@ -66,7 +66,7 @@
           <v-btn color="error" text @click="deleteFournisseur">Supprimer</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
   </v-container>
 </template>
 
@@ -102,20 +102,20 @@ export default {
       router.go(-1);
     };
 
-    const confirmDelete = () => {
-      showDeleteConfirmation.value = true;
-    };
+    // const confirmDelete = () => {
+    //   showDeleteConfirmation.value = true;
+    // };
 
-    const deleteFournisseur = async () => {
-      try {
-        await api.deleteFournisseur(fournisseur.value.id);
-        showDeleteConfirmation.value = false;
-        router.push({ name: 'ListeFournisseurs' }); 
-      } catch (error) {
-        console.error('Error deleting fournisseur:', error);
-      }
-      goBack();
-    };
+    // const deleteFournisseur = async () => {
+    //   try {
+    //     await api.deleteFournisseur(fournisseur.value.id);
+    //     showDeleteConfirmation.value = false;
+    //     router.push({ name: 'ListeFournisseurs' }); 
+    //   } catch (error) {
+    //     console.error('Error deleting fournisseur:', error);
+    //   }
+    //   goBack();
+    // };
 
     onMounted(() => {
       getFournisseur();
@@ -126,8 +126,8 @@ export default {
       errorMessage,
       isLoading,
       goBack,
-      confirmDelete,
-      deleteFournisseur,
+      // confirmDelete,
+      // deleteFournisseur,
       showDeleteConfirmation
     };
   }

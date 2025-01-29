@@ -9,7 +9,7 @@
           <v-col cols="6">
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">
-                Listes des défaillances signalées
+                Liste des demandes de bon de travail
                 <v-spacer></v-spacer>
               </v-card-title>
               <v-divider></v-divider>
@@ -40,7 +40,7 @@
           <v-col cols="6">
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">
-                Listes des interventions terminées
+                Liste de bon de travail terminés
                 <v-spacer></v-spacer>
               </v-card-title>
               <v-divider></v-divider>

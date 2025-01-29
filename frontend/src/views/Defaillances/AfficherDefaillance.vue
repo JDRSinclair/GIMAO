@@ -53,7 +53,7 @@
                         @click.stop="ouvrirEquipement"
                         :disabled="!defaillance.equipement"
                       >
-                        Détaile
+                        Détails
                       </v-btn>
                       <v-icon class="ml-2">
                         {{ showEquipementDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
@@ -148,15 +148,16 @@
             </v-btn>
 
             <v-btn color="error" class="text-white mx-2" @click="supprimerDefaillance" :disabled="!canSupprimer">
-              Supprimer la défaillance
+              Supprimer la demande
             </v-btn>
 
             <v-btn color="success" class="text-white mx-2" @click="traiterDefaillance" :disabled="!canTraiter">
-              Traiter la défaillance
+              Mettre en attente la demande
             </v-btn>
 
             <v-btn color="success" class="text-white mx-2" @click="creerIntervention" :disabled="canTraiter">
-              Creer un bon de travail
+              Trasformer en bon de travail
+              
             </v-btn>
           </v-row>
         </v-card>
@@ -198,7 +199,7 @@ export default {
     if (confirm(`Êtes-vous sûr de vouloir supprimer le document "${item.nomDocumentDefaillance}" ?`)) {
       try {
         console.log('Tentative de suppression du document:', item);
-        await api.deleteDefaillanceDocument(item.id);
+        // await api.deleteDefaillanceDocument(item.id);
         console.log('Document supprimé avec succès');
         
         // Rafraîchir la liste des documents après la suppression
@@ -341,13 +342,13 @@ export default {
           // Supprimer d'abord tous les documents associés
           if (defaillance.value.documents && defaillance.value.documents.length > 0) {
             for (const document of defaillance.value.documents) {
-              await api.deleteDefaillanceDocument(document.id);
+              // await api.deleteDefaillanceDocument(document.id);
               console.log(`Document ${document.nomDocumentDefaillance} supprimé.`);
             }
           }
 
           // Ensuite, supprimer la défaillance
-          await api.deleteDefaillance(defaillance.value.id);
+          // await api.deleteDefaillance(defaillance.value.id);
           console.log('Défaillance supprimée avec succès.');
           
           // Redirection vers la page des signalements

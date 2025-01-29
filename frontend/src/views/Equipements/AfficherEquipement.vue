@@ -221,7 +221,7 @@ export default {
 
     autresDocuments() {
       const documentsDefaillance = (this.equipement.liste_documents_defaillance || []).map(doc => ({
-        type: 'Défaillance',
+        type: 'Demande de BT',
         nomDocument: doc.nomDocumentDefaillance,
         lienDocument: doc.lienDocumentDefaillance
       }));
