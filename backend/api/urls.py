@@ -3,8 +3,6 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     UserViewSet,
-    RoleViewSet,
-    AvoirViewSet,
     FabricantViewSet,
     FournisseurViewSet,
     ConsommableViewSet,
@@ -32,8 +30,6 @@ from .views import (
 
 router = DefaultRouter()
 router.register(r'utilisateurs', UserViewSet)
-router.register(r'roles', RoleViewSet)
-router.register(r'avoir', AvoirViewSet)
 router.register(r'fabricants', FabricantViewSet)
 router.register(r'fournisseurs', FournisseurViewSet)
 router.register(r'consommables', ConsommableViewSet)

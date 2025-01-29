@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.db.models import Max
 from django.contrib.auth import get_user_model
 from myApp.models import (
-    Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable,
+    Fabricant, Fournisseur, Consommable, StockConsommable,
     ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer,
     InformationStatut, DocumentTechnique, Correspondre, Defaillance,
     DocumentDefaillance, Intervention, DocumentIntervention
@@ -14,16 +14,6 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
-
-class RoleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Role
-        fields = '__all__'
-
-class AvoirSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Avoir
         fields = '__all__'
 
 class FabricantSerializer(serializers.ModelSerializer):

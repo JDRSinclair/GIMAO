@@ -29,17 +29,6 @@ def validate_etat_equipement(value):
 
 # ------------------------- Création des models -------------------------
 
-
-class Role(models.Model):
-    nomRole = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.nomRole
-
-class Avoir(models.Model):
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
-
 class Fabricant(models.Model):
     nomFabricant = models.CharField(
         max_length=50,
@@ -79,6 +68,19 @@ class Fabricant(models.Model):
         help_text="Indique si le fabricant offre un service après-vente"
     )
 
+    date_desactivation = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date et heure de désactivation du fabricant"
+    )
+
+    def desactiver(self):
+        self.date_desactivation = timezone.now()
+        self.save()
+
+    def est_actif(self):
+        return self.date_desactivation is None
+
     def __str__(self):
         return self.nomFabricant
 
@@ -95,6 +97,19 @@ class Fournisseur(models.Model):
         help_text="Indique si le fournisseur propose un service d'aprés vente",
     )
 
+    date_desactivation = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date et heure de désactivation du fabricant"
+    )
+
+    def desactiver(self):
+        self.date_desactivation = timezone.now()
+        self.save()
+
+    def est_actif(self):
+        return self.date_desactivation is None
+
 
     def __str__(self):
         return self.nomFournisseur
@@ -103,6 +118,19 @@ class Consommable(models.Model):
     designation = models.CharField(max_length=50)
     lienImageConsommable = models.ImageField(upload_to='images/consomable', null=False) 
     fabricant = models.ForeignKey(Fabricant, on_delete=models.CASCADE)
+
+    date_desactivation = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date et heure de désactivation du fabricant"
+    )
+
+    def desactiver(self):
+        self.date_desactivation = timezone.now()
+        self.save()
+
+    def est_actif(self):
+        return self.date_desactivation is None
 
     def __str__(self):
         return self.designation
@@ -124,6 +152,19 @@ class ModeleEquipement(models.Model):
     nomModeleEquipement = models.CharField(max_length=50)
     fabricant = models.ForeignKey(Fabricant, on_delete=models.CASCADE)
 
+    date_desactivation = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date et heure de désactivation du fabricant"
+    )
+
+    def desactiver(self):
+        self.date_desactivation = timezone.now()
+        self.save()
+
+    def est_actif(self):
+        return self.date_desactivation is None
+
     def __str__(self):
         return self.nomModeleEquipement
 
@@ -143,6 +184,19 @@ class Lieu(models.Model):
         blank=True,
         on_delete=models.CASCADE,
         help_text="Pointeur désignant la structure (un autre lieu) où se trouve l'élément en question.")
+    
+    date_desactivation = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date et heure de désactivation du fabricant"
+    )
+
+    def desactiver(self):
+        self.date_desactivation = timezone.now()
+        self.save()
+
+    def est_actif(self):
+        return self.date_desactivation is None
 
     def __str__(self):
         return self.nomLieu
@@ -176,6 +230,19 @@ class Equipement(models.Model):
     preventifGlissant = models.BooleanField(null=True, blank=True)
     joursIntervalleMaintenance = models.SmallIntegerField()
 
+    date_desactivation = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date et heure de désactivation du fabricant"
+    )
+
+    def desactiver(self):
+        self.date_desactivation = timezone.now()
+        self.save()
+
+    def est_actif(self):
+        return self.date_desactivation is None
+
     def __str__(self):
         return self.designation
 
@@ -208,6 +275,19 @@ class DocumentTechnique(models.Model):
     nomDocumentTechnique = models.CharField(max_length=50)
     lienDocumentTechnique = models.FileField(upload_to='documents/documentTecnique', null=False) 
 
+    date_desactivation = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date et heure de désactivation du fabricant"
+    )
+
+    def desactiver(self):
+        self.date_desactivation = timezone.now()
+        self.save()
+
+    def est_actif(self):
+        return self.date_desactivation is None
+
     def __str__(self):
         return self.nomDocumentTechnique
 
@@ -228,7 +308,8 @@ class Defaillance(models.Model):
         validators=[validate_niveau_de_defaillance])
     utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
     equipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
-    dateTraitementDefaillance = models.DateTimeField(null=True, blank=True)
+    dateDeTraitementDemande = models.DateTimeField(null=True, blank=True)
+    dateMiseEnAttente = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.commentaireDefaillance

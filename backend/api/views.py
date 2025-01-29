@@ -8,15 +8,13 @@ from django.apps import apps
 from rest_framework.decorators import api_view
 from django.contrib.auth import get_user_model
 from myApp.models import (
-    Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable,
+    Fabricant, Fournisseur, Consommable, StockConsommable,
     ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer,
     InformationStatut, DocumentTechnique, Correspondre, Defaillance,
     DocumentDefaillance, Intervention, DocumentIntervention
 )
 from .serializers import (
     UserSerializer,
-    RoleSerializer,
-    AvoirSerializer,
     FabricantSerializer,
     FournisseurSerializer,
     ConsommableSerializer,
@@ -47,14 +45,6 @@ User = get_user_model()
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
-class RoleViewSet(viewsets.ModelViewSet):
-    queryset = Role.objects.all()
-    serializer_class = RoleSerializer
-
-class AvoirViewSet(viewsets.ModelViewSet):
-    queryset = Avoir.objects.all()
-    serializer_class = AvoirSerializer
 
 class FabricantViewSet(viewsets.ModelViewSet):
     queryset = Fabricant.objects.all()
