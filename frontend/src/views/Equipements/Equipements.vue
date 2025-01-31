@@ -178,7 +178,7 @@ export default {
           return 'green';
         case 'Dégradé':
           return 'orange';
-        case 'A l\'arrêt':
+        case 'À l\'arrêt':
           return 'red';
         default:
           return 'black';

@@ -103,7 +103,7 @@
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-actions class="justify-center">
                 <v-btn color="primary" @click="modifierEquipement">
-                  Modifier l'équipemets
+                  Modifier l'équipement
                 </v-btn>
                 <v-btn color="warning" @click="signalerDefaillance">
                   Signaler une défaillance
@@ -252,7 +252,7 @@ export default {
           return 'green';
         case 'Dégradé':
           return 'orange';
-        case 'A l\'arret':
+        case 'À l\'arrêt':
           return 'red';
         case 'Rebuté':
           return 'grey';
