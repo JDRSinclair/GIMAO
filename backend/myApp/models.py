@@ -5,269 +5,366 @@ from django.contrib.auth.models import User, AbstractUser
 from django.core.exceptions import ValidationError
 
 
-# ------------------------- Création des validateurs des models -------------------------
+# ------------------------- Creation of model validators -------------------------
 
-# Validateur pour les numéros de téléphone
-phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Le numéro de téléphone doit être entré au format: '+999999999'. Jusqu'à 15 chiffres autorisés.")
+# Validator for phone numbers
+phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
 
-# Valideur pour le champ 'niveau' dans la table 'Defaillance'.
-def validate_niveau_de_defaillance(value):
-    niveaux_valid = ["Critique", "Majeur", "Mineur"]
+# Validator for the 'level' field in the 'Failure' table.
+def validate_failure_level(value):
+    valid_levels = ["Critical", "Major", "Minor"]
     
-    if value not in niveaux_valid:
-        raise ValidationError(f"Le niveau de défaillance doit être l'une des valeurs suivantes: {', '.join(niveaux_valid)}.")
+    if value not in valid_levels:
+        raise ValidationError(f"The failure level must be one of the following values: {', '.join(valid_levels)}.")
 
-
-def validate_etat_equipement(value):
-    etat_valid = ["Rebuté", "En fonctionnement", "Dégradé", "A l'arrêt"]
+def validate_equipment_status(value):
+    valid_statuses = ["Scrapped", "Operational", "Degraded", "Stopped"]
     
-    if value not in etat_valid:
-        raise ValidationError(f"Le statut du modèle doit être l'une des valeurs suivantes :  {', '.join(etat_valid)}.")
+    if value not in valid_statuses:
+        raise ValidationError(f"The equipment status must be one of the following values: {', '.join(valid_statuses)}.")
 
+# ------------------------- Creation of models -------------------------
 
-# ------------------------- Création des models -------------------------
-
-
-class Role(models.Model):
-    nomRole = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.nomRole
-
-class Avoir(models.Model):
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
-
-class Fabricant(models.Model):
-    nomFabricant = models.CharField(
+class Manufacturer(models.Model):
+    manufacturerName = models.CharField(
         max_length=50,
-        help_text="Nom du fabricant",
+        help_text="Name of the manufacturer",
         error_messages={
-            'unique': "Ce nom de fabricant existe déjà.",
+            'unique': "This manufacturer name already exists.",
         }
     )
 
-    paysFabricant = models.CharField(
+    manufacturerCountry = models.CharField(
         max_length=50,
-        help_text="Pays du fabricant"
+        help_text="Country of the manufacturer"
     )
 
-    mailFabricant = models.EmailField(
+    manufacturerEmail = models.EmailField(
         max_length=50,
         null=True,
         blank=True,
         validators=[EmailValidator()],
-        help_text="Adresse e-mail du fabricant",
+        help_text="Email address of the manufacturer",
         error_messages={
-            'invalid': "Entrez une adresse e-mail valide.",
+            'invalid': "Enter a valid email address.",
         }
     )
     
-    numTelephoneFabricant = models.CharField(
+    manufacturerPhoneNumber = models.CharField(
         max_length=15,
         null=True,
         blank=True,
         validators=[phone_regex],
-        help_text="Numéro de téléphone du fabricant",
+        help_text="Phone number of the manufacturer",
         error_messages={
-            'invalid': "Entrez un numéro de téléphone valide.",
+            'invalid': "Enter a valid phone number.",
         }
     )
-    serviceApresVente = models.BooleanField(
-        help_text="Indique si le fabricant offre un service après-vente"
+    afterSalesService = models.BooleanField(
+        help_text="Indicates if the manufacturer offers after-sales service"
     )
 
-    def __str__(self):
-        return self.nomFabricant
-
-class Fournisseur(models.Model):
-    nomFournisseur = models.CharField(max_length=50)
-    numRue = models.SmallIntegerField()
-    nomRue = models.CharField(max_length=50)
-    codePostal = models.CharField(max_length=50)
-    ville = models.CharField(max_length=50)
-    paysFournisseur = models.CharField(max_length=50)
-    mailFournisseur = models.EmailField(max_length=50, null=True, blank=True, validators=[EmailValidator()])
-    numTelephoneFournisseur = models.CharField(max_length=15, null=True, blank=True, validators=[phone_regex])
-    serviceApresVente = models.BooleanField(
-        help_text="Indique si le fournisseur propose un service d'aprés vente",
+    deactivation_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date and time of manufacturer deactivation"
     )
 
+    def deactivate(self):
+        self.deactivation_date = timezone.now()
+        self.save()
+
+    def is_active(self):
+        return self.deactivation_date is None
 
     def __str__(self):
-        return self.nomFournisseur
+        return self.manufacturerName
 
-class Consommable(models.Model):
+class Supplier(models.Model):
+    supplierName = models.CharField(max_length=50)
+    streetNumber = models.SmallIntegerField()
+    streetName = models.CharField(max_length=50)
+    postalCode = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
+    supplierCountry = models.CharField(max_length=50)
+    supplierEmail = models.EmailField(max_length=50, null=True, blank=True, validators=[EmailValidator()])
+    supplierPhoneNumber = models.CharField(max_length=15, null=True, blank=True, validators=[phone_regex])
+    afterSalesService = models.BooleanField(
+        help_text="Indicates if the supplier offers after-sales service",
+    )
+
+    deactivation_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date and time of supplier deactivation"
+    )
+
+    def deactivate(self):
+        self.deactivation_date = timezone.now()
+        self.save()
+
+    def is_active(self):
+        return self.deactivation_date is None
+
+    def __str__(self):
+        return self.supplierName
+
+class Consumable(models.Model):
     designation = models.CharField(max_length=50)
-    lienImageConsommable = models.ImageField(upload_to='images/consomable', null=False) 
-    fabricant = models.ForeignKey(Fabricant, on_delete=models.CASCADE)
+    consumableImageLink = models.ImageField(upload_to='images/consumable', null=False) 
+    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
+
+    deactivation_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date and time of consumable deactivation"
+    )
+
+    def deactivate(self):
+        self.deactivation_date = timezone.now()
+        self.save()
+
+    def is_active(self):
+        return self.deactivation_date is None
 
     def __str__(self):
         return self.designation
 
-class StockConsommable(models.Model):
-    consommable = models.ForeignKey(Consommable, on_delete=models.CASCADE)
-    fournisseur = models.ForeignKey(Fournisseur, on_delete=models.CASCADE)
-    prixAchat = models.DecimalField(max_digits=7, decimal_places=2)
-    dateAchat = models.DateField()
-    quantiteConsommable = models.SmallIntegerField()
-    commentaire = models.CharField(
+
+class ConsumableStock(models.Model):
+    consumable = models.ForeignKey(Consumable, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    purchasePrice = models.DecimalField(max_digits=7, decimal_places=2)
+    purchaseDate = models.DateField()
+    consumableQuantity = models.SmallIntegerField()
+    comment = models.CharField(
         max_length=1000, 
         null=True, 
         blank=True,
-        help_text="Informations complémentaires possibles à renseigner",
+        help_text="Possible additional information to be provided",
         )
 
-class ModeleEquipement(models.Model):
-    nomModeleEquipement = models.CharField(max_length=50)
-    fabricant = models.ForeignKey(Fabricant, on_delete=models.CASCADE)
+class EquipmentModel(models.Model):
+    equipmentModelName = models.CharField(max_length=50)
+    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
+
+    deactivation_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date and time of equipment model deactivation"
+    )
+
+    def deactivate(self):
+        self.deactivation_date = timezone.now()
+        self.save()
+
+    def is_active(self):
+        return self.deactivation_date is None
 
     def __str__(self):
-        return self.nomModeleEquipement
+        return self.equipmentModelName
 
-class EstCompatible(models.Model):
-    consommable = models.ForeignKey(Consommable, on_delete=models.CASCADE)
-    modeleEquipement = models.ForeignKey(ModeleEquipement, on_delete=models.CASCADE)
 
-class Lieu(models.Model):
-    nomLieu = models.CharField(max_length=50)
-    typeLieu = models.CharField(
+class IsCompatible(models.Model):
+    consumable = models.ForeignKey(Consumable, on_delete=models.CASCADE)
+    equipmentModel = models.ForeignKey(EquipmentModel, on_delete=models.CASCADE)
+
+class Location(models.Model):
+    locationName = models.CharField(max_length=50)
+    locationType = models.CharField(
         max_length=50,
-        help_text="Informations complémentaires optionnelles sur le type de lieu renseigné.")
+        help_text="Optional additional information about the type of location entered.")
 
-    lieuParent = models.ForeignKey(
+    parentLocation = models.ForeignKey(
         'self',
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        help_text="Pointeur désignant la structure (un autre lieu) où se trouve l'élément en question.")
+        help_text="Pointer designating the structure (another location) where the element in question is located.")
+    
+    deactivation_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date and time of location deactivation"
+    )
+
+    def deactivate(self):
+        self.deactivation_date = timezone.now()
+        self.save()
+
+    def is_active(self):
+        return self.deactivation_date is None
 
     def __str__(self):
-        return self.nomLieu
+        return self.locationName
 
-class Equipement(models.Model):
+class Equipment(models.Model):
     reference = models.CharField(
         max_length=50,
         primary_key=True,
     )
 
-    dateCreation = models.DateTimeField()
+    creationDate = models.DateTimeField()
     designation = models.CharField(
         max_length=50,
         null=True,
         blank=True,
-        help_text="Nom par lequel nous faisons référence à la machine."
+        help_text="Name by which we refer to the machine."
     )
-    dateMiseEnService = models.DateField()
-    prixAchat = models.DecimalField(
+    commissioningDate = models.DateField()
+    purchasePrice = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         null=True,
         blank=True,
-        help_text="Prix auquel vous avez acheté le lot"
+        help_text="Price at which you purchased the batch"
     )
-    lienImageEquipement = models.ImageField(upload_to='images/equipement', null=False)
-    createurEquipement = models.ForeignKey(User, related_name='createurEquipement', on_delete=models.CASCADE, null=True, blank=True)
-    lieu = models.ForeignKey('Lieu', on_delete=models.CASCADE, null=True, blank=True)
-    modeleEquipement = models.ForeignKey('ModeleEquipement', on_delete=models.CASCADE, null=True, blank=True)
-    fournisseur = models.ForeignKey('Fournisseur', on_delete=models.CASCADE, null=True, blank=True)
-    preventifGlissant = models.BooleanField(null=True, blank=True)
-    joursIntervalleMaintenance = models.SmallIntegerField()
+    equipmentImageLink = models.ImageField(upload_to='images/equipment', null=False)
+    equipmentCreator = models.ForeignKey(User, related_name='equipmentCreator', on_delete=models.CASCADE, null=True, blank=True)
+    location = models.ForeignKey('Location', on_delete=models.CASCADE, null=True, blank=True)
+    equipmentModel = models.ForeignKey('EquipmentModel', on_delete=models.CASCADE, null=True, blank=True)
+    supplier = models.ForeignKey('Supplier', on_delete=models.CASCADE, null=True, blank=True)
+    slidingPreventive = models.BooleanField(null=True, blank=True)
+    maintenanceIntervalDays = models.SmallIntegerField()
+
+    deactivation_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date and time of equipment deactivation"
+    )
+
+    def deactivate(self):
+        self.deactivation_date = timezone.now()
+        self.save()
+
+    def is_active(self):
+        return self.deactivation_date is None
 
     def __str__(self):
         return self.designation
 
-class Constituer(models.Model):
-    equipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
-    consommable = models.ForeignKey(Consommable, on_delete=models.CASCADE)
 
-class InformationStatut(models.Model):
+class Constitute(models.Model):
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    consumable = models.ForeignKey(Consumable, on_delete=models.CASCADE)
+
+class StatusInformation(models.Model):
     STATUT_CHOICES = [
-        ('Rebuté', 'Rebuté'),
-        ('En fonctionnement', 'En fonctionnement'),
-        ('Dégradé', 'Dégradé'),
-        ('A l\'arret', 'A l\'arret'),
+        ('Scrapped', 'Scrapped'),
+        ('Operational', 'Operational'),
+        ('Degraded', 'Degradeds'),
+        ('Stopped', 'Stopped'),
     ]
-    statutEquipement = models.CharField(
+    equipmentStatus = models.CharField(
             max_length=50,
-            choices=STATUT_CHOICES,
+            choices=STATUS_CHOICES,
             null=True,
             blank=True
         )
-    dateChangement = models.DateTimeField(null=True, blank=True)
-    equipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
-    informationStatutParent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
-    ModificateurStatut = models.ForeignKey(User, on_delete=models.CASCADE)
+    changeDate = models.DateTimeField(null=True, blank=True)
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    parentStatusInformation = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    statusModifier = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Statut de {self.equipement}: {self.statutEquipement} (modifié le {self.dateChangement})"
+        return f"Status of {self.equipment}: {self.equipmentStatus} (modified on {self.changeDate})"
 
-class DocumentTechnique(models.Model):
-    nomDocumentTechnique = models.CharField(max_length=50)
-    lienDocumentTechnique = models.FileField(upload_to='documents/documentTecnique', null=False) 
+class TechnicalDocument(models.Model):
+    technicalDocumentName = models.CharField(max_length=50)
+    technicalDocumentLink = models.FileField(upload_to='documents/technicalDocument', null=False) 
+
+    deactivation_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Date and time of technical document deactivation"
+    )
+
+    def deactivate(self):
+        self.deactivation_date = timezone.now()
+        self.save()
+
+    def is_active(self):
+        return self.deactivation_date is None
 
     def __str__(self):
-        return self.nomDocumentTechnique
+        return self.technicalDocumentName
 
-class Correspondre(models.Model):
-    documentTechnique = models.ForeignKey(DocumentTechnique, on_delete=models.CASCADE)
-    modeleEquipement = models.ForeignKey(ModeleEquipement, on_delete=models.CASCADE)
+class Correspond(models.Model):
+    technicalDocument = models.ForeignKey(TechnicalDocument, on_delete=models.CASCADE)
+    equipmentModel = models.ForeignKey(EquipmentModel, on_delete=models.CASCADE)
 
-class Defaillance(models.Model):
-    DEFAILLANCE_CHOICES = [
-        ('Critique', 'Critique'),
-        ('Majeur', 'Majeur'),
-        ('Mineur', 'Mineur'),
+
+class InterventionRequest(models.Model):
+    FAILURE_CHOICES = [
+        ('Critical', 'Critical'),
+        ('Major', 'Major'),
+        ('Minor', 'Minor'),
     ]
-    commentaireDefaillance = models.CharField(max_length=1000, null=True, blank=True)
-    niveau = models.CharField(
+    failureComment = models.CharField(max_length=1000, null=True, blank=True)
+    failureLevel = models.CharField(
         max_length=50,
-        choices=DEFAILLANCE_CHOICES, 
-        validators=[validate_niveau_de_defaillance])
-    utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
-    equipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
+        choices=FAILURE_CHOICES, 
+        validators=[validate_failure_level])
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    requestProcessingDate = models.DateTimeField(null=True, blank=True)
+    waitingDate = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return self.commentaireDefaillance
+        return self.
 
-class DocumentDefaillance(models.Model):
-    nomDocumentDefaillance = models.CharField(max_length=50)
-    lienDocumentDefaillance = models.FileField(upload_to='documents/documentDefaillance', null=False) 
-    defaillance = models.ForeignKey(Defaillance, on_delete=models.CASCADE)
+class FailureDocument(models.Model):
+    failureDocumentName = models.CharField(max_length=50)
+    failureDocumentLink = models.FileField(upload_to='documents/failureDocument', null=False) 
+    failure = models.ForeignKey(Failure, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nomDocumentDefaillance
+        return self.failureDocumentName
+
+
+class WorkOrder(models.Model):
+    workOrderName = models.CharField(max_length=500, null=True, blank=True)
+    workOrderCategory = models.BooleanField(
+        help_text='The value is positive if it\'s a preventive intervention, otherwise it\'s a corrective intervention.',
+        null=True, 
+        blank=True)
+    assignmentDate = models.DateTimeField()
+    closureDate = models.DateTimeField(null=True, blank=True)
+    estimatedTime = models.TimeField(null=True, blank=True)
+    interventionComment = models.CharField(max_length=1000, null=True, blank=True)
+    failure = models.ForeignKey(Failure, on_delete=models.CASCADE)
+    interventionCreator = models.ForeignKey(User,
+        related_name='interventionCreator', 
+        on_delete=models.CASCADE,
+        help_text="The person who creates the intervention")
+
+    def __str__(self):
+        return self.workOrderName
 
 class Intervention(models.Model):
-    nomIntervention = models.CharField(max_length=500, null=True, blank=True)
-    interventionCurative = models.BooleanField(null=True, blank=True)
-    dateAssignation = models.DateTimeField()
-    dateCloture = models.DateTimeField(null=True, blank=True)
-    dateDebutIntervention = models.DateTimeField(null=True, blank=True)
-    dateFinIntervention = models.DateTimeField(null=True, blank=True)
-    tempsEstime = models.TimeField(null=True, blank=True)
-    commentaireIntervention = models.CharField(max_length=1000, null=True, blank=True)
-    commentaireRefusCloture = models.CharField(max_length=1000, null=True, blank=True)
-    defaillance = models.ForeignKey(Defaillance, on_delete=models.CASCADE)
-    createurIntervention = models.ForeignKey(User,
-    related_name='createurIntervention', 
-    on_delete=models.CASCADE,
-    help_text="La personne qui crée l'intervention")
-    
-    responsable = models.ForeignKey(User, 
-    related_name='responsable', 
-    on_delete=models.CASCADE, 
-    null=True, blank=True,
-    help_text="La personne qui réalise l'intervention"
+    instructions = models.CharField(max_length=1000, null=True, blank=True)
+    attributionDate = models.DateTimeField()
+    desiredDate = models.DateTimeField(null=True, blank=True)
+    interventionStartDate = models.DateTimeField(null=True, blank=True)
+    interventionEndDate = models.DateTimeField(null=True, blank=True)
+    interventionComment = models.CharField(max_length=1000, null=True, blank=True)
+    workOrder = models.ForeignKey(WorkOrder, on_delete=models.CASCADE)
+    technician = models.ForeignKey(User,
+        related_name='Technician',  
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        help_text="The person who performs the intervention"
     )
 
     def __str__(self):
-        return self.nomIntervention
+        return self.interventionComment
 
-class DocumentIntervention(models.Model):
-    nomDocumentIntervention = models.CharField(max_length=500)
-    lienDocumentIntervention = models.FileField(upload_to='documents/documentIntervention', null=False) 
+
+class InterventionDocument(models.Model):
+    interventionDocumentName = models.CharField(max_length=500)
+    interventionDocumentLink = models.FileField(upload_to='documents/interventionDocument', null=False) 
     intervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nomDocumentIntervention
+        return self.interventionDocumentName
