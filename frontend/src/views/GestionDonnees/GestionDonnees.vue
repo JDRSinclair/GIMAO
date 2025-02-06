@@ -1,20 +1,19 @@
 <template>
   <v-app>
-    <!-- Contenu principal -->
     <v-main>
-      <v-container>
-        <!-- Filtres et tableau -->
+      <v-container fluid>
         <v-row>
-          <!-- Colonne contenant les filtres -->
           <v-col cols="12">
-            <v-card elevation="1" class="rounded-lg pa-2 mb-4">
-              <v-card-title class="font-weight-bold text-uppercase text-primary">Gestion des Données</v-card-title>
-              <v-divider></v-divider>
-              <v-list dense>
-                <v-list-item v-for="item in items" :key="item.name" @click="navigateTo(item.route)">
-                  <v-list-item-title>{{ item.name }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
+            <h1 class="text-h3 font-weight-bold text-primary mb-6 text-center">Gestion des Données</h1>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col v-for="item in items" :key="item.name" cols="12" sm="6" md="4" lg="3">
+            <v-card elevation="2" class="rounded-lg pa-4 mb-4 data-card" @click="navigateTo(item.route)">
+              <v-card-text class="text-center">
+                <v-icon :color="item.color" size="64" class="mb-4">{{ item.icon }}</v-icon>
+                <h2 class="text-h5 font-weight-medium">{{ item.name }}</h2>
+              </v-card-text>
             </v-card>
           </v-col>
         </v-row>
@@ -29,12 +28,12 @@ export default {
   data() {
     return {
       items: [
-        { name: "Lieux", route: "/lieux" },
-        { name: "Consommables", route: "/consommables" },
-        { name: "Fournisseurs", route: "/fournisseurs" },
-        { name: "Fabricants", route: "/fabricants" },
-        { name: "Modeles Equipements", route: "/modeles-equipements" },
-        { name: "Interventions", route: "/interventions" }
+        { name: "Lieux", route: "/lieux", icon: "mdi-map-marker", color: "blue" },
+        { name: "Consommables", route: "/consommables", icon: "mdi-package-variant", color: "green" },
+        { name: "Fournisseurs", route: "/fournisseurs", icon: "mdi-truck", color: "orange" },
+        { name: "Fabricants", route: "/fabricants", icon: "mdi-factory", color: "red" },
+        { name: "Modeles Equipements", route: "/modeles-equipements", icon: "mdi-cog", color: "purple" },
+        // { name: "Interventions", route: "/interventions", icon: "mdi-wrench", color: "teal" }
       ],
     };
   },
@@ -51,20 +50,21 @@ export default {
   color: #05004E;
 }
 
-.text-dark {
-  color: #3C3C3C;
+.data-card {
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
 }
 
-.v-card {
-  background-color: #FFFFFF;
+.data-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
-.v-btn {
-  background-color: #F1F5FF;
-  border-radius: 50%;
+.v-icon {
+  transition: transform 0.3s;
 }
 
-h1 {
-  color: #05004E;
+.data-card:hover .v-icon {
+  transform: scale(1.1);
 }
 </style>

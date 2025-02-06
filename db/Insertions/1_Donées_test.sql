@@ -212,12 +212,13 @@ INSERT INTO myApp_defaillance (
     commentaireDefaillance,
     niveau,
     utilisateur_id,
-    equipement_id
+    equipement_id,
+    dateTraitementDefaillance
 ) VALUES
-('Usure anormale des rouleaux magnétiques', 'Mineur', 2, 'EQ-004'),
-('Problème de surchauffe dans le système de plasma', 'Critique', 3, 'EQ-006'),
-('Perte de précision dans la focalisation du laser', 'Mineur', 1, 'EQ-007'),
-('Dysfonctionnement du système d''alimentation', 'Majeur', 3, 'EQ-009');
+('Usure anormale des rouleaux magnétiques', 'Mineur', 2, 'EQ-004',NULL),
+('Problème de surchauffe dans le système de plasma', 'Critique', 3, 'EQ-006',NULL),
+('Perte de précision dans la focalisation du laser', 'Mineur', 1, 'EQ-007',NULL),
+('Dysfonctionnement du système d''alimentation', 'Majeur', 3, 'EQ-009',NULL);
 
 -- Insert pour EQ-004
 INSERT INTO myApp_informationstatut (
@@ -270,10 +271,11 @@ INSERT INTO myApp_defaillance (
     commentaireDefaillance,
     niveau,
     utilisateur_id,
-    equipement_id
+    equipement_id,
+    dateTraitementDefaillance
 ) VALUES
-('Fluctuations de puissance du laser', 'Mineur', 2, 'EQ-007'),
-('Défaillance du système de refroidissement optique', 'Critique', 3, 'EQ-007');
+('Fluctuations de puissance du laser', 'Mineur', 2, 'EQ-007',NULL),
+('Défaillance du système de refroidissement optique', 'Critique', 3, 'EQ-007',NULL);
 
 
 

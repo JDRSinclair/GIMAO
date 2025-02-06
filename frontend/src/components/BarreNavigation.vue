@@ -25,18 +25,18 @@
         @click="item.disabled ? $event.preventDefault() : null"
       >
         <template v-slot:prepend>
-          <img
-            :src="require(`@/assets/images/${item.icon}`)"
-            :alt="`Icone ${item.name}`"
+          <v-icon
+            :color="isActive(item.name) ? 'white' : 'primary'"
             :class="[{ 'active-icon': isActive(item.name), 'inner-shadow': true }, $style.icon]"
-          />
+          >
+            {{ item.icon }}
+          </v-icon>
         </template>
         <v-list-item-title class="font-weight-bold text-center" v-html="item.title"></v-list-item-title>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
-
 
 <script>
 export default {
@@ -52,15 +52,15 @@ export default {
     navigationItems: {
       type: Array,
       default: () => [
-        { name: 'TableauDeBord', icon: 'Graphe.svg', title: 'Tableau de bord' },
-        { name: 'Equipements', icon: 'Outils.svg', title: 'Equipements' },
-        { name: 'Maintenances', icon: 'Maintenance.svg', title: 'Maintenances' },
-        { name: 'Techniciens', icon: 'Techniciens.svg', title: 'Techniciens', disabled: true },
-        { name: 'GestionComptes', icon: 'GestionComptes.svg', title: 'Gestion des <br>comptes', disabled: true },
-        { name: 'Commandes', icon: 'Commande.svg', title: 'Commandes', disabled: true },
-        { name: 'Stocks', icon: 'Stocks.svg', title: 'Stocks' },
-        { name: 'Signalements', icon: 'Signalements.svg', title: 'Signalements' },
-        { name: 'GestionDonnees', icon: 'GestionDonnees.svg', title: 'Gestion des <br>données' }
+        { name: 'TableauDeBord', icon: 'mdi-view-dashboard', title: 'Tableau de bord' },
+        { name: 'Equipements', icon: 'mdi-tools', title: 'Equipements' },
+        { name: 'Maintenances', icon: 'mdi-wrench', title: 'Maintenances' },
+        { name: 'Signalements', icon: 'mdi-alert', title: 'Signalements' },
+        { name: 'Techniciens', icon: 'mdi-account-hard-hat', title: 'Techniciens', disabled: true },
+        { name: 'GestionComptes', icon: 'mdi-account-cog', title: 'Gestion des <br>comptes', disabled: true },
+        { name: 'Commandes', icon: 'mdi-cart', title: 'Commandes', disabled: true },
+        { name: 'Stocks', icon: 'mdi-package-variant-closed', title: 'Stocks',disabled: true },
+        { name: 'GestionDonnees', icon: 'mdi-database-cog', title: 'Gestion des <br>données' }
       ],
     },
   },
@@ -82,10 +82,8 @@ export default {
 };
 </script>
 
-
 <style module>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
 
 :root {
   --primary-color: #5D5FEF;
@@ -121,7 +119,7 @@ export default {
 </style>
 
 <style scoped>
-  body {
+body {
   font-family: 'Poppins', sans-serif;
 }
 
