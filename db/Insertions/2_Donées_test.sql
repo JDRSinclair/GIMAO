@@ -29,12 +29,12 @@ INSERT INTO myApp_lieu (nomLieu, typeLieu, lieuParent_id) VALUES
 -- Niveau 2 : Zones dans la Bibliothèque Universitaire
 ('Zone de Lectures', 'Zone de lecture', 2),
 ('Salle de Référence', 'Salle de recherche', 2),
-('Salle dÉtude Collaborative', 'Salle de travail', 2),
+('Salle d''Étude Collaborative', 'Salle de travail', 2),
 ('Espace Multimédia', 'Zone de technologie', 2),
 
 -- Niveau 3 : Sous-zones dans la Zone de Lectures
 ('Zone Silencieuse', 'Zone calme', 10),
-('Zone de Groupes d Étude', 'Zone de travail', 10),
+('Zone de Groupes d''Étude', 'Zone de travail', 10),
 
 -- Niveau 2 : Zones dans le Centre de Recherche
 ('Laboratoire de Biologie', 'Laboratoire', 3),
@@ -180,10 +180,10 @@ INSERT INTO myApp_informationstatut (
 ) VALUES
 ('En fonctionnement', NULL, 'EQ-001', NULL, 1),
 ('Dégradé', NULL, 'EQ-002', NULL, 2),
-('A l arret', NULL, 'EQ-003', NULL, 3),
+('À l''arrêt', NULL, 'EQ-003', NULL, 3),
 ('En fonctionnement', NULL, 'EQ-004', NULL, 1),
-('A l arret', NULL, 'EQ-005', NULL, 2),
-('A l arret', NULL, 'EQ-006', NULL, 3),
+('À l''arrêt', NULL, 'EQ-005', NULL, 2),
+('À l''arrêt', NULL, 'EQ-006', NULL, 3),
 ('Dégradé', NULL, 'EQ-007', NULL, 1),
 ('Dégradé', NULL, 'EQ-008', NULL, 2),
 ('En fonctionnement', NULL, 'EQ-009', NULL, 3),
@@ -220,7 +220,7 @@ INSERT INTO myApp_informationstatut (
     equipement_id,
     informationStatutParent_id,
     ModificateurStatut_id
-) SELECT 'A l''arret', CURRENT_TIMESTAMP, 'EQ-006',
+) SELECT 'À l''arrêt', CURRENT_TIMESTAMP, 'EQ-006',
 (SELECT id FROM (SELECT id FROM myApp_informationstatut WHERE equipement_id = 'EQ-006' ORDER BY dateChangement DESC LIMIT 1) AS temp),
 3;
 
@@ -242,7 +242,7 @@ INSERT INTO myApp_informationstatut (
     equipement_id,
     informationStatutParent_id,
     ModificateurStatut_id
-) SELECT 'A l''arret', CURRENT_TIMESTAMP, 'EQ-009',
+) SELECT 'À l''arrêt', CURRENT_TIMESTAMP, 'EQ-009',
 (SELECT id FROM (SELECT id FROM myApp_informationstatut WHERE equipement_id = 'EQ-009' ORDER BY dateChangement DESC LIMIT 1) AS temp),
 3;
 
@@ -274,7 +274,7 @@ INSERT INTO myApp_informationstatut (
     equipement_id,
     informationStatutParent_id,
     ModificateurStatut_id
-) SELECT 'A l''arret', CURRENT_TIMESTAMP, 'EQ-007',
+) SELECT 'À l''arrêt', CURRENT_TIMESTAMP, 'EQ-007',
 (SELECT id FROM (SELECT id FROM myApp_informationstatut WHERE equipement_id = 'EQ-007' ORDER BY dateChangement DESC LIMIT 1) AS temp),
 3;
 
@@ -283,8 +283,8 @@ INSERT INTO myApp_intervention
 dateFinIntervention, tempsEstime, commentaireIntervention, commentaireRefusCloture, 
 createurIntervention_id, defaillance_id, responsable_id) 
 VALUES 
-('Fissure de l optique', True, CURRENT_TIMESTAMP, NULL, NULL, NULL, '03:30:00', NULL,NULL,1, 6, 3),
-('Maintenance du système d alimentation du microscope', True, CURRENT_TIMESTAMP, NULL, NULL, NULL, '07:00:00', NULL,NULL,1, 2, 3);
+('Fissure de l''optique', True, CURRENT_TIMESTAMP, NULL, NULL, NULL, '03:30:00', NULL,NULL,1, 6, 3),
+('Maintenance du système d''alimentation du microscope', True, CURRENT_TIMESTAMP, NULL, NULL, NULL, '07:00:00', NULL,NULL,1, 2, 3);
 
 -- Association des consommables aux équipements
 INSERT INTO myApp_constituer (equipement_id, consommable_id) VALUES

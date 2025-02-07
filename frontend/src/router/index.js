@@ -49,13 +49,13 @@ import AfficherConsommable from '@/views/GestionDonnees/Consommables/AfficherCon
 
 
 const routes = [
-  // Tableau de Bord
   {
     path: '/',
     name: 'TableauDeBord',
     component: TableauDeBord,
     meta: { title: 'Tableau de Bord' }
   },
+
   {
     path: '/techniciens',
     name: 'Techniciens',
@@ -69,12 +69,15 @@ const routes = [
     component: GestionComptes,
     meta: { title: 'Gestion des Comptes' }
   },
+
   {
     path: '/commandes',
     name: 'Commandes',
     component: Commandes,
     meta: { title: 'Commandes' }
+    
   },
+
   {
     path: '/stocks',
     name: 'Stocks',
@@ -175,7 +178,7 @@ const routes = [
     path: '/maintenances',
     name: 'Maintenances',
     component: Maintenances,
-    meta: { title: 'Maintenances' }
+    meta: { title: 'Bon de travail' }
   },
 
   {
@@ -186,7 +189,6 @@ const routes = [
     meta: { title: 'Détails de l\'intervention' }
   },
 
-  //Lieux
   {
     path: '/defaillance/:id/creer-intervention/',
     name: 'CreerIntervention',
@@ -210,7 +212,7 @@ const routes = [
     path: '/signalements',
     name: 'Signalements',
     component: Signalements,
-    meta: { title: 'Liste des signalements' }
+    meta: { title: 'Demandes de bon de travail' }
   },
 
   // Equipements ---------------------------------------------------------------
@@ -219,18 +221,19 @@ const routes = [
     path: '/equipements',
     name: 'Equipements',
     component: Equipements,
-    meta: { title: 'Equipement' }
+    meta: { title: 'Équipements' }
   },
 
   {
-    path: '/lieux',
-    name: 'Lieux',
-    component: Lieux,
-    meta: { title: 'Lieux' }
+    path: '/equipement/:reference',
+    name: 'AfficherEquipement',
+    component: AfficherEquipement,
+    props: true, 
+    meta: { title: 'Descriptif de l\'équipement' }
   },
 
   {
-    path: '/creerEquipement',
+    path: '/creer-Equipement',
     name: 'CreerEquipement',
     component: CreerEquipement,
     meta: { title: 'Ajouter Equipement' }
@@ -242,7 +245,7 @@ const routes = [
     name: 'CreerDefaillance',
     component: CreerDefaillance,
     props: true,
-    meta: { title: 'Signaler une défaillance' }
+    meta: { title: 'Demande de bon de travail' }
   },
 
   {
@@ -250,7 +253,7 @@ const routes = [
     name: 'AfficherDefaillance',
     component: AfficherDefaillance,
     props: true,
-    meta: { title: 'Détails de la defaillance' }
+    meta: { title: 'Details de la demande ' }
   },
 
   {
@@ -294,6 +297,6 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-});
+})
 
-export default router;
+export default router

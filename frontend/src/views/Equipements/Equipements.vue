@@ -92,6 +92,7 @@
           :sort-by="['designation']"
           :sort-desc="[false]"
         >
+        
           <!-- Template personnalisé pour chaque ligne du tableau -->
           <template v-slot:item="{ item }">
             <!-- Ligne cliquable pour afficher les détails de l'équipement -->
@@ -110,6 +111,7 @@
             </tr>
           </template>
         </v-data-table>
+
       </v-col>
     </v-row>
   </v-container>
@@ -176,7 +178,7 @@ export default {
           return 'green';
         case 'Dégradé':
           return 'orange';
-        case 'A l\'arrêt':
+        case 'À l\'arrêt':
           return 'red';
         default:
           return 'black';
@@ -260,7 +262,7 @@ export default {
 
     // Redirection vers la page d'ajout d'équipement
     const ouvrirPageAjoutEquipement = () => {
-      router.push('/ajouter-equipement');
+      router.push('/creer-equipement');
     };
 
     // Redirection vers la page d'affichage d'un équipement
@@ -283,7 +285,7 @@ export default {
       toggleNode,
       getStatusColor,
     };
-  },
+  }
 };
 </script>
 
