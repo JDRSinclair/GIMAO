@@ -11,15 +11,15 @@
             <v-alert v-if="isLoading" type="info">
               Chargement des fabricants...
             </v-alert>
-            <v-form @submit.prevent="submitForm">
+            <v-form @submit.prevent="submit_form">
               <v-text-field
-                v-model="consommable.designation"
+                v-model="consumable.designation"
                 label="Désignation"
                 required
               ></v-text-field>
               
               <v-file-input
-                v-model="consommable.lienImageConsommable"
+                v-model="consumable.lienImageConsommable"
                 label="Image du consommable"
                 accept="image/*"
                 prepend-icon="mdi-camera"
@@ -27,7 +27,7 @@
               
               <v-select
                 v-if="!isLoading && fabricants.length > 0"
-                v-model="consommable.fabricant"
+                v-model="consumable.fabricant"
                 :items="fabricants"
                 item-title="nomFabricant"
                 item-value="id"
@@ -36,7 +36,7 @@
                 return-object
               ></v-select>
               
-              <v-btn color="secondary" class="mt-4 mr-2" @click="goBack">
+              <v-btn color="secondary" class="mt-4 mr-2" @click="go_back">
                 Retour
               </v-btn>
               <v-btn type="submit" color="primary" class="mt-4" :disabled="!isFormValid">
@@ -59,7 +59,7 @@ import api from '@/services/api';
 export default {
   setup() {
     const router = useRouter();
-    const consommable = ref({
+    const consumable = ref({
       designation: '',
       lienImageConsommable: null,
       fabricant: null
@@ -69,12 +69,12 @@ export default {
     const isLoading = ref(false);
 
     const isFormValid = computed(() => {
-      return consommable.value.designation && 
-             consommable.value.fabricant && 
-             consommable.value.lienImageConsommable;
+      return consumable.value.designation && 
+             consumable.value.fabricant && 
+             consumable.value.lienImageConsommable;
     });
 
-    const getFabricants = async () => {
+    const get_manufacturers = async () => {
       isLoading.value = true;
       errorMessage.value = '';
       try {
@@ -89,7 +89,7 @@ export default {
       }
     };
 
-    const submitForm = async () => {
+    const submit_form = async () => {
       if (!isFormValid.value) {
         errorMessage.value = 'Veuillez remplir tous les champs requis.';
         return;
@@ -97,43 +97,43 @@ export default {
 
       try {
         const formData = new FormData();
-        formData.append('designation', consommable.value.designation);
-        formData.append('fabricant', consommable.value.fabricant.id);
-        if (consommable.value.lienImageConsommable) {
-          formData.append('lienImageConsommable', consommable.value.lienImageConsommable);
+        formData.append('designation', consumable.value.designation);
+        formData.append('fabricant', consumable.value.fabricant.id);
+        if (consumable.value.lienImageConsommable) {
+          formData.append('lienImageConsommable', consumable.value.lienImageConsommable);
         }
 
         const response = await api.postConsommable(formData);
         console.log('Consommable créé:', response.data);
         
-        goBack();
+        go_back();
       } catch (error) {
         console.error('Error creating consommable:', error);
 
       }
     };
 
-    const goBack = () => {
+    const go_back = () => {
       router.go(-1);
     };
 
-    const handleFileChange = (file) => {
-      consommable.value.lienImageConsommable = file;
+    const handle_file_change = (file) => {
+      consumable.value.lienImageConsommable = file;
     };
 
     onMounted(() => {
-      getFabricants();
+      get_manufacturers();
     });
 
     return {
-      consommable,
+      consumable,
       fabricants,
       errorMessage,
       isLoading,
       isFormValid,
-      submitForm,
-      goBack,
-      handleFileChange
+      submit_form,
+      go_back,
+      handle_file_change
     };
   }
 };

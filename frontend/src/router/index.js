@@ -41,7 +41,7 @@ import CreateManufacturer from '@/views/DataManagement/Manufacturers/CreateManuf
 import ManufacturerList from '@/views/DataManagement/Manufacturers/ManufacturerList.vue'
 import ManufacturerDetail from '@/views/DataManagement/Manufacturers/ManufacturerDetail.vue'
 
-import ConsummableList from '@/views/DataManagement/Consummables/ConsummableList.vue'
+import ConsumableList from '@/views/DataManagement/Consummables/ConsumableList.vue'
 import CreateConsummable from '@/views/DataManagement/Consummables/CreateConsummable.vue'
 import ConsummableDetail from '@/views/DataManagement/Consummables/ConsummableDetail.vue'
 
@@ -90,9 +90,9 @@ const routes = [
   // Consommables ------------------------------------------------------------------
 
   {
-    path: '/ConsummableList',
-    name: 'ConsummableList',
-    component: ConsummableList,
+    path: '/ConsumableList',
+    name: 'ConsumableList',
+    component: ConsumableList,
     meta: { title: 'Consommables' }
   },
   

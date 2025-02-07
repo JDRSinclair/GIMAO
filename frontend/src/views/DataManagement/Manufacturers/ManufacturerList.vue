@@ -23,7 +23,7 @@
     </v-row>
     <v-row>
       <v-col v-for="fabricant in filteredFabricants" :key="fabricant.id" cols="12" sm="6" md="4">
-        <v-card @click="goToFabricantDetails(fabricant.id)">
+        <v-card @click="go_to_manufacturer_detail(fabricant.id)">
           <v-card-title>{{ fabricant.nomFabricant }}</v-card-title>
           <v-card-text>
             <p>Pays: {{ fabricant.paysFabricant }}</p>
@@ -49,7 +49,7 @@ export default {
     };
   },
   computed: {
-    filteredFabricants() {
+    filtered_manufacturer() {
       if (!this.searchQuery) {
         return this.fabricants;
       }
@@ -62,7 +62,7 @@ export default {
     }
   },
   methods: {
-    async fetchFabricants() {
+    async fetch_manufacturer() {
       try {
         const response = await api.getFabricants();
         this.fabricants = response.data;
@@ -70,12 +70,12 @@ export default {
         console.error('Erreur lors de la récupération des fabricants:', error);
       }
     },
-    goToFabricantDetails(id) {
+    go_to_manufacturer_detail(id) {
       this.$router.push(`/ManufacturerDetail/${id}`);
     }
   },
   created() {
-    this.fetchFabricants();
+    this.fetch_manufacturer();
   }
 }
 </script>

@@ -22,8 +22,8 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col v-for="fournisseur in filteredFournisseurs" :key="fournisseur.id" cols="12" sm="6" md="4">
-        <v-card @click="goToFournisseurDetails(fournisseur.id)">
+      <v-col v-for="fournisseur in filtered_suppliers" :key="fournisseur.id" cols="12" sm="6" md="4">
+        <v-card @click="go_to_suppliers_details(fournisseur.id)">
           <v-card-title>{{ fournisseur.nomFournisseur }}</v-card-title>
           <v-card-text>
             <p>Ville: {{ fournisseur.ville }}</p>
@@ -49,7 +49,7 @@ export default {
     };
   },
   computed: {
-    filteredFournisseurs() {
+    filtered_suppliers() {
       if (!this.searchQuery) {
         return this.fournisseurs;
       }
@@ -62,7 +62,7 @@ export default {
     }
   },
   methods: {
-    async fetchFournisseurs() {
+    async fetch_suppliers() {
       try {
         const response = await api.getFournisseurs();
         this.fournisseurs = response.data;
@@ -70,12 +70,12 @@ export default {
         console.error('Erreur lors de la récupération des fournisseurs:', error);
       }
     },
-    goToFournisseurDetails(id) {
+    go_to_suppliers_details(id) {
       this.$router.push(`/SupplierDetail/${id}`);
     }
   },
   created() {
-    this.fetchFournisseurs();
+    this.fetch_suppliers();
   }
 }
 </script>

@@ -29,7 +29,7 @@ export default {
     return {
       items: [
         { name: "Lieux", route: "/LocationList", icon: "mdi-map-marker", color: "blue" },
-        { name: "Consommables", route: "/ConsummableList", icon: "mdi-package-variant", color: "green" },
+        { name: "Consommables", route: "/ConsumableList", icon: "mdi-package-variant", color: "green" },
         { name: "Fournisseurs", route: "/SupplierList", icon: "mdi-truck", color: "orange" },
         { name: "Fabricants", route: "/ManufacturerList", icon: "mdi-factory", color: "red" },
         { name: "Modeles Equipements", route: "/modeles-equipements", icon: "mdi-cog", color: "purple" },
