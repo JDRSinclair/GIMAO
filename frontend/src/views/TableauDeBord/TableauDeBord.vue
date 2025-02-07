@@ -83,6 +83,26 @@ export default {
     TopNavBar,
   },
 
+<<<<<<< Updated upstream
+=======
+  setup() {
+    const router = useRouter();
+
+    const ouvrirAfficherDefaillance = (id) => {
+      router.push({ name: 'FailureDetail', params: { id: id } });
+    };
+
+    const ouvrirAfficherIntervention = (id) => {
+      router.push({ name: 'AfficherIntervention', params: { id: id } });
+    };
+
+    return {
+      ouvrirAfficherDefaillance,
+      ouvrirAfficherIntervention
+    };
+  },
+
+>>>>>>> Stashed changes
   data() {
     return {
       menuItems: [
