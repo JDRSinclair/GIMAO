@@ -1,5 +1,7 @@
 # myApp/models.py
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.core.validators import RegexValidator, EmailValidator
 from django.contrib.auth.models import User, AbstractUser
 from django.core.exceptions import ValidationError
@@ -186,7 +188,7 @@ class InformationStatut(models.Model):
         ('Rebuté', 'Rebuté'),
         ('En fonctionnement', 'En fonctionnement'),
         ('Dégradé', 'Dégradé'),
-        ('A l\'arret', 'A l\'arret'),
+        ('A l\'arrêt', 'A l\'arrêt'),
     ]
     statutEquipement = models.CharField(
             max_length=50,
@@ -226,6 +228,7 @@ class Defaillance(models.Model):
         validators=[validate_niveau_de_defaillance])
     utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
     equipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
+    dateTraitementDefaillance = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.commentaireDefaillance
@@ -237,6 +240,7 @@ class DocumentDefaillance(models.Model):
 
     def __str__(self):
         return self.nomDocumentDefaillance
+
 
 class Intervention(models.Model):
     nomIntervention = models.CharField(max_length=500, null=True, blank=True)

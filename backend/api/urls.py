@@ -22,16 +22,16 @@ from .views import (
     InterventionViewSet,
     DocumentInterventionViewSet,
 
+    EquipementAvecDernierStatutViewSet,
     EquipementDetailViewSet,
     get_lieux_hierarchy,
     EquipementAffichageViewSet,
     InterventionAfficherViewSet,
-
-    LieuCreateView,
+    DefaillanceAfficherViewSet,
 )
 
 router = DefaultRouter()
-router.register(r'utilsateurs', UserViewSet)
+router.register(r'utilisateurs', UserViewSet)
 router.register(r'roles', RoleViewSet)
 router.register(r'avoir', AvoirViewSet)
 router.register(r'fabricants', FabricantViewSet)
@@ -61,10 +61,10 @@ urlpatterns = [
     path('', include(router.urls)),
     path('lieux-hierarchy/', get_lieux_hierarchy, name='lieux-hierarchy'),
     path('equipements-detail/', EquipementDetailViewSet.as_view({'get': 'list'}), name='equipement-detail-list'),
+    path('equipement/<str:reference>/avec-statut/', EquipementAvecDernierStatutViewSet.as_view({'get': 'retrieve'}), name='equipement-avec-statut'),
     path('equipements-detail/<str:reference>/', EquipementDetailViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
     path('equipement/<str:reference>/affichage/', EquipementAffichageViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
     path('intervention/<int:pk>/affichage/', InterventionAfficherViewSet.as_view({'get': 'retrieve'}), name='intervention-detail'),
-
-     path('creer-lieu/', LieuCreateView.as_view(), name='creer-lieu'),
+    path('defaillance/<int:pk>/affichage/', DefaillanceAfficherViewSet.as_view({'get': 'retrieve'}), name='defaillance-detail'),
 
 ]

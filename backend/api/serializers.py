@@ -159,6 +159,29 @@ class LieuHierarchySerializer(serializers.ModelSerializer):
         return representation
 
 
+class EquipementAvecDernierStatutSerializer(serializers.ModelSerializer):
+    dernier_statut = serializers.SerializerMethodField()
+    lieu = LieuSerializer(read_only=True)
+
+    class Meta:
+        model = Equipement
+        fields = ['reference', 'dateCreation', 'designation', 'dateMiseEnService', 
+            'prixAchat','preventifGlissant', 'joursIntervalleMaintenance', 
+            'lieu', 'dernier_statut']
+
+    def get_dernier_statut(self, obj):
+        dernier_statut = obj.informationstatut_set.order_by('-dateChangement').first()
+        if dernier_statut:
+            return {
+                'id': dernier_statut.id,
+                'statutEquipement': dernier_statut.statutEquipement,
+                'dateChangement': dernier_statut.dateChangement,
+                'equipement': dernier_statut.equipement.reference,
+                'informationStatutParent': dernier_statut.informationStatutParent.id if dernier_statut.informationStatutParent else None,
+                'ModificateurStatut': dernier_statut.ModificateurStatut.username if dernier_statut.ModificateurStatut else None
+            }
+        return None
+
 
 class EquipementAffichageSerializer(serializers.ModelSerializer):
     lieu = LieuSerializer(read_only=True)
@@ -215,8 +238,11 @@ class EquipementAffichageSerializer(serializers.ModelSerializer):
         dernier_statut = obj.informationstatut_set.order_by('-dateChangement').first()
         if dernier_statut:
             return {
+                'id': dernier_statut.id,
                 'statutEquipement': dernier_statut.statutEquipement,
                 'dateChangement': dernier_statut.dateChangement,
+                'equipement': dernier_statut.equipement.reference,
+                'informationStatutParent': dernier_statut.informationStatutParent.id if dernier_statut.informationStatutParent else None,
                 'ModificateurStatut': dernier_statut.ModificateurStatut.username if dernier_statut.ModificateurStatut else None
             }
         return None
@@ -229,7 +255,8 @@ class EquipementAffichageSerializer(serializers.ModelSerializer):
                 "commentaireDefaillance": defaillance.commentaireDefaillance,
                 "niveau": defaillance.niveau,
                 "utilisateur": defaillance.utilisateur.id if defaillance.utilisateur else None,
-                "equipement": defaillance.equipement.reference
+                "equipement": defaillance.equipement.reference,
+                "dateTraitementDefaillance": defaillance.dateTraitementDefaillance
             }
             for defaillance in defaillances
         ]
@@ -313,8 +340,74 @@ class EquipementAffichageSerializer(serializers.ModelSerializer):
             for doc in documents_intervention
         ]
     
+
 class InterventionAfficherSerializer(serializers.ModelSerializer):
+    liste_documents_intervention = serializers.SerializerMethodField()
+
     class Meta:
         model = Intervention
-        fields = '__all__'
+        fields = [
+            'id', 'nomIntervention', 'interventionCurative', 'dateAssignation', 
+            'dateCloture', 'dateDebutIntervention', 'dateFinIntervention', 
+            'tempsEstime', 'commentaireIntervention', 'commentaireRefusCloture', 
+            'defaillance', 'createurIntervention', 'responsable',
+            'liste_documents_intervention'
+        ]
         depth = 1
+
+    def get_liste_documents_intervention(self, obj):
+        documents_intervention = DocumentIntervention.objects.filter(intervention=obj)
+        return [
+            {
+                "id": doc.id,
+                "nomDocumentIntervention": doc.nomDocumentIntervention,
+                "lienDocumentIntervention": doc.lienDocumentIntervention.url if doc.lienDocumentIntervention else None,
+            }
+            for doc in documents_intervention
+        ]
+
+
+class DefaillanceAfficherSerializer(serializers.ModelSerializer):
+    liste_documents_defaillance = serializers.SerializerMethodField()
+    equipement = EquipementAvecDernierStatutSerializer()
+    intervention = serializers.SerializerMethodField()
+
+
+    class Meta:
+        model = Defaillance  
+        fields = [
+            'id', 'commentaireDefaillance', 'niveau', 'dateTraitementDefaillance', 'utilisateur', 'equipement',
+            'liste_documents_defaillance','intervention'
+        ]
+        depth = 1
+
+    def get_liste_documents_defaillance(self, obj):
+        documents_defaillance = DocumentDefaillance.objects.filter(defaillance=obj)
+        return [
+            {
+                "id": doc.id,
+                "nomDocumentDefaillance": doc.nomDocumentDefaillance,
+                "lienDocumentDefaillance": doc.lienDocumentDefaillance.url if doc.lienDocumentDefaillance else None,
+            }
+            for doc in documents_defaillance
+        ]
+
+    def get_intervention(self, obj):
+        intervention = Intervention.objects.filter(defaillance=obj).first()
+        if intervention:
+            return {
+                "id": intervention.id,
+                "nomIntervention": intervention.nomIntervention,
+                "interventionCurative": intervention.interventionCurative,
+                "dateAssignation": intervention.dateAssignation,
+                "dateCloture": intervention.dateCloture,
+                "dateDebutIntervention": intervention.dateDebutIntervention,
+                "dateFinIntervention": intervention.dateFinIntervention,
+                "tempsEstime": str(intervention.tempsEstime),
+                "commentaireIntervention": intervention.commentaireIntervention,
+                "commentaireRefusCloture": intervention.commentaireRefusCloture,
+                "defaillance": intervention.defaillance.id,
+                "createurIntervention": intervention.createurIntervention.id if intervention.createurIntervention else None,
+                "responsable": intervention.responsable.id if intervention.responsable else None
+            }
+        return None

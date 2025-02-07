@@ -20,22 +20,23 @@
       <v-list-item
         v-for="item in navigationItems"
         :key="item.name"
-        :to="{ name: item.name }"
-        :class="[getItemClasses(item.name), $style.itemSize]"
+        :to="!item.disabled ? { name: item.name } : null"
+        :class="[getItemClasses(item.name), $style.itemSize, { 'disabled-item': item.disabled }]"
+        @click="item.disabled ? $event.preventDefault() : null"
       >
         <template v-slot:prepend>
-          <img
-            :src="require(`@/assets/images/${item.icon}`)"
-            :alt="`Icone ${item.name}`"
+          <v-icon
+            :color="isActive(item.name) ? 'white' : 'primary'"
             :class="[{ 'active-icon': isActive(item.name), 'inner-shadow': true }, $style.icon]"
-          />
+          >
+            {{ item.icon }}
+          </v-icon>
         </template>
         <v-list-item-title class="font-weight-bold text-center" v-html="item.title"></v-list-item-title>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
-
 
 <script>
 export default {
@@ -51,15 +52,15 @@ export default {
     navigationItems: {
       type: Array,
       default: () => [
-        { name: 'TableauDeBord', icon: 'Graphe.svg', title: 'Tableau de bord' },
-        { name: 'Equipements', icon: 'Outils.svg', title: 'Equipements' },
-        { name: 'Maintenances', icon: 'Maintenance.svg', title: 'Maintenances' },
-        { name: 'Techniciens', icon: 'Techniciens.svg', title: 'Techniciens' },
-        { name: 'GestionComptes', icon: 'GestionComptes.svg', title: 'Gestion des <br>comptes' },
-        { name: 'Commandes', icon: 'Commande.svg', title: 'Commandes' },
-        { name: 'Stocks', icon: 'Stocks.svg', title: 'Stocks' },
-        { name: 'Signalements', icon: 'Signalements.svg', title: 'Signalements' },
-        { name: 'Lieux', icon: 'lieux.svg', title: 'Lieux' },
+        { name: 'TableauDeBord', icon: 'mdi-view-dashboard', title: 'Tableau de bord' },
+        { name: 'Equipements', icon: 'mdi-tools', title: 'Équipements' },
+        { name: 'Maintenances', icon: 'mdi-wrench', title: 'Bons de travail' },
+        { name: 'Signalements', icon: 'mdi-alert', title: 'Demandes de <br>bons de travail' },
+        { name: 'Techniciens', icon: 'mdi-account-hard-hat', title: 'Techniciens', disabled: true },
+        { name: 'GestionComptes', icon: 'mdi-account-cog', title: 'Gestion des <br>comptes', disabled: true },
+        { name: 'Commandes', icon: 'mdi-cart', title: 'Commandes', disabled: true },
+        { name: 'Stocks', icon: 'mdi-package-variant-closed', title: 'Stocks',disabled: true },
+        { name: 'DataManagement', icon: 'mdi-database-cog', title: 'Gestion des <br>données' }
       ],
     },
   },
@@ -81,10 +82,8 @@ export default {
 };
 </script>
 
-
 <style module>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
 
 :root {
   --primary-color: #5D5FEF;
@@ -120,7 +119,7 @@ export default {
 </style>
 
 <style scoped>
-  body {
+body {
   font-family: 'Poppins', sans-serif;
 }
 
@@ -146,5 +145,10 @@ export default {
 
 .inner-shadow {
   box-shadow: inset 0 20px 50px rgba(55, 69, 87, 0.1);
+}
+
+.disabled-item {
+  pointer-events: none;
+  opacity: 0.5;
 }
 </style>

@@ -1,12 +1,5 @@
 <template>
   <v-app>
-    <NavigationDrawer 
-      :logo="require('@/assets/images/LogoGIMAO.png')"
-      :items="menuItems" 
-      @item-selected="handleItemSelected"
-    />
-    <TopNavBar />
-
     <v-main>
       <v-container>
         <v-row>
@@ -24,14 +17,12 @@
                     </v-col>
                     <v-col cols="12">
                       <p class="mb-4">
-                        <v-row align="center" justify="start">
+                        <v-row justify="start">
                           <v-col cols="auto">
-                            <strong>Etat :</strong> {{ infosRecuperes.statutEquipement }}
-                          </v-col>
-                          <v-col cols="auto">
-                            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <circle cx="5.5" cy="5.5" r="5.5" fill="#F0635D"/>
-                            </svg>
+                            <strong>Etat de la machine :</strong>
+                            <v-chip :color="getNiveauColor(infosRecuperes.statutEquipement)" dark>
+                              {{ infosRecuperes.statutEquipement }}
+                            </v-chip>
                           </v-col>
                         </v-row>
                       </p>
@@ -41,7 +32,7 @@
 
                 <!-- Colonne de droite qui contient le champ commentaire -->
                 <v-col cols="6">
-                  <p><strong>Commentaire</strong></p>
+                  <p><strong>Informations sur la defaillance</strong></p>
                   <p>{{ infosRecuperes.commentaireDefaillance }}</p>
                 </v-col>
               </v-row>
@@ -54,7 +45,6 @@
             <v-col cols="12">
               <v-card elevation="1" class="rounded-lg pa-2">
                 <h2 class="text-primary text-center mb-4">Informations du bon de travail</h2>
-                <!-- Lier formulaireValide avec v-model -->
                 <v-form ref="formulaire" v-model="formulaireValide" @submit.prevent="validateForm">
                   <v-row>
                     <v-col cols="6">
@@ -81,7 +71,15 @@
                     </v-col>
 
                     <v-col cols="6">
-                      <p class="mb-4"><strong>Technicien</strong></p>
+                      <p class="mb-4"><strong>Intervention curative</strong></p>
+                      <v-switch
+                        v-model="form.interventionCurative"
+                        label="Intervention Curative"
+                        color="primary"
+                        hide-details
+                        inset
+                      ></v-switch>
+                      <!-- <p class="mb-4"><strong>Technicien</strong></p>
                       <v-select
                         v-model="form.technicien"
                         label="Technicien"
@@ -89,19 +87,7 @@
                         outlined
                         dense
                         :rules="[v => !!v || 'Technicien requis']"
-                      ></v-select>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <p class="mb-4"><strong>Intervention curative</strong></p>
-                      <v-select
-                        v-model="form.interventionCurative"
-                        label="Intervention Curative"
-                        :items="interventionCurative"
-                        outlined
-                        dense
-                        :rules="[v => !!v || 'Précision requise']"
-                      ></v-select>
+                      ></v-select> -->
                     </v-col>
 
                     <v-col cols="6">
@@ -118,19 +104,12 @@
                     </v-col>
 
                     <v-col cols="6">
-                      <p class="mb-4"><strong>Créateur bon de travail</strong></p>
-                      <v-select
-                        v-model="form.createurIntervention"
-                        label="Créateur du bon de travail"
-                        :items="createurInterventions"
-                        outlined
-                        dense
-                        :rules="[v => !!v || 'Utilisateur requis']"
-                      ></v-select>
+                      
                     </v-col>
+                    <v-col cols="6"></v-col>
 
                     <v-row justify="center">
-                      <v-col cols="8">
+                      <v-col cols="10">
                         <v-row justify="center">
                           <p class="mb-4"><strong>Commentaire</strong></p> 
                         </v-row> 
@@ -152,9 +131,6 @@
             <v-btn color="primary" class="text-white mx-2" @click="backPreviousPage">
               Annuler
             </v-btn>
-            <v-btn color="error" class="text-white mx-2" @click="deleteInterventionRequest">
-              Supprimer
-            </v-btn>
             <v-btn color="success" class="text-white mx-2" @click="validateForm">
               Valider
             </v-btn>
@@ -168,14 +144,26 @@
 <script>
 import '@/assets/css/global.css'; 
 import { reactive, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import api from '@/services/api';
 
 export default {
-  name: 'CreerBonTravail',
+  name: 'CreerIntervention',
   
   setup() {
     const routeur = useRouter();
+    const route = useRoute();
+
+    const getNiveauColor = (niveau) => {
+      switch (niveau) {
+        case 'Critique':
+          return 'red';
+        case 'Majeur':
+          return 'orange';
+        default:
+          return 'green';
+      }
+    };
     
     const infosRecuperes = reactive({
       designation: "",
@@ -188,61 +176,129 @@ export default {
       nomIntervention: "",        
       dateDebut: "",              
       technicien: "",             
-      interventionCurative: "",   
+      interventionCurative: false,   
       tempsEstime: null,          
-      createurIntervention: "",   
+      createurIntervention: 1,   
       commentaireARentrer: "",    
     });
 
-    const techniciens = ["technicien1", "technicien2", "technicien3"];
-    const createurInterventions = ["responsableGMAO", "respGMAO"];
-    const interventionCurative = ["Oui", "Non"];
+    const techniciens = ref([]);
+    const interventionCurative = [
+      { text: 'Oui', value: true },
+      { text: 'Non', value: false }
+    ];
 
-    const formulaireValide = ref(null);
+    const formulaireValide = ref(false);
 
     const fetchData = async () => {
       try {
-        const interventionsRes = await api.getIntervention();
-        if (interventionsRes && interventionsRes.data) {
-          Object.assign(infosRecuperes, interventionsRes.data);
+        const defaillanceId = route.params.id;
+        if (!defaillanceId) {
+          throw new Error('ID de défaillance manquant');
+        }
+
+        const [defaillanceRes, utilisateursRes] = await Promise.all([
+          api.getDefaillanceAffichage(defaillanceId),
+          api.getUtilisateur()
+        ]);
+
+        if (defaillanceRes && defaillanceRes.data) {
+          Object.assign(infosRecuperes, {
+            designation: defaillanceRes.data.equipement.designation,
+            nomLieu: defaillanceRes.data.equipement.lieu.nomLieu,
+            commentaireDefaillance: defaillanceRes.data.commentaireDefaillance,
+            statutEquipement: defaillanceRes.data.equipement.dernier_statut.statutEquipement
+          });
         } else {
-          console.error('Aucune donnée reçue de l\'API');
+          console.error('Aucune donnée de défaillance reçue de l\'API');
+        }
+
+        if (utilisateursRes && utilisateursRes.data) {
+          techniciens.value = utilisateursRes.data
+            .filter(user => user.role === 'Technicien')
+            .map(tech => ({
+              text: `${tech.prenom} ${tech.nom}`,
+              value: tech.id
+            }));
+        } else {
+          console.error('Aucune donnée d\'utilisateurs reçue de l\'API');
         }
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
+        alert('Erreur lors de la récupération des données. Veuillez réessayer.');
       }
     };
 
     const backPreviousPage = () => {
-      routeur.push({ name: 'TableauDeBord' });
+      routeur.go(-1);
     };
 
     const deleteInterventionRequest = () => {
       routeur.push({ name: 'TableauDeBord' });
     };
 
-    const validateForm = () => {
+    const validateForm = async () => {
       if (formulaireValide.value) {
-        alert("Formulaire validé avec succès !");
-        backPreviousPage();
+        try {
+          const interventionData = {
+            nomIntervention: form.nomIntervention,
+            interventionCurative: form.interventionCurative,
+            dateAssignation: new Date().toISOString(),
+            dateCloture: null,
+            dateDebutIntervention: form.dateDebut,
+            dateFinIntervention: null,
+            tempsEstime: form.tempsEstime ? `${form.tempsEstime.toString().padStart(2, '0')}:00:00` : null,
+            commentaireIntervention: form.commentaireARentrer,
+            commentaireRefusCloture: null,
+            defaillance: parseInt(route.params.id),
+            createurIntervention: 1,
+            responsable: 1
+          };
+
+          const response = await api.postIntervention(interventionData);
+          
+          if (response && response.data) {
+            alert("Intervention créée avec succès !");
+            // Redirection vers la page d'affichage de l'intervention
+            routeur.push({ name: 'AfficherIntervention', params: { id: response.data.id } });
+          } else {
+            throw new Error('Réponse invalide du serveur');
+          }
+        } catch (error) {
+          console.error('Erreur lors de la création de l\'intervention:', error);
+          alert("Erreur lors de la création de l'intervention. Veuillez réessayer.");
+        }
       } else {
         alert("Le formulaire n'est pas complet. Veuillez remplir les champs obligatoires.");
       }
     };
-
     onMounted(fetchData);
 
     return {
-      form, 
+      form,
       infosRecuperes,
+      techniciens,
+      interventionCurative,
+      formulaireValide,
       backPreviousPage,
       deleteInterventionRequest,
       validateForm,
-      formulaireValide,
-      techniciens,            
-      createurInterventions,  
-      interventionCurative  
+      getNiveauColor,
+      menuItems: [
+        { title: 'Tableau de bord', icon: 'mdi-view-dashboard', route: '/tableau-de-bord' },
+        { title: 'Interventions', icon: 'mdi-wrench', route: '/interventions' },
+        { title: 'Equipements', icon: 'mdi-laptop', route: '/equipements' },
+        { title: 'Gestion des données', icon: 'mdi-database', route: '/gestion-donnees' },
+        { title: 'Commandes', icon: 'mdi-cart', route: '/commandes' },
+      ],
+      handleItemSelected(route) {
+        routeur.push(route);
+      },
     };
   },
 };
 </script>
+
+<style scoped>
+/* Ajoutez ici vos styles spécifiques si nécessaire */
+</style>
