@@ -89,7 +89,7 @@ export default {
       }
     },
     go_to_consumable_details(id) {
-      this.$router.push(`/afficher-consommable/${id}`);
+      this.$router.push(`/ConsumableDetail/${id}`);
     }
   },
   async created() {

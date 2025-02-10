@@ -212,7 +212,7 @@ const routes = [
     path: '/FailureList',
     name: 'FailureList',
     component: FailureList,
-    meta: { title: 'Demandes de bon de travail' }
+    meta: { title: 'Demandes d\'interventions' }
   },
 
   // Equipements ---------------------------------------------------------------
@@ -245,7 +245,7 @@ const routes = [
     name: 'CreateFailure',
     component: CreateFailure,
     props: true,
-    meta: { title: 'Demande de bon de travail' }
+    meta: { title: 'Demande d\'intervention' }
   },
 
   {

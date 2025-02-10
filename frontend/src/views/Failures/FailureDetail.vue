@@ -156,7 +156,7 @@
             </v-btn>
 
             <v-btn color="success" class="text-white mx-2" @click="CreateIntervention" :disabled="canTraiter">
-              Trasformer en bon de travail
+              Transformer en bon de travail
               
             </v-btn>
           </v-row>

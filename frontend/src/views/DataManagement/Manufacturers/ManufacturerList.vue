@@ -22,7 +22,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col v-for="fabricant in filteredFabricants" :key="fabricant.id" cols="12" sm="6" md="4">
+      <v-col v-for="fabricant in filtered_manufacturer" :key="fabricant.id" cols="12" sm="6" md="4">
         <v-card @click="go_to_manufacturer_detail(fabricant.id)">
           <v-card-title>{{ fabricant.nomFabricant }}</v-card-title>
           <v-card-text>
