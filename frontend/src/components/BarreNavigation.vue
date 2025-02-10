@@ -5,6 +5,8 @@
         lines="two"
         :prepend-avatar="logo"
         :class="[$style.logoContainer, 'd-flex justify-center']"
+        @click="goToDashboard"
+        style="cursor: pointer;"
       >
         <v-list-item-title :class="[$style.logoTitle, 'font-weight-bold text-center']">
           {{ appTitle }}
@@ -18,15 +20,17 @@
       <v-list-item
         v-for="item in navigationItems"
         :key="item.name"
-        :to="{ name: item.name }"
-        :class="[getItemClasses(item.name), $style.itemSize]"
+        :to="!item.disabled ? { name: item.name } : null"
+        :class="[getItemClasses(item.name), $style.itemSize, { 'disabled-item': item.disabled }]"
+        @click="item.disabled ? $event.preventDefault() : null"
       >
         <template v-slot:prepend>
-          <img
-            :src="require(`@/assets/images/${item.icon}`)"
-            :alt="`Icone ${item.name}`"
+          <v-icon
+            :color="isActive(item.name) ? 'white' : 'primary'"
             :class="[{ 'active-icon': isActive(item.name), 'inner-shadow': true }, $style.icon]"
-          />
+          >
+            {{ item.icon }}
+          </v-icon>
         </template>
         <v-list-item-title class="font-weight-bold text-center" v-html="item.title"></v-list-item-title>
       </v-list-item>
@@ -39,15 +43,16 @@ export default {
   props: {
     logo: {
       type: String,
-      default: () => require('@/assets/images/LogoGIMAO.png')
+      default: () => require('@/assets/images/LogoGIMAO.png'),
     },
     appTitle: {
       type: String,
-      default: 'GIMAO'
+      default: 'GIMAO',
     },
     navigationItems: {
       type: Array,
       default: () => [
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         { name: 'TableauDeBord', icon: 'Graphe.svg', title: 'Tableau de bord' },
         { name: 'Equipements', icon: 'Outils.svg', title: 'Equipements' },
@@ -60,6 +65,8 @@ export default {
       ]
     }
 =======
+=======
+>>>>>>> Stashed changes
         { name: 'TableauDeBord', icon: 'mdi-view-dashboard', title: 'Tableau de bord' },
         { name: 'Equipements', icon: 'mdi-tools', title: 'Équipements' },
         { name: 'Maintenances', icon: 'mdi-wrench', title: 'Bons de travail' },
@@ -71,6 +78,9 @@ export default {
         { name: 'DataManagement', icon: 'mdi-database-cog', title: 'Gestion des <br>données' }
       ],
     },
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   },
   methods: {
@@ -83,6 +93,9 @@ export default {
         'no-hover': this.isActive(itemName),
         'inner-shadow': true,
       };
+    },
+    goToDashboard() {
+      this.$router.push({ name: 'TableauDeBord' });
     },
   },
 };
@@ -100,6 +113,11 @@ export default {
 
 .logoContainer {
   height: 100px;
+}
+
+.logoContainer:active {
+  transform: scale(0.95);
+  transition: transform 0.2s;
 }
 
 .logoTitle {
@@ -120,7 +138,7 @@ export default {
 </style>
 
 <style scoped>
-  body {
+body {
   font-family: 'Poppins', sans-serif;
 }
 
@@ -146,5 +164,10 @@ export default {
 
 .inner-shadow {
   box-shadow: inset 0 20px 50px rgba(55, 69, 87, 0.1);
+}
+
+.disabled-item {
+  pointer-events: none;
+  opacity: 0.5;
 }
 </style>

@@ -2,6 +2,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
+<<<<<<< Updated upstream
+=======
+    UserViewSet,
+>>>>>>> Stashed changes
     RoleViewSet,
     AvoirViewSet,
     FabricantViewSet,
@@ -21,11 +25,21 @@ from .views import (
     InterventionViewSet,
     DocumentInterventionViewSet,
 
+<<<<<<< Updated upstream
     EquipementDetailViewSet,
     get_lieux_hierarchy
+=======
+    EquipementAvecDernierStatutViewSet,
+    EquipementDetailViewSet,
+    get_lieux_hierarchy,
+    EquipementAffichageViewSet,
+    InterventionAfficherViewSet,
+    DefaillanceAfficherViewSet,
+>>>>>>> Stashed changes
 )
 
 router = DefaultRouter()
+router.register(r'utilisateurs', UserViewSet)
 router.register(r'roles', RoleViewSet)
 router.register(r'avoir', AvoirViewSet)
 router.register(r'fabricants', FabricantViewSet)
@@ -48,11 +62,24 @@ router.register(r'document-interventions', DocumentInterventionViewSet)
 
 
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 
 urlpatterns = [
     path('', include(router.urls)),
     path('lieux-hierarchy/', get_lieux_hierarchy, name='lieux-hierarchy'),
     path('equipements-detail/', EquipementDetailViewSet.as_view({'get': 'list'}), name='equipement-detail-list'),
+<<<<<<< Updated upstream
     path('equipements-detail/<str:reference>/', EquipementDetailViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
+=======
+    path('equipement/<str:reference>/avec-statut/', EquipementAvecDernierStatutViewSet.as_view({'get': 'retrieve'}), name='equipement-avec-statut'),
+    path('equipements-detail/<str:reference>/', EquipementDetailViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
+    path('equipement/<str:reference>/affichage/', EquipementAffichageViewSet.as_view({'get': 'retrieve'}), name='equipement-detail'),
+    path('intervention/<int:pk>/affichage/', InterventionAfficherViewSet.as_view({'get': 'retrieve'}), name='intervention-detail'),
+    path('defaillance/<int:pk>/affichage/', DefaillanceAfficherViewSet.as_view({'get': 'retrieve'}), name='defaillance-detail'),
+
+>>>>>>> Stashed changes
 ]

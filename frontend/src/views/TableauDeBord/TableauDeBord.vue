@@ -3,18 +3,14 @@
     <!-- Contenu principal -->
     <v-main>
       <v-container>
-
         <!-- Filtres et tableau -->
         <v-row>
           <!-- Colonne contenant Liste des défaillances signalées et Liste des interventions terminées -->
           <v-col cols="6">
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">
-                Listes des défaillances signalées
+                Liste des demandes de bons de travail
                 <v-spacer></v-spacer>
-                <v-btn color="success" @click="transformerEnBonDeTravail">
-                  Transformer en bon de travail
-                </v-btn>
               </v-card-title>
               <v-divider></v-divider>
               <v-data-table
@@ -22,10 +18,22 @@
                 :items="defaillances"
                 :items-per-page="5"
                 :page.sync="defaillancesPage"
+<<<<<<< Updated upstream
                 item-value="nom"
+=======
+                item-value="id"
+>>>>>>> Stashed changes
                 class="elevation-1 rounded-lg"
                 hide-default-footer
-              ></v-data-table>
+                @click:row="(event, {item}) => ouvrirAfficherDefaillance(item.id)"
+              >
+                <template v-slot:item.niveau="{ item }">
+                  <v-chip :color="getNiveauColor(item.niveau)" dark>
+                    {{ item.niveau }}
+                  </v-chip>
+                </template>
+              </v-data-table>
+
               <v-pagination
                 v-model="defaillancesPage"
                 :length="Math.ceil(defaillances.length / 5)"
@@ -36,11 +44,8 @@
           <v-col cols="6">
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">
-                Listes des interventions terminées
+                Liste des bons de travail terminés
                 <v-spacer></v-spacer>
-                <v-btn color="success" @click="cloturerFicheIntervention">
-                  Clôturer la fiche d'intervention
-                </v-btn>
               </v-card-title>
               <v-divider></v-divider>
               <v-data-table
@@ -48,10 +53,17 @@
                 :items="interventions"
                 :items-per-page="5"
                 :page.sync="interventionsPage"
+<<<<<<< Updated upstream
                 item-value="nom"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
                 @click:row="cloturerIntervention"
+=======
+                item-value="id"
+                class="elevation-1 rounded-lg"
+                hide-default-footer
+                @click:row="(event, {item}) => ouvrirAfficherIntervention(item.id)"
+>>>>>>> Stashed changes
               ></v-data-table>
               <v-pagination
                 v-model="interventionsPage"
@@ -73,9 +85,11 @@
 </template>
 
 <script>
-import NavigationDrawer from '@/components/BarreNavigation.vue'; // Assurez-vous que le chemin est correct
+import { useRouter } from 'vue-router';
+import NavigationDrawer from '@/components/BarreNavigation.vue';
 import TopNavBar from "@/components/BarreNavigationHaut.vue";
-import '@/assets/css/global.css'; // Importation du fichier CSS global
+import '@/assets/css/global.css';
+import api from '@/services/api';
 
 export default {
   components: {
@@ -84,7 +98,10 @@ export default {
   },
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
   setup() {
     const router = useRouter();
 
@@ -102,6 +119,9 @@ export default {
     };
   },
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   data() {
     return {
@@ -112,41 +132,85 @@ export default {
         { name: 'Techniciens', icon: require('@/assets/images/Techniciens.svg') },
       ],
       defaillancesHeaders: [
-        { text: 'Nom', value: 'nom' },
-        { text: 'Date de signalement', value: 'dateSignalement' },
+        { title: 'Commentaire', value: 'commentaireDefaillance' },
+        { title: 'Niveau', value: 'niveau' },
+        { title: 'Équipement', value: 'equipement' },
       ],
-      defaillances: [
-        { nom: 'Défaillance sur Équipement "Distributeur de Savon"', dateSignalement: '18/08/2024' },
-        { nom: 'Défaillance sur Équipement "Ordinateur SN25458"', dateSignalement: '19/08/2024' },
-        { nom: 'Défaillance sur Équipement "Vidéo projecteur SN25458"', dateSignalement: '25/05/2024' },
-        { nom: 'Défaillance sur Équipement "Tableau Blanc"', dateSignalement: '13/10/2024' },
-      ],
+      defaillances: [],
       interventionsHeaders: [
-        { text: 'Nom', value: 'nom' },
-        { text: 'Date de signalement', value: 'dateSignalement' },
+        { title: 'Nom', value: 'nomIntervention' },
+        { title: 'Date d\'assignation', value: 'dateAssignation' },
+        { title: 'Temps estimé', value: 'tempsEstime' },
       ],
-      interventions: [
-        { nom: 'Intervention sur Équipement "Distributeur de Savon"', dateSignalement: '18/08/2024' },
-        { nom: 'Intervention sur Équipement "Vidéo projecteur SN25458"', dateSignalement: '25/05/2024' },
-        { nom: 'Intervention sur Équipement "Vidéo projecteur SN25458"', dateSignalement: '25/05/2024' },
-        { nom: 'Intervention sur Équipement "Tableau Blanc"', dateSignalement: '13/10/2024' },
-      ],
-      nombreInterventions: 7,
+      interventions: [],
+      nombreInterventions: 0,
       defaillancesPage: 1,
       interventionsPage: 1,
     };
   },
+
   methods: {
+<<<<<<< Updated upstream
     transformerEnBonDeTravail() {
       console.log('Transformer en bon de travail');
+=======
+    handleItemSelected(item) {
+      console.log('Selected item:', item);
     },
-    cloturerFicheIntervention() {
-      console.log('Clôturer la fiche d\'intervention');
+
+    formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+>>>>>>> Stashed changes
     },
+
+    async fetchDefaillances() {
+      try {
+        const response = await api.getDefaillances();
+        this.defaillances = response.data.filter(defaillance => defaillance.dateTraitementDefaillance === null);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des défaillances:', error);
+      }
+    },
+<<<<<<< Updated upstream
     cloturerIntervention() {
       // Rediriger vers la page de clôture d'intervention sans paramètres
       this.$router.push({ name: 'CloturerIntervention' });
     },
+=======
+
+    getNiveauColor(niveau) {
+      switch (niveau) {
+        case 'Critique':
+          return 'red';
+        case 'Majeur':
+          return 'orange';
+        default:
+          return 'green';
+      }
+    },
+
+    async fetchInterventions() {
+      try {
+        const response = await api.getInterventions();
+        this.interventions = response.data
+          // .filter(intervention => intervention.dateFinIntervention !== null)
+          .map(intervention => ({
+            ...intervention,
+            dateAssignation: this.formatDate(intervention.dateAssignation)
+          }));
+        this.nombreInterventions = this.interventions.length; // Modifié ici
+      } catch (error) {
+        console.error('Erreur lors de la récupération des interventions:', error);
+      }
+    },
+  },
+
+  created() {
+    this.fetchDefaillances();
+    this.fetchInterventions();
+>>>>>>> Stashed changes
   },
 };
 </script>

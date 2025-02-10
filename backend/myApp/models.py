@@ -1,5 +1,7 @@
 # myApp/models.py
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.core.validators import RegexValidator, EmailValidator
 from django.contrib.auth.models import User, AbstractUser
 from django.core.exceptions import ValidationError
@@ -186,7 +188,7 @@ class InformationStatut(models.Model):
         ('Rebuté', 'Rebuté'),
         ('En fonctionnement', 'En fonctionnement'),
         ('Dégradé', 'Dégradé'),
-        ('A l\'arret', 'A l\'arret'),
+        ('A l\'arrêt', 'A l\'arrêt'),
     ]
     statutEquipement = models.CharField(
             max_length=50,
@@ -226,6 +228,7 @@ class Defaillance(models.Model):
         validators=[validate_niveau_de_defaillance])
     utilisateur = models.ForeignKey(User, on_delete=models.CASCADE)
     equipement = models.ForeignKey(Equipement, on_delete=models.CASCADE)
+    dateTraitementDefaillance = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.commentaireDefaillance
@@ -238,15 +241,17 @@ class DocumentDefaillance(models.Model):
     def __str__(self):
         return self.nomDocumentDefaillance
 
+
 class Intervention(models.Model):
-    nomIntervention = models.CharField(max_length=50, null=True, blank=True)
+    nomIntervention = models.CharField(max_length=500, null=True, blank=True)
     interventionCurative = models.BooleanField(null=True, blank=True)
     dateAssignation = models.DateTimeField()
-    dateCloture = models.DateTimeField()
+    dateCloture = models.DateTimeField(null=True, blank=True)
     dateDebutIntervention = models.DateTimeField(null=True, blank=True)
     dateFinIntervention = models.DateTimeField(null=True, blank=True)
     tempsEstime = models.TimeField(null=True, blank=True)
     commentaireIntervention = models.CharField(max_length=1000, null=True, blank=True)
+    commentaireRefusCloture = models.CharField(max_length=1000, null=True, blank=True)
     defaillance = models.ForeignKey(Defaillance, on_delete=models.CASCADE)
     createurIntervention = models.ForeignKey(User,
     related_name='createurIntervention', 
@@ -264,7 +269,7 @@ class Intervention(models.Model):
         return self.nomIntervention
 
 class DocumentIntervention(models.Model):
-    nomDocumentIntervention = models.CharField(max_length=50)
+    nomDocumentIntervention = models.CharField(max_length=500)
     lienDocumentIntervention = models.FileField(upload_to='documents/documentIntervention', null=False) 
     intervention = models.ForeignKey(Intervention, on_delete=models.CASCADE)
 
