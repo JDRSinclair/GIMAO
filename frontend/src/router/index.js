@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 // ---------------------------------------------------------------
-import TableauDeBord from '@/views/TableauDeBord/TableauDeBord.vue'
+import Dashboard from '@/views/Dashboard/Dashboard.vue'
 import EquipmentList from '@/views/Equipments/EquipmentList.vue'
 import Maintenances from '@/views/Maintenances/Maintenances.vue'
 import Techniciens from '@/views/Techniciens/Techniciens.vue'
 import AccountManagement from '@/views/AccountManagement/AccountManagement.vue'
-import Commandes from '@/views/Commandes/Commandes.vue'
+import Orders from '@/views/Orders/Orders.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
 import Signalements from '@/views/Failures/Defaillances.vue'
 
@@ -51,8 +51,8 @@ import ConsumableDetail from '@/views/DataManagement/Consumables/ConsumableDetai
 const routes = [
   {
     path: '/',
-    name: 'TableauDeBord',
-    component: TableauDeBord,
+    name: 'Dashboard',
+    component: Dashboard,
     meta: { title: 'Tableau de Bord' }
   },
 
@@ -71,9 +71,9 @@ const routes = [
   },
 
   {
-    path: '/commandes',
-    name: 'Commandes',
-    component: Commandes,
+    path: '/Orders',
+    name: 'Orders',
+    component: Orders,
     meta: { title: 'Commandes' }
     
   },

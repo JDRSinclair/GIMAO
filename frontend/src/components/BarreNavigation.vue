@@ -52,13 +52,13 @@ export default {
     navigationItems: {
       type: Array,
       default: () => [
-        { name: 'TableauDeBord', icon: 'mdi-view-dashboard', title: 'Tableau de bord' },
+        { name: 'Dashboard', icon: 'mdi-view-dashboard', title: 'Tableau de bord' },
         { name: 'EquipmentList', icon: 'mdi-tools', title: 'Équipements' },
         { name: 'Maintenances', icon: 'mdi-wrench', title: 'Bons de travail' },
         { name: 'Signalements', icon: 'mdi-alert', title: 'Demandes de <br>bons de travail' },
         { name: 'Techniciens', icon: 'mdi-account-hard-hat', title: 'Techniciens', disabled: true },
         { name: 'AccountManagement', icon: 'mdi-account-cog', title: 'Gestion des <br>comptes', disabled: true },
-        { name: 'Commandes', icon: 'mdi-cart', title: 'Commandes', disabled: true },
+        { name: 'Orders', icon: 'mdi-cart', title: 'Orders', disabled: true },
         { name: 'Stocks', icon: 'mdi-package-variant-closed', title: 'Stocks',disabled: true },
         { name: 'DataManagement', icon: 'mdi-database-cog', title: 'Gestion des <br>données' }
       ],
@@ -76,7 +76,7 @@ export default {
       };
     },
     goToDashboard() {
-      this.$router.push({ name: 'TableauDeBord' });
+      this.$router.push({ name: 'Dashboard' });
     },
   },
 };

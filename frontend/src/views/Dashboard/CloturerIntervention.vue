@@ -67,7 +67,7 @@ import { useRouter } from 'vue-router';
 import api from '@/services/api';
 
 export default {
-  name: 'CloturerIntervention',
+  name: 'CloseIntervention',
   setup() {
     const router = useRouter();
     const intervention = reactive({

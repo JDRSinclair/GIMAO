@@ -141,7 +141,7 @@
               Rouvrir l'intervention
             </v-btn>
 
-            <v-btn color="success" class="text-white mx-2" @click="cloturerIntervention" :disabled="!canCloturer">
+            <v-btn color="success" class="text-white mx-2" @click="CloseIntervention" :disabled="!canCloturer">
               Clôturer l'intervention
             </v-btn>
           </v-row>

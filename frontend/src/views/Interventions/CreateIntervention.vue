@@ -234,7 +234,7 @@ export default {
     };
 
     const deleteInterventionRequest = () => {
-      routeur.push({ name: 'TableauDeBord' });
+      routeur.push({ name: 'Dashboard' });
     };
 
     const validateForm = async () => {
@@ -289,7 +289,7 @@ export default {
         { title: 'Interventions', icon: 'mdi-wrench', route: '/interventions' },
         { title: 'Equipements', icon: 'mdi-laptop', route: '/equipements' },
         { title: 'Gestion des données', icon: 'mdi-database', route: '/gestion-donnees' },
-        { title: 'Commandes', icon: 'mdi-cart', route: '/commandes' },
+        { title: 'Commandes', icon: 'mdi-cart', route: '/Orders' },
       ],
       handleItemSelected(route) {
         routeur.push(route);

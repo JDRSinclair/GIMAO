@@ -23,7 +23,7 @@ export default {
     return {
       currentPageTitle: '',
       menuItems: [
-        { name: 'Tableau de bord', icon: require('@/assets/images/Graphe.svg'), routeName: 'TableauDeBord' },
+        { name: 'Tableau de bord', icon: require('@/assets/images/Graphe.svg'), routeName: 'Dashboard' },
         { name: 'Equipements', icon: require('@/assets/images/Outils.svg'), routeName: 'Equipements' },
         { name: 'Maintenances', icon: require('@/assets/images/Maintenance.svg'), routeName: 'Maintenances' },
         { name: 'Techniciens', icon: require('@/assets/images/Techniciens.svg'), routeName: 'Techniciens' },
