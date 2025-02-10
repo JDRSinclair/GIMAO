@@ -13,7 +13,7 @@
       <v-col cols="3" class="align-center">
         <v-btn 
           color="primary" 
-          @click="$router.push('/CreateConsummable')"
+          @click="$router.push('/CreateConsumable')"
           class="ml-2"
           height="50%"
         >

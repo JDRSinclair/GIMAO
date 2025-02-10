@@ -1,42 +1,42 @@
 <template>
   <v-container>
     <v-row>
-      <!-- Colonne de gauche -->
+      <!-- Left Column -->
       <v-col cols="4">
-        <!-- Carte : Structure des lieux -->
+        <!-- Card: Structure of Locations -->
         <v-card elevation="1" class="rounded-lg pa-2 mb-4">
           <v-card-title class="font-weight-bold text-uppercase text-primary">
-            Structure des lieux
+            Structure des Lieux
           </v-card-title>
           <v-divider></v-divider>
           <div>
-            <!-- Message si aucune donnée n'est disponible -->
-            <p v-if="!lieuxAvecTous || lieuxAvecTous.length === 0">Aucune donnée disponible.</p>
-            <!-- Arborescence des lieux -->
+            <!-- Message if no data is available -->
+            <p v-if="!locations_with_all || locations_with_all.length === 0">No data available.</p>
+            <!-- Treeview of locations -->
             <v-treeview
               v-else
-              v-model:selected="selectedTreeNodes"
-              :items="lieux"
+              v-model:selected="selected_tree_nodes"
+              :items="locations"
               item-title="nomLieu"
               item-value="id"
               select-strategy="selectionType"
               selectable
               dense
-              @update:selected="onSelectLieu"
+              @update:selected="on_select_location"
             >
-              <!-- Slot pour l'icône de préfixe (flèche pour ouvrir/fermer les nœuds) -->
+              <!-- Slot for the prefix icon (arrow to open/close nodes) -->
               <template v-slot:prepend="{ item, open }">
                 <v-icon
                   v-if="item.children && item.children.length > 0 && item.nomLieu !== 'Tous'"
-                  @click.stop="toggleNode(item)"
+                  @click.stop="toggle_node(item)"
                   :class="{ 'rotate-icon': open }"
                 >
                   {{ open ? 'mdi-triangle-down' : 'mdi-triangle-right' }}
                 </v-icon>
-                <!-- Espace réservé pour les éléments sans enfants -->
+                <!-- Placeholder for items without children -->
                 <span v-else class="tree-icon-placeholder"></span>
               </template>
-              <!-- Slot pour le label personnalisé (affichage du type de lieu) -->
+              <!-- Slot for custom label (display of location type) -->
               <template v-slot:label="{ item }">
                 <span class="text-caption ml-2">{{ item.typeLieu }}</span>
               </template>
@@ -44,64 +44,63 @@
           </div>
         </v-card>
         
-        <!-- Carte : Types d'équipements -->
+        <!-- Card: Types of Equipment -->
         <v-card elevation="1" class="rounded-lg pa-2">
           <v-card-title class="font-weight-bold text-uppercase text-primary">
-            Types d'équipements
+            Types des Equipements
           </v-card-title>
           <v-divider></v-divider>
-          <!-- Liste des types d'équipements -->
+          <!-- List of equipment types -->
           <v-list dense>
-            <!-- Option "Tous" pour sélectionner tous les types d'équipements -->
+            <!-- "All" option to select all types of equipment -->
             <v-list-item
               link
-              @click="handleTypeEquipementSelected(null)"
-              :class="{ 'selected-item': selectedTypeEquipements.length === 0 }"
+              @click="handle_equipment_type_selected(null)"
+              :class="{ 'selected-item': selected_type_equipments.length === 0 }"
             >
-              <v-list-item-title>Tous</v-list-item-title>
+              <v-list-item-title>All</v-list-item-title>
             </v-list-item>
-            <!-- Boucle pour afficher chaque type d'équipement -->
+            <!-- Loop to display each type of equipment -->
             <v-list-item
-              v-for="(modele, index) in modeleEquipements"
+              v-for="(model, index) in equipment_models"
               :key="index"
               link
-              @click="handleTypeEquipementSelected(modele)"
-              :class="{ 'selected-item': isTypeEquipementSelected(modele) }"
+              @click="handle_equipment_type_selected(model)"
+              :class="{ 'selected-item': is_equipment_type_selected(model) }"
             >
-              <v-list-item-title>{{ modele.nomModeleEquipement }}</v-list-item-title>
+              <v-list-item-title>{{ model.nomModeleEquipement }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card>
       </v-col>
       
-      <!-- Colonne de droite -->
+      <!-- Right Column -->
       <v-col cols="8">
-        <!-- Bouton pour rediriger vers la page d'ajout d'équipement -->
-        <v-btn color="primary" @click="ouvrirPageAjoutEquipement" class="mb-4">
-          Aller à l'ajout d'équipement
+        <!-- Button to redirect to the equipment addition page -->
+        <v-btn color="primary" @click="open_add_equipment_page" class="mb-4">
+          Ajouter un Equipement
         </v-btn>
 
-        <!-- Tableau des équipements -->
+        <!-- Equipment Table -->
         <v-data-table
           :headers="header"
-          :items="filteredEquipements"
-          :items-per-page="itemsPerPage"
+          :items="filtered_equipments"
+          :items-per-page="items_per_page"
           :page.sync="page"
           class="elevation-1 rounded-lg"
           @page-count="pageCount = $event"
           :sort-by="['designation']"
           :sort-desc="[false]"
         >
-        
-          <!-- Template personnalisé pour chaque ligne du tableau -->
+          <!-- Custom template for each row in the table -->
           <template v-slot:item="{ item }">
-            <!-- Ligne cliquable pour afficher les détails de l'équipement -->
-            <tr @click="ouvrirAfficherEquipement(item.reference)" style="cursor: pointer;">
+            <!-- Clickable row to show equipment details -->
+            <tr @click="open_view_equipment(item.reference)" style="cursor: pointer;">
               <td>{{ item.modeleEquipement.nomModeleEquipement }}</td>
               <td>{{ item.lieu.nomLieu }}</td>
               <td>
                 <v-chip
-                  :color="getStatusColor(item.statut.statutEquipement)"
+                  :color="get_status_color(item.statut.statutEquipement)"
                   text-color="white"
                   small
                 >
@@ -131,85 +130,85 @@ export default {
   setup() {
     const router = useRouter();
 
-    // État réactif pour gérer les données et l'état du composant
+    // Reactive state to manage data and component state
     const state = reactive({
-      equipements: [],
-      lieux: [],
-      modeleEquipements: [],
-      selectedLieu: [],
-      selectedTypeEquipements: [],
-      selectedTreeNodes: [],
+      equipments: [],
+      locations: [],
+      equipment_models: [],
+      selected_location: [],
+      selected_type_equipments: [],
+      selected_tree_nodes: [],
       page: 1,
       pageCount: 0,
-      itemsPerPage: 10,
+      items_per_page: 10,
       header: [
         { title: 'Désignation', value: 'modeleEquipement.nomModeleEquipement', sortable: true, align: 'center' },
         { title: 'Lieu', value: 'lieu.nomLieu', sortable: true, align: 'center' },
         { title: 'Statut', value: 'statut.statutEquipement', sortable: true, align: 'center',
           sort: (a, b) => {
-            const order = ['Rebuté', 'En fonctionnement', 'Dégradé', 'A l\'arrêt'];
+            const order = ['Rebuté', 'En fonctionnement', 'Dégradé', 'A l\'arret'];
             return order.indexOf(a) - order.indexOf(b);
           }
         },
       ],
-      openNodes: new Set(),
+      open_nodes: new Set(),
     });
 
-    // Fonction pour récupérer les données depuis l'API
+    // Function to fetch data from the API
     const fetchData = async () => {
       try {
-        const [equipementsRes, lieuxRes, modeleEquipementsRes] = await Promise.all([
+        const [equipmentsRes, locationsRes, equipmentModelsRes] = await Promise.all([
           api.getEquipementsVue(),
           api.getLieuxHierarchy(),
           api.getModeleEquipements()
         ]);
 
-        state.equipements = equipementsRes.data;
-        state.lieux = lieuxRes.data;
-        state.modeleEquipements = modeleEquipementsRes.data;
+        state.equipments = equipmentsRes.data;
+        state.locations = locationsRes.data;
+        state.equipment_models = equipmentModelsRes.data;
       } catch (error) {
-        console.error('Erreur lors de la récupération des données:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
-    const getStatusColor = (statut) => {
-      switch (statut) {
+    const get_status_color = (status) => {
+      switch (status) {
         case 'En fonctionnement':
           return 'green';
         case 'Dégradé':
           return 'orange';
-        case 'À l\'arrêt':
+        case 'A l\'arret':
           return 'red';
         default:
           return 'black';
       }
     };
 
-    // Calcul des lieux avec l'option "Tous"
-    const lieuxAvecTous = computed(() => {
-      return [{ id: null, nomLieu: 'Tous' }, ...state.lieux];
+    // Compute locations with the "All" option
+    const locations_with_all = computed(() => {
+      return [{ id: null, nomLieu: 'All' }, ...state.locations];
     });
 
-    // Gestion de la sélection d'un lieu dans l'arborescence
-    const onSelectLieu = (items) => {
+    // Handle selection of a location in the treeview
+    const on_select_location = (items) => {
       if (items.length > 0) {
-        state.selectedLieu = items.map(id => {
-          const selectedItem = findItem(lieuxAvecTous.value, id);
+        state.selected_location = items.map(id => {
+          const selectedItem = find_item(locations_with_all.value, id);
           return selectedItem?.nomLieu;
         }).filter(Boolean);
       } else {
-        state.selectedLieu = [];
+        state.selected_location = [];
       }
     };
 
-    // Fonction pour trouver un élément dans l'arborescence
-    const findItem = (items, id) => {
+    // Function to find an item in the treeview
+    const find_item = (items, id) => {
       for (const item of items) {
         if (item.id === id) {
           return item;
         }
         if (item.children) {
-          const found = findItem(item.children, id);
+          const found = find_item(item.children, id);
           if (found) {
             return found;
           }
@@ -218,72 +217,72 @@ export default {
       return null;
     };
 
-    // Fonction pour basculer l'état d'un nœud dans l'arborescence
-    const toggleNode = (item) => {
-      if (state.openNodes.has(item.id)) {
-        state.openNodes.delete(item.id);
+    // Function to toggle the state of a node in the treeview
+    const toggle_node = (item) => {
+      if (state.open_nodes.has(item.id)) {
+        state.open_nodes.delete(item.id);
       } else {
-        state.openNodes.add(item.id);
+        state.open_nodes.add(item.id);
       }
     };
 
-    // Gestion de la sélection d'un type d'équipement
-    const handleTypeEquipementSelected = (modele) => {
-      if (modele === null) {
-        state.selectedTypeEquipements = [];
+    // Handle selection of an equipment type
+    const handle_equipment_type_selected = (model) => {
+      if (model === null) {
+        state.selected_type_equipments = [];
       } else {
-        const index = state.selectedTypeEquipements.findIndex(m => m.nomModeleEquipement === modele.nomModeleEquipement);
+        const index = state.selected_type_equipments.findIndex(m => m.nomModeleEquipement === model.nomModeleEquipement);
         if (index > -1) {
-          state.selectedTypeEquipements.splice(index, 1);
+          state.selected_type_equipments.splice(index, 1);
         } else {
-          state.selectedTypeEquipements.push(modele);
+          state.selected_type_equipments.push(model);
         }
       }
     };
 
-    // Vérifie si un type d'équipement est sélectionné
-    const isTypeEquipementSelected = (modele) => {
-      return state.selectedTypeEquipements.some(m => m.nomModeleEquipement === modele.nomModeleEquipement);
+    // Check if an equipment type is selected
+    const is_equipment_type_selected = (model) => {
+      return state.selected_type_equipments.some(m => m.nomModeleEquipement === model.nomModeleEquipement);
     };
 
-    // Filtrage des équipements en fonction des sélections
-    const filteredEquipements = computed(() => {
-      return state.equipements.filter(e => {
-        const lieuMatch = state.selectedLieu.length === 0 || 
-                         state.selectedLieu.includes('Tous') || 
-                         state.selectedLieu.includes(e.lieu.nomLieu);
-        const typeMatch = state.selectedTypeEquipements.length === 0 ||
-                         state.selectedTypeEquipements.some(m => 
+    // Filter equipments based on selections
+    const filtered_equipments = computed(() => {
+      return state.equipments.filter(e => {
+        const locationMatch = state.selected_location.length === 0 || 
+                           state.selected_location.includes('All') || 
+                           state.selected_location.includes(e.lieu.nomLieu);
+        const typeMatch = state.selected_type_equipments.length === 0 ||
+                         state.selected_type_equipments.some(m => 
                            m.nomModeleEquipement === e.modeleEquipement.nomModeleEquipement
                          );
-        return lieuMatch && typeMatch;
+        return locationMatch && typeMatch;
       });
     });
 
-    // Redirection vers la page d'ajout d'équipement
-    const ouvrirPageAjoutEquipement = () => {
+    // Redirect to the add equipment page
+    const open_add_equipment_page = () => {
       router.push('/CreateEquipment');
     };
 
-    // Redirection vers la page d'affichage d'un équipement
-    const ouvrirAfficherEquipement = (reference) => {
+    // Redirect to the view equipment page
+    const open_view_equipment = (reference) => {
       router.push({ name: 'EquipmentDetail', params: { reference: reference } });
     };
 
-    // Chargement des données au montage du composant
+    // Load data on component mount
     onMounted(fetchData);
 
     return {
       ...toRefs(state),
-      lieuxAvecTous,
-      filteredEquipements,
-      onSelectLieu,
-      handleTypeEquipementSelected,
-      ouvrirPageAjoutEquipement,
-      ouvrirAfficherEquipement,
-      isTypeEquipementSelected,
-      toggleNode,
-      getStatusColor,
+      locations_with_all,
+      filtered_equipments,
+      on_select_location,
+      handle_equipment_type_selected,
+      open_add_equipment_page,
+      open_view_equipment,
+      is_equipment_type_selected,
+      toggle_node,
+      get_status_color,
     };
   }
 };
