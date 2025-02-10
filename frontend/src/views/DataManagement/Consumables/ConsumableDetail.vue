@@ -26,7 +26,7 @@
             </v-list>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" @click="goBack">
+            <v-btn color="primary" @click="go_back">
               Retour
             </v-btn>
             <v-spacer></v-spacer>
@@ -89,7 +89,7 @@ export default {
       }
     };
 
-    const goBack = () => {
+    const go_back = () => {
       router.go(-1);
     };
 
@@ -104,7 +104,7 @@ export default {
       manufacturerName,
       errorMessage,
       isLoading,
-      goBack,
+      go_back,
       showDeleteConfirmation
     };
   }

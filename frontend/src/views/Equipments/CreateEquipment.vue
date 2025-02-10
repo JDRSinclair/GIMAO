@@ -165,7 +165,7 @@
           </div>
 
           <v-row justify="end">
-            <v-btn color="secondary" class="mt-4 rounded" @click="goBack" style="border-radius: 0; margin-right: 35px;" large>
+            <v-btn color="secondary" class="mt-4 rounded" @click="go_back" style="border-radius: 0; margin-right: 35px;" large>
               Annuler
             </v-btn>
             <v-btn type="submit" color="primary" class="mt-4 rounded" style="border-radius: 0 ;margin-right: 35px;" large>
@@ -256,7 +256,7 @@ export default {
             });
           }
           
-          goBack();
+          go_back();
         } else {
           console.log('Erreur lors de l\'ajout de l\'équipement.');
         }
@@ -282,7 +282,7 @@ export default {
       }
     };
 
-    const goBack = () => {
+    const go_back = () => {
       router.go(-1);
     };
 
@@ -296,7 +296,7 @@ export default {
       lieuxAvecTous,
       onClickLieu,
       toggleNode,
-      goBack,
+      go_back,
     };
   },
 };
