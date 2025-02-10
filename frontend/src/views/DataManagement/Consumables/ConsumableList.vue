@@ -4,7 +4,7 @@
       <!-- Barre de recherche -->
       <v-col cols="9">
         <v-text-field
-          v-model="searchQuery"
+          v-model="search_query"
           label="Rechercher un consommable"
           prepend-icon="mdi-magnify"
           clearable
@@ -22,16 +22,16 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col v-for="consommable in filtered_consumable" :key="consommable.id" cols="12" sm="6" md="4">
-        <v-card @click="go_to_consumable_details(consommable.id)">
+      <v-col v-for="consumable in filtered_consumables" :key="consumable.id" cols="12" sm="6" md="4">
+        <v-card @click="go_to_consumable_details(consumable.id)">
           <v-img
-            :src="consommable.lienImageConsommable"
+            :src="consumable.lienImageConsommable"
             height="200px"
             cover
           ></v-img>
-          <v-card-title>{{ consommable.designation }}</v-card-title>
+          <v-card-title>{{ consumable.designation }}</v-card-title>
           <v-card-text>
-            Fabricant: {{ consommable.fabricantNom }}
+            Fabricant: {{ consumable.manufacturer_name }}
           </v-card-text>
         </v-card>
       </v-col>
@@ -48,26 +48,26 @@ export default {
     return {
       consommables: [],
       fabricants: [],
-      searchQuery: ''
+      search_query: ''
     };
   },
   computed: {
     consumables_with_manufacturers() {
-      return this.consommables.map(consommable => {
-        const fabricant = this.fabricants.find(f => f.id === consommable.fabricant);
+      return this.consommables.map(consumable => {
+        const manufacturer = this.fabricants.find(f => f.id === consumable.fabricant);
         return {
-          ...consommable,
-          fabricantNom: fabricant ? fabricant.nomFabricant : 'Inconnu'
+          ...consumable,
+          manufacturer_name: manufacturer ? manufacturer.nomFabricant : 'Inconnu'
         };
       });
     },
-    filtered_consumable() {
-      if (!this.searchQuery) {
+    filtered_consumables() {
+      if (!this.search_query) {
         return this.consumables_with_manufacturers;
       }
-      const searchLower = this.searchQuery.toLowerCase();
-      return this.consumables_with_manufacturers.filter(consommable => 
-        consommable.designation.toLowerCase().includes(searchLower)
+      const searchLower = this.search_query.toLowerCase();
+      return this.consumables_with_manufacturers.filter(consumable => 
+        consumable.designation.toLowerCase().includes(searchLower)
       );
     }
   },
@@ -80,7 +80,7 @@ export default {
         console.error('Erreur lors de la récupération des consommables:', error);
       }
     },
-    async fetch_manufacturer() {
+    async fetch_manufacturers() {
       try {
         const response = await api.getFabricants();
         this.fabricants = response.data;
@@ -93,7 +93,7 @@ export default {
     }
   },
   async created() {
-    await Promise.all([this.fetch_consumables(), this.fetch_manufacturer()]);
+    await Promise.all([this.fetch_consumables(), this.fetch_manufacturers()]);
   }
 }
 </script>

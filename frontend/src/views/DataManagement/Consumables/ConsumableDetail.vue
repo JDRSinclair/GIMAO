@@ -5,8 +5,8 @@
         <v-card v-if="consumable">
           <v-card-title>Détails du consommable</v-card-title>
           <v-card-text>
-            <v-alert v-if="errorMessage" type="error">
-              {{ errorMessage }}
+            <v-alert v-if="error_message" type="error">
+              {{ error_message }}
             </v-alert>
             <v-img
               v-if="consumable.lienImageConsommable"
@@ -21,7 +21,7 @@
               </v-list-item>
               <v-list-item>
                 <v-list-item-title>Fabricant:</v-list-item-title>
-                <v-list-item-subtitle>{{ manufacturerName }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ manufacturer_name }}</v-list-item-subtitle>
               </v-list-item>
             </v-list>
           </v-card-text>
@@ -32,7 +32,7 @@
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
-        <v-alert v-else-if="isLoading" type="info">
+        <v-alert v-else-if="is_loading" type="info">
           Chargement du consommable...
         </v-alert>
         <v-alert v-else type="warning">
@@ -54,17 +54,17 @@ export default {
     const route = useRoute();
     const consumable = ref(null);
     const fabricant = ref(null);
-    const errorMessage = ref('');
-    const isLoading = ref(true);
-    const showDeleteConfirmation = ref(false);
+    const error_message = ref('');
+    const is_loading = ref(true);
+    const show_delete_confirmation = ref(false);
 
-    const manufacturerName = computed(() => {
+    const manufacturer_name = computed(() => {
       return fabricant.value ? fabricant.value.nomFabricant : 'Non spécifié';
     });
 
     const get_consumable = async () => {
-      isLoading.value = true;
-      errorMessage.value = '';
+      is_loading.value = true;
+      error_message.value = '';
       try {
         const response = await api.getConsommable(route.params.id);
         consumable.value = response.data;
@@ -73,9 +73,9 @@ export default {
         }
       } catch (error) {
         console.error('Error fetching consommable:', error);
-        errorMessage.value = 'Erreur lors de la récupération du consommable.';
+        error_message.value = 'Erreur lors de la récupération du consommable.';
       } finally {
-        isLoading.value = false;
+        is_loading.value = false;
       }
     };
 
@@ -85,7 +85,7 @@ export default {
         fabricant.value = response.data;
       } catch (error) {
         console.error('Error fetching fabricant:', error);
-        errorMessage.value = 'Erreur lors de la récupération du fabricant.';
+        error_message.value = 'Erreur lors de la récupération du fabricant.';
       }
     };
 
@@ -93,19 +93,17 @@ export default {
       router.go(-1);
     };
 
-
-
     onMounted(() => {
       get_consumable();
     });
 
     return {
       consumable,
-      manufacturerName,
-      errorMessage,
-      isLoading,
+      manufacturer_name,
+      error_message,
+      is_loading,
       go_back,
-      showDeleteConfirmation
+      show_delete_confirmation
     };
   }
 };

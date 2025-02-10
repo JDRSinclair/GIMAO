@@ -109,7 +109,7 @@ const routes = [
 
   {
     path: '/ConsumableDetail/:id',
-    name: 'ConsummableDetail',
+    name: 'ConsumableDetail',
     component: ConsumableDetail,
     props: true,
     meta: { title: 'Détails d\'un consommable' }

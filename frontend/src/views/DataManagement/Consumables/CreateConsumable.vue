@@ -5,10 +5,10 @@
         <v-card>
           <v-card-title>Ajouter un nouveau consommable</v-card-title>
           <v-card-text>
-            <v-alert v-if="errorMessage" type="error">
-              {{ errorMessage }}
+            <v-alert v-if="error_message" type="error">
+              {{ error_message }}
             </v-alert>
-            <v-alert v-if="isLoading" type="info">
+            <v-alert v-if="is_loading" type="info">
               Chargement des fabricants...
             </v-alert>
             <v-form @submit.prevent="submit_form">
@@ -26,7 +26,7 @@
               ></v-file-input>
               
               <v-select
-                v-if="!isLoading && fabricants.length > 0"
+                v-if="!is_loading && fabricants.length > 0"
                 v-model="consumable.fabricant"
                 :items="fabricants"
                 item-title="nomFabricant"
@@ -39,11 +39,10 @@
               <v-btn color="secondary" class="mt-4 mr-2" @click="go_back">
                 Retour
               </v-btn>
-              <v-btn type="submit" color="primary" class="mt-4" :disabled="!isFormValid">
+              <v-btn type="submit" color="primary" class="mt-4" :disabled="!is_form_valid">
                 Ajouter le consommable
               </v-btn>
             </v-form>
-            
             
           </v-card-text>
         </v-card>
@@ -65,33 +64,33 @@ export default {
       fabricant: null
     });
     const fabricants = ref([]);
-    const errorMessage = ref('');
-    const isLoading = ref(false);
+    const error_message = ref('');
+    const is_loading = ref(false);
 
-    const isFormValid = computed(() => {
+    const is_form_valid = computed(() => {
       return consumable.value.designation && 
              consumable.value.fabricant && 
              consumable.value.lienImageConsommable;
     });
 
     const get_manufacturers = async () => {
-      isLoading.value = true;
-      errorMessage.value = '';
+      is_loading.value = true;
+      error_message.value = '';
       try {
         const response = await api.getFabricants();
         fabricants.value = response.data;
         console.log('Fabricants récupérés:', JSON.stringify(fabricants.value, null, 2));
       } catch (error) {
         console.error('Error fetching fabricants:', error);
-        errorMessage.value = 'Erreur lors de la récupération des fabricants.';
+        error_message.value = 'Erreur lors de la récupération des fabricants.';
       } finally {
-        isLoading.value = false;
+        is_loading.value = false;
       }
     };
 
     const submit_form = async () => {
-      if (!isFormValid.value) {
-        errorMessage.value = 'Veuillez remplir tous les champs requis.';
+      if (!is_form_valid.value) {
+        error_message.value = 'Veuillez remplir tous les champs requis.';
         return;
       }
 
@@ -128,9 +127,9 @@ export default {
     return {
       consumable,
       fabricants,
-      errorMessage,
-      isLoading,
-      isFormValid,
+      error_message,
+      is_loading,
+      is_form_valid,
       submit_form,
       go_back,
       handle_file_change
