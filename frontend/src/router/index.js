@@ -45,6 +45,10 @@ import ConsumableList from '@/views/DataManagement/Consumables/ConsumableList.vu
 import CreateConsumable from '@/views/DataManagement/Consumables/CreateConsumable.vue'
 import ConsumableDetail from '@/views/DataManagement/Consumables/ConsumableDetail.vue'
 
+import ModelEquipmentList from '@/views/DataManagement/EquipmentsModels/ModelEquipmentList.vue'
+import CreateModelEquipment from '@/views/DataManagement/EquipmentsModels/CreateModelEquipment.vue'
+import ModelEquipmentDetail from '@/views/DataManagement/EquipmentsModels/ModelEquipmentDetail.vue'
+
 
 
 
@@ -289,7 +293,28 @@ const routes = [
   },
 
 
+    // Modele Equipements ---------------------------------------------------------------
 
+    {
+      path: '/ModelEquipmentList',
+      name: 'ModelEquipmentList',
+      component: ModelEquipmentList,
+      meta: { title: 'Modele' }
+    },
+
+    {
+      path: '/CreateModelEquipment',
+      name: 'CreateModelEquipment',
+      component: CreateModelEquipment,
+      meta: { title: 'Creer un modele equipement' }
+    },
+    
+    {
+      path: '/ModelEquipmentDetail/:id',
+      name: 'ModelEquipmentDetail',
+      component: ModelEquipmentDetail,
+      meta: { title: 'Creer un modele equipement' }
+    },
   
 
 ]

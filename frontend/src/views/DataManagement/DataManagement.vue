@@ -32,7 +32,7 @@ export default {
         { name: "Consommables", route: "/ConsumableList", icon: "mdi-package-variant", color: "green" },
         { name: "Fournisseurs", route: "/SupplierList", icon: "mdi-truck", color: "orange" },
         { name: "Fabricants", route: "/ManufacturerList", icon: "mdi-factory", color: "red" },
-        { name: "Modeles Equipements", route: "/modeles-equipements", icon: "mdi-cog", color: "purple" },
+        { name: "Modeles Equipements", route: "/ModelEquipmentList", icon: "mdi-cog", color: "purple" },
       ],
     };
   },
