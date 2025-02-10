@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <v-container>
-        <v-form @submit.prevent="submitForm">
+        <v-form @submit.prevent="submit_form">
   
           <v-text-field
             v-model="formData.nomLieu"
@@ -23,10 +23,10 @@
           ></v-text-field>
   
           <div>
-            <p v-if="!lieux_avec_tous || lieux_avec_tous.length === 0">Aucune donnée disponible.</p>
+            <p v-if="!places_with_all || places_with_all.length === 0">Aucune donnée disponible.</p>
             <v-treeview
               v-else
-              :items="lieux_avec_tous"
+              :items="places_with_all"
               item-key="id"
               :open-on-click="false"
               item-text="nomLieu"
@@ -38,7 +38,7 @@
               <template v-slot:prepend="{ item, open }">
                 <v-icon
                   v-if="item.children && item.children.length > 0 && item.nomLieu !== 'Tous'"
-                  @click.stop="toggleNode(item)"
+                  @click.stop="toggle_node(item)"
                   :class="{ 'rotate-icon': open }"
                 >
                   {{ open ? 'mdi-triangle-down' : 'mdi-triangle-right' }}
@@ -93,7 +93,7 @@ export default {
       lieux: [],
     });
 
-    const lieux_avec_tous = computed(() => {
+    const places_with_all = computed(() => {
       return [...state.lieux];
     });
 
@@ -108,7 +108,7 @@ export default {
       }
     };
 
-    const toggleNode = (item) => {
+    const toggle_node = (item) => {
       if (state.openNodes.has(item.id)) {
         state.openNodes.delete(item.id);
       } else {
@@ -116,7 +116,7 @@ export default {
       }
     };
 
-    const submitForm = async () => {
+    const submit_form = async () => {
       const formData = new FormData();
       formData.append('nomLieu', state.formData.nomLieu);
       formData.append('typeLieu', state.formData.typeLieu);
@@ -138,7 +138,7 @@ export default {
       }
     };
 
-    const fetchData = async () => {
+    const fetch_data = async () => {
       try {
         const [lieuRES] = await Promise.all([api.getLieuxHierarchy()]);
         state.lieux = lieuRES.data;
@@ -152,15 +152,15 @@ export default {
     };
 
     onMounted(() => {
-      fetchData();
+      fetch_data();
     });
 
     return {
       ...toRefs(state),
-      submitForm,
-      lieux_avec_tous,
+      submit_form,
+      places_with_all,
       on_click_location,
-      toggleNode,
+      toggle_node,
       go_back,
     };
   },

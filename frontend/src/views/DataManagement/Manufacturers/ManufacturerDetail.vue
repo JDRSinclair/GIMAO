@@ -38,7 +38,7 @@
             </v-list>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" @click="goBack">
+            <v-btn color="primary" @click="go_back">
               Retour
             </v-btn>
             <v-spacer></v-spacer>
@@ -80,7 +80,7 @@ export default {
     const isLoading = ref(true);
     const showDeleteConfirmation = ref(false);
 
-    const getFabricant = async () => {
+    const get_manufacturer = async () => {
       isLoading.value = true;
       errorMessage.value = '';
       try {
@@ -94,19 +94,19 @@ export default {
       }
     };
 
-    const goBack = () => {
+    const go_back = () => {
       router.go(-1);
     };
 
     onMounted(() => {
-      getFabricant();
+      get_manufacturer();
     });
 
     return {
       fabricant,
       errorMessage,
       isLoading,
-      goBack,
+      go_back,
       showDeleteConfirmation
     };
   }

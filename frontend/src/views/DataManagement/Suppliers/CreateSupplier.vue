@@ -8,7 +8,7 @@
             <v-alert v-if="errorMessage" type="error">
               {{ errorMessage }}
             </v-alert>
-            <v-form @submit.prevent="submitForm">
+            <v-form @submit.prevent="submit_form">
               <v-text-field
                 v-model="fournisseur.nomFournisseur"
                 label="Nom du fournisseur"
@@ -64,7 +64,7 @@
                 label="Service Après-Vente"
               ></v-switch>
               
-              <v-btn color="secondary" class="mt-4 mr-2" @click="goBack">
+              <v-btn color="secondary" class="mt-4 mr-2" @click="go_back">
                 Retour
               </v-btn>
               <v-btn type="submit" color="primary" class="mt-4" :disabled="!isFormValid">
@@ -110,7 +110,7 @@ export default {
              fournisseur.value.numTelephoneFournisseur;
     });
 
-    const submitForm = async () => {
+    const submit_form = async () => {
       if (!isFormValid.value) {
         errorMessage.value = 'Veuillez remplir tous les champs requis.';
         return;
@@ -119,13 +119,13 @@ export default {
       try {
         const response = await api.postFournisseur(fournisseur.value);
         console.log('Fournisseur créé:', response.data);
-        goBack();
+        go_back();
       } catch (error) {
         console.error('Error creating fournisseur:', error);
       }
     };
 
-    const goBack = () => {
+    const go_back = () => {
       router.go(-1);
     };
 
@@ -133,8 +133,8 @@ export default {
       fournisseur,
       errorMessage,
       isFormValid,
-      submitForm,
-      goBack
+      submit_form,
+      go_back
     };
   }
 };
