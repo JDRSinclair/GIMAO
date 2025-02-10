@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import NavigationDrawer from '@/components/BarreNavigation.vue';
-import TopNavBar from "@/components/BarreNavigationHaut.vue";
+import NavigationDrawer from '@/components/NavigationBar.vue';
+import TopNavBar from "@/components/TopBar.vue";
 
 export default {
   name: 'App',

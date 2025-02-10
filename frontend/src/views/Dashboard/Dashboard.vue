@@ -75,8 +75,8 @@
 
 <script>
 import { useRouter } from 'vue-router';
-import NavigationDrawer from '@/components/BarreNavigation.vue';
-import TopNavBar from "@/components/BarreNavigationHaut.vue";
+import NavigationDrawer from '@/components/NavigationBar.vue';
+import TopNavBar from "@/components/TopBar.vue";
 import '@/assets/css/global.css';
 import api from '@/services/api';
 
