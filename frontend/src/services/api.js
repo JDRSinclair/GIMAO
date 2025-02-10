@@ -7,18 +7,6 @@ export const BASE_URL = 'http://localhost:8000';
 export default {
 
 
-<<<<<<< Updated upstream
-  getInterventions() {
-    return axios.get(`${API_URL}interventions/`);
-  },
-
-  getLieux() {
-    return axios.get(`${API_URL}lieux-hierarchy/`);
-  },
-
-  getModeleEquipements() {
-    return axios.get(`${API_URL}modele-equipements/`);
-=======
 
   //Fournisseurs -----------------------
 
@@ -193,10 +181,6 @@ export default {
         'Content-Type': 'multipart/form-data'
       }
     });
->>>>>>> Stashed changes
   },
 
-  getEquipementsVue(){
-    return axios.get(`${API_URL}equipements-detail/`);
-  }
 };

@@ -165,7 +165,7 @@ import { useRouter } from 'vue-router';
 
 
 export default {
-  name: 'AfficherEquipement',
+  name: 'EquipmentDetail',
   setup() {
     const router = useRouter();
     return { router };

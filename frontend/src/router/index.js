@@ -2,30 +2,23 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 // ---------------------------------------------------------------
 import TableauDeBord from '@/views/TableauDeBord/TableauDeBord.vue'
-import Equipements from '@/views/Equipements/Equipements.vue'
+import EquipmentList from '@/views/Equipments/EquipmentList.vue'
 import Maintenances from '@/views/Maintenances/Maintenances.vue'
 import Techniciens from '@/views/Techniciens/Techniciens.vue'
-import GestionComptes from '@/views/GestionComptes/GestionComptes.vue'
+import AccountManagement from '@/views/AccountManagement/AccountManagement.vue'
 import Commandes from '@/views/Commandes/Commandes.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import Signalements from '@/views/Signalements/Signalements.vue'
-import CloturerIntervention from '@/views/TableauDeBord/CloturerIntervention.vue'
-=======
-=======
->>>>>>> Stashed changes
 import Signalements from '@/views/Failures/Defaillances.vue'
 
 
 // ---------------------------------------------------------------
 import AfficherIntervention from '@/views/Interventions/AfficherIntervention.vue'
-import CreerIntervention from '@/views/Interventions/CreerIntervention.vue'
+import CreateIntervention from '@/views/Interventions/CreateIntervention.vue'
 import AjouterDocumentIntervention from '@/views/Interventions/AjouterDocumentIntervention.vue'
 
 // ------------------------------------------------------------------
-import AfficherEquipement from '@/views/Equipements/AfficherEquipement.vue'
-import CreerEquipement from '@/views/Equipements/CreerEquipement.vue'
+import EquipmentDetail from '@/views/Equipments/EquipmentDetail.vue'
+import CreateEquipment from '@/views/Equipments/CreateEquipment.vue'
 
 // ------------------------------------------------------------------
 import CreateFailure from '@/views/Failures/CreateFailure.vue'
@@ -48,18 +41,10 @@ import CreateManufacturer from '@/views/DataManagement/Manufacturers/CreateManuf
 import ManufacturerList from '@/views/DataManagement/Manufacturers/ManufacturerList.vue'
 import ManufacturerDetail from '@/views/DataManagement/Manufacturers/ManufacturerDetail.vue'
 
-<<<<<<< Updated upstream
 import ConsummableList from '@/views/DataManagement/Consummables/ConsummableList.vue'
 import CreateConsummable from '@/views/DataManagement/Consummables/CreateConsummable.vue'
 import ConsummableDetail from '@/views/DataManagement/Consummables/ConsummableDetail.vue'
 
->>>>>>> Stashed changes
-=======
-import ConsumableList from '@/views/DataManagement/Consumables/ConsumableList.vue'
-import CreateConsumable from '@/views/DataManagement/Consumables/CreateConsumable.vue'
-import ConsumableDetail from '@/views/DataManagement/Consumables/ConsumableDetail.vue'
-
->>>>>>> Stashed changes
 
 
 
@@ -70,34 +55,7 @@ const routes = [
     component: TableauDeBord,
     meta: { title: 'Tableau de Bord' }
   },
-<<<<<<< Updated upstream
-  {
-    path: '/equipements',
-    name: 'Equipements',
-    component: Equipements,
-    meta: { title: 'Equipement' }
-  },
-  {
-    path: '/ajouterEquipement',
-    name: 'AjouterEquipement',
-    component: AjouterEquipement,
-    meta: { title: 'AjouterEquipement' }
-  },
-  {
-    path: '/equipement/:id',
-    name: 'VisualiserEquipement',
-    component: VisualiserEquipement,
-    meta: { title: 'VisualiserEquipement' }
-  },
-  {
-    path: '/maintenances',
-    name: 'Maintenances',
-    component: Maintenances,
-    meta: { title: 'Maintenances' }
-  },
-=======
 
->>>>>>> Stashed changes
   {
     path: '/techniciens',
     name: 'Techniciens',
@@ -106,9 +64,9 @@ const routes = [
   },
   
   {
-    path: '/gestion-comptes',
-    name: 'GestionComptes',
-    component: GestionComptes,
+    path: '/AccountManagement',
+    name: 'AccountManagement',
+    component: AccountManagement,
     meta: { title: 'Gestion des Comptes' }
   },
 
@@ -126,52 +84,29 @@ const routes = [
     component: Stocks,
     meta: { title: 'Stocks' }
   },
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
 
 
 
   // Consommables ------------------------------------------------------------------
 
   {
-<<<<<<< Updated upstream
     path: '/ConsummableList',
     name: 'ConsummableList',
     component: ConsummableList,
-=======
-    path: '/ConsumableList',
-    name: 'ConsumableList',
-    component: ConsumableList,
->>>>>>> Stashed changes
     meta: { title: 'Consommables' }
   },
   
   {
-<<<<<<< Updated upstream
     path: '/CreateConsummable',
     name: 'CreateConsummable',
     component: CreateConsummable,
-=======
-    path: '/CreateConsumable',
-    name: 'CreateConsumable',
-    component: CreateConsumable,
->>>>>>> Stashed changes
     meta: { title: 'Creer un Consommable' }
   },
 
   {
-<<<<<<< Updated upstream
     path: '/ConsummableDetail/:id',
     name: 'ConsummableDetail',
     component: ConsummableDetail,
-=======
-    path: '/ConsumableDetail/:id',
-    name: 'ConsumableDetail',
-    component: ConsumableDetail,
->>>>>>> Stashed changes
     props: true,
     meta: { title: 'Détails d\'un consommable' }
   },
@@ -255,9 +190,9 @@ const routes = [
   },
 
   {
-    path: '/defaillance/:id/creer-intervention/',
-    name: 'CreerIntervention',
-    component: CreerIntervention,
+    path: '/defaillance/:id/CreateIntervention/',
+    name: 'CreateIntervention',
+    component: CreateIntervention,
     meta: { title: 'Créer un bon de travail' }
   },
 
@@ -273,52 +208,34 @@ const routes = [
 
   // Signalements ---------------------------------------------------------------
 
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   {
     path: '/signalements',
     name: 'Signalements',
     component: Signalements,
-<<<<<<< Updated upstream
-    meta: { title: 'Signalements' }
-  },
-
-  {
-<<<<<<< Updated upstream
-    path: '/cloturer-interventions',
-    name: 'CloturerIntervention',
-    component: CloturerIntervention,
-    meta: { title: 'CloturerIntervention' }
-  }
-=======
-=======
     meta: { title: 'Demandes de bon de travail' }
   },
 
   // Equipements ---------------------------------------------------------------
 
   {
-    path: '/equipements',
-    name: 'Equipements',
-    component: Equipements,
+    path: '/EquipmentList',
+    name: 'EquipmentList',
+    component: EquipmentList,
     meta: { title: 'Équipements' }
   },
 
   {
->>>>>>> Stashed changes
-    path: '/equipement/:reference',
-    name: 'AfficherEquipement',
-    component: AfficherEquipement,
+    path: '/EquipmentDetail/:reference',
+    name: 'EquipmentDetail',
+    component: EquipmentDetail,
     props: true, 
     meta: { title: 'Descriptif de l\'équipement' }
   },
 
   {
-    path: '/creer-Equipement',
-    name: 'CreerEquipement',
-    component: CreerEquipement,
+    path: '/CreateEquipment',
+    name: 'CreateEquipment',
+    component: CreateEquipment,
     meta: { title: 'Ajouter Equipement' }
   },
 
@@ -375,10 +292,6 @@ const routes = [
 
   
 
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 ]
 
 const router = createRouter({

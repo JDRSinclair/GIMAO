@@ -1,10 +1,7 @@
 # api/serializers.py
 from rest_framework import serializers
 from django.db.models import Max
-<<<<<<< Updated upstream
-=======
 from django.contrib.auth import get_user_model
->>>>>>> Stashed changes
 from myApp.models import (
     Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable,
     ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer,
@@ -61,30 +58,10 @@ class EstCompatibleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class LieuSerializer(serializers.ModelSerializer):
-<<<<<<< Updated upstream
-=======
     class Meta:
         model = Lieu
         fields = '__all__'
 
-class EquipementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Equipement
-        fields = '__all__'
-        
-
-class ConstituerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Constituer
-        fields = '__all__'
-
-class InformationStatutSerializer(serializers.ModelSerializer):
->>>>>>> Stashed changes
-    class Meta:
-        model = Lieu
-        fields = '__all__'
-
-<<<<<<< Updated upstream
 class EquipementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Equipement
@@ -101,8 +78,6 @@ class InformationStatutSerializer(serializers.ModelSerializer):
         model = InformationStatut
         fields = '__all__'
 
-=======
->>>>>>> Stashed changes
 class DocumentTechniqueSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentTechnique
@@ -183,10 +158,6 @@ class LieuHierarchySerializer(serializers.ModelSerializer):
             representation.pop('children')
         return representation
 
-<<<<<<< Updated upstream
-
-
-=======
 
 class EquipementAvecDernierStatutSerializer(serializers.ModelSerializer):
     dernier_statut = serializers.SerializerMethodField()
@@ -440,4 +411,3 @@ class DefaillanceAfficherSerializer(serializers.ModelSerializer):
                 "responsable": intervention.responsable.id if intervention.responsable else None
             }
         return None
->>>>>>> Stashed changes

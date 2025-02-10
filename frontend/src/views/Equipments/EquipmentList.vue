@@ -1,33 +1,14 @@
 <template>
   <v-container>
     <v-row>
-<<<<<<< Updated upstream
-      <v-col cols="4">
-        <!-- Structure des lieux -->
-=======
       <!-- Colonne de gauche -->
       <v-col cols="4">
         <!-- Carte : Structure des lieux -->
->>>>>>> Stashed changes
         <v-card elevation="1" class="rounded-lg pa-2 mb-4">
           <v-card-title class="font-weight-bold text-uppercase text-primary">
             Structure des lieux
           </v-card-title>
           <v-divider></v-divider>
-<<<<<<< Updated upstream
-          <LieuxExplorer :lieux="lieuxAvecTous" @select-lieu="handleLieuSelected" />
-        </v-card>
-
-        <!-- Types d'équipements -->
-        <v-card elevation="1" class="rounded-lg pa-2">
-          <v-card-title class="font-weight-bold text-uppercase text-primary">Types d'équipements</v-card-title>
-          <v-divider></v-divider>
-          <v-list dense>
-            <v-list-item link @click="handleTypeEquipementSelected(null)">
-              <v-list-item-title>Tous</v-list-item-title>
-            </v-list-item>
-            <v-list-item v-for="(modele, index) in modeleEquipements" :key="index" link @click="handleTypeEquipementSelected(modele)">
-=======
           <div>
             <!-- Message si aucune donnée n'est disponible -->
             <p v-if="!lieuxAvecTous || lieuxAvecTous.length === 0">Aucune donnée disponible.</p>
@@ -87,31 +68,20 @@
               @click="handleTypeEquipementSelected(modele)"
               :class="{ 'selected-item': isTypeEquipementSelected(modele) }"
             >
->>>>>>> Stashed changes
               <v-list-item-title>{{ modele.nomModeleEquipement }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-card>
       </v-col>
-<<<<<<< Updated upstream
-
-      <v-col cols="8">
-        <!-- Bouton d'ajout d'équipement -->
-=======
       
       <!-- Colonne de droite -->
       <v-col cols="8">
         <!-- Bouton pour rediriger vers la page d'ajout d'équipement -->
->>>>>>> Stashed changes
         <v-btn color="primary" @click="ouvrirPageAjoutEquipement" class="mb-4">
           Aller à l'ajout d'équipement
         </v-btn>
 
-<<<<<<< Updated upstream
-        <!-- Table des équipements -->
-=======
         <!-- Tableau des équipements -->
->>>>>>> Stashed changes
         <v-data-table
           :headers="header"
           :items="filteredEquipements"
@@ -122,11 +92,6 @@
           :sort-by="['designation']"
           :sort-desc="[false]"
         >
-<<<<<<< Updated upstream
-        </v-data-table>
-
-        <v-pagination v-model="page" :length="pageCount" class="text-center pt-2"></v-pagination>
-=======
         
           <!-- Template personnalisé pour chaque ligne du tableau -->
           <template v-slot:item="{ item }">
@@ -147,7 +112,6 @@
           </template>
         </v-data-table>
 
->>>>>>> Stashed changes
       </v-col>
     </v-row>
   </v-container>
@@ -156,47 +120,28 @@
 <script>
 import { ref, computed, onMounted, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
-<<<<<<< Updated upstream
-import LieuxExplorer from '@/components/LieuxExplorer.vue';
-=======
 import { VTreeview } from 'vuetify/labs/VTreeview';
->>>>>>> Stashed changes
 import api from '@/services/api';
 
 export default {
-  name: 'Equipements',
+  name: 'EquipmentList',
   components: {
-<<<<<<< Updated upstream
-    LieuxExplorer,
-  },
-  setup() {
-    const router = useRouter();
-=======
     VTreeview,
   },
   setup() {
     const router = useRouter();
 
     // État réactif pour gérer les données et l'état du composant
->>>>>>> Stashed changes
     const state = reactive({
       equipements: [],
       lieux: [],
       modeleEquipements: [],
-<<<<<<< Updated upstream
-      selectedLieu: null,
-      selectedTypeEquipement: null,
-      page: 1,
-      pageCount: 0,
-      itemsPerPage: 5,
-=======
       selectedLieu: [],
       selectedTypeEquipements: [],
       selectedTreeNodes: [],
       page: 1,
       pageCount: 0,
       itemsPerPage: 10,
->>>>>>> Stashed changes
       header: [
         { title: 'Désignation', value: 'modeleEquipement.nomModeleEquipement', sortable: true, align: 'center' },
         { title: 'Lieu', value: 'lieu.nomLieu', sortable: true, align: 'center' },
@@ -207,10 +152,7 @@ export default {
           }
         },
       ],
-<<<<<<< Updated upstream
-=======
       openNodes: new Set(),
->>>>>>> Stashed changes
     });
 
     // Fonction pour récupérer les données depuis l'API
@@ -218,11 +160,7 @@ export default {
       try {
         const [equipementsRes, lieuxRes, modeleEquipementsRes] = await Promise.all([
           api.getEquipementsVue(),
-<<<<<<< Updated upstream
-          api.getLieux(),
-=======
           api.getLieuxHierarchy(),
->>>>>>> Stashed changes
           api.getModeleEquipements()
         ]);
 
@@ -234,33 +172,6 @@ export default {
       }
     };
 
-<<<<<<< Updated upstream
-    const lieuxAvecTous = computed(() => {
-      return [{ id: null, nomLieu: 'Tous', children: [] }, ...state.lieux];
-    });
-
-    const filteredEquipements = computed(() => {
-      return state.equipements.filter(e => {
-        const lieuMatch = !state.selectedLieu || state.selectedLieu === 'Tous' || e.lieu.nomLieu === state.selectedLieu;
-        const typeMatch = !state.selectedTypeEquipement || e.modeleEquipement.nomModeleEquipement === state.selectedTypeEquipement;
-        return lieuMatch && typeMatch;
-      });
-    });
-
-    const handleLieuSelected = (lieu) => {
-      state.selectedLieu = lieu.nomLieu;
-    };
-
-    const handleTypeEquipementSelected = (modele) => {
-      state.selectedTypeEquipement = modele ? modele.nomModeleEquipement : null;
-    };
-
-    const ouvrirPageAjoutEquipement = () => {
-      router.push('/ajouter-equipement');
-    };
-
-    onMounted(fetchData);
-=======
     const getStatusColor = (statut) => {
       switch (statut) {
         case 'En fonctionnement':
@@ -278,7 +189,6 @@ export default {
     const lieuxAvecTous = computed(() => {
       return [{ id: null, nomLieu: 'Tous' }, ...state.lieux];
     });
->>>>>>> Stashed changes
 
     // Gestion de la sélection d'un lieu dans l'arborescence
     const onSelectLieu = (items) => {
@@ -352,12 +262,12 @@ export default {
 
     // Redirection vers la page d'ajout d'équipement
     const ouvrirPageAjoutEquipement = () => {
-      router.push('/creer-equipement');
+      router.push('/CreateEquipment');
     };
 
     // Redirection vers la page d'affichage d'un équipement
     const ouvrirAfficherEquipement = (reference) => {
-      router.push({ name: 'AfficherEquipement', params: { reference: reference } });
+      router.push({ name: 'EquipmentDetail', params: { reference: reference } });
     };
 
     // Chargement des données au montage du composant
@@ -367,11 +277,6 @@ export default {
       ...toRefs(state),
       lieuxAvecTous,
       filteredEquipements,
-<<<<<<< Updated upstream
-      handleLieuSelected,
-      handleTypeEquipementSelected,
-      ouvrirPageAjoutEquipement,
-=======
       onSelectLieu,
       handleTypeEquipementSelected,
       ouvrirPageAjoutEquipement,
@@ -379,7 +284,6 @@ export default {
       isTypeEquipementSelected,
       toggleNode,
       getStatusColor,
->>>>>>> Stashed changes
     };
   }
 };
@@ -397,8 +301,6 @@ export default {
 
 .v-data-table th {
   color: black !important;
-<<<<<<< Updated upstream
-=======
 }
 
 .v-treeview-node--active {
@@ -437,6 +339,5 @@ export default {
 
 .v-icon {
   transition: transform 0.3s ease;
->>>>>>> Stashed changes
 }
 </style>

@@ -155,7 +155,7 @@
               Mettre en attente la demande
             </v-btn>
 
-            <v-btn color="success" class="text-white mx-2" @click="creerIntervention" :disabled="canTraiter">
+            <v-btn color="success" class="text-white mx-2" @click="CreateIntervention" :disabled="canTraiter">
               Trasformer en bon de travail
               
             </v-btn>
@@ -353,7 +353,7 @@ export default {
           
           // Redirection vers la page des signalements
           router.push({ 
-            name: 'AfficherEquipement', 
+            name: 'openEquipmentDetail', 
             params: { reference: defaillance.value.equipement.reference }
           });
         } catch (error) {
@@ -396,10 +396,10 @@ export default {
       }
     };
 
-    const creerIntervention = () => {
+    const CreateIntervention = () => {
       if (defaillance.value && defaillance.value.id) {
         router.push({ 
-          name: 'CreerIntervention', 
+          name: 'CreateIntervention', 
           params: { id: defaillance.value.id }
         });
       } else {
@@ -480,7 +480,7 @@ export default {
       canTraiter,
       supprimerDefaillance,
       traiterDefaillance,
-      creerIntervention,
+      CreateIntervention,
       showEquipementDetails,
       showDocumentsDetails,
       toggleEquipementDetails,

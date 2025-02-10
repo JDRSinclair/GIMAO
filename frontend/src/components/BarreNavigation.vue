@@ -52,36 +52,17 @@ export default {
     navigationItems: {
       type: Array,
       default: () => [
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        { name: 'TableauDeBord', icon: 'Graphe.svg', title: 'Tableau de bord' },
-        { name: 'Equipements', icon: 'Outils.svg', title: 'Equipements' },
-        { name: 'Maintenances', icon: 'Maintenance.svg', title: 'Maintenances' },
-        { name: 'Techniciens', icon: 'Techniciens.svg', title: 'Techniciens' },
-        { name: 'GestionComptes', icon: 'GestionComptes.svg', title: 'Gestion des <br>comptes' },
-        { name: 'Commandes', icon: 'Commande.svg', title: 'Commandes' },
-        { name: 'Stocks', icon: 'Stocks.svg', title: 'Stocks' },
-        { name: 'Signalements', icon: 'Signalements.svg', title: 'Signalements' },
-      ]
-    }
-=======
-=======
->>>>>>> Stashed changes
         { name: 'TableauDeBord', icon: 'mdi-view-dashboard', title: 'Tableau de bord' },
-        { name: 'Equipements', icon: 'mdi-tools', title: 'Équipements' },
+        { name: 'EquipmentList', icon: 'mdi-tools', title: 'Équipements' },
         { name: 'Maintenances', icon: 'mdi-wrench', title: 'Bons de travail' },
         { name: 'Signalements', icon: 'mdi-alert', title: 'Demandes de <br>bons de travail' },
         { name: 'Techniciens', icon: 'mdi-account-hard-hat', title: 'Techniciens', disabled: true },
-        { name: 'GestionComptes', icon: 'mdi-account-cog', title: 'Gestion des <br>comptes', disabled: true },
+        { name: 'AccountManagement', icon: 'mdi-account-cog', title: 'Gestion des <br>comptes', disabled: true },
         { name: 'Commandes', icon: 'mdi-cart', title: 'Commandes', disabled: true },
         { name: 'Stocks', icon: 'mdi-package-variant-closed', title: 'Stocks',disabled: true },
         { name: 'DataManagement', icon: 'mdi-database-cog', title: 'Gestion des <br>données' }
       ],
     },
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   },
   methods: {
     isActive(routeName) {

@@ -18,11 +18,7 @@
                 :items="defaillances"
                 :items-per-page="5"
                 :page.sync="defaillancesPage"
-<<<<<<< Updated upstream
-                item-value="nom"
-=======
                 item-value="id"
->>>>>>> Stashed changes
                 class="elevation-1 rounded-lg"
                 hide-default-footer
                 @click:row="(event, {item}) => ouvrirAfficherDefaillance(item.id)"
@@ -53,17 +49,10 @@
                 :items="interventions"
                 :items-per-page="5"
                 :page.sync="interventionsPage"
-<<<<<<< Updated upstream
-                item-value="nom"
-                class="elevation-1 rounded-lg"
-                hide-default-footer
-                @click:row="cloturerIntervention"
-=======
                 item-value="id"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
                 @click:row="(event, {item}) => ouvrirAfficherIntervention(item.id)"
->>>>>>> Stashed changes
               ></v-data-table>
               <v-pagination
                 v-model="interventionsPage"
@@ -97,11 +86,6 @@ export default {
     TopNavBar,
   },
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
   setup() {
     const router = useRouter();
 
@@ -119,10 +103,6 @@ export default {
     };
   },
 
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   data() {
     return {
       menuItems: [
@@ -150,10 +130,6 @@ export default {
   },
 
   methods: {
-<<<<<<< Updated upstream
-    transformerEnBonDeTravail() {
-      console.log('Transformer en bon de travail');
-=======
     handleItemSelected(item) {
       console.log('Selected item:', item);
     },
@@ -162,7 +138,6 @@ export default {
       if (!dateString) return '';
       const date = new Date(dateString);
       return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
->>>>>>> Stashed changes
     },
 
     async fetchDefaillances() {
@@ -173,12 +148,6 @@ export default {
         console.error('Erreur lors de la récupération des défaillances:', error);
       }
     },
-<<<<<<< Updated upstream
-    cloturerIntervention() {
-      // Rediriger vers la page de clôture d'intervention sans paramètres
-      this.$router.push({ name: 'CloturerIntervention' });
-    },
-=======
 
     getNiveauColor(niveau) {
       switch (niveau) {
@@ -210,7 +179,6 @@ export default {
   created() {
     this.fetchDefaillances();
     this.fetchInterventions();
->>>>>>> Stashed changes
   },
 };
 </script>

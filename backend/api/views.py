@@ -3,17 +3,10 @@ import os
 from rest_framework import viewsets, status
 from django.conf import settings
 from django.db.models import Prefetch
-<<<<<<< Updated upstream
-from rest_framework.exceptions import NotFound
-=======
->>>>>>> Stashed changes
 from rest_framework.response import Response
 from django.apps import apps
 from rest_framework.decorators import api_view
-<<<<<<< Updated upstream
-=======
 from django.contrib.auth import get_user_model
->>>>>>> Stashed changes
 from myApp.models import (
     Role, Avoir, Fabricant, Fournisseur, Consommable, StockConsommable,
     ModeleEquipement, EstCompatible, Lieu, Equipement, Constituer,
@@ -21,10 +14,7 @@ from myApp.models import (
     DocumentDefaillance, Intervention, DocumentIntervention
 )
 from .serializers import (
-<<<<<<< Updated upstream
-=======
     UserSerializer,
->>>>>>> Stashed changes
     RoleSerializer,
     AvoirSerializer,
     FabricantSerializer,
@@ -44,17 +34,12 @@ from .serializers import (
     InterventionSerializer,
     DocumentInterventionSerializer,
 
-<<<<<<< Updated upstream
-    EquipementDetailSerializer,
-    LieuHierarchySerializer,
-=======
     EquipementAvecDernierStatutSerializer,
     EquipementDetailSerializer,
     LieuHierarchySerializer,
     EquipementAffichageSerializer,
     InterventionAfficherSerializer,
     DefaillanceAfficherSerializer,
->>>>>>> Stashed changes
 )
 
 User = get_user_model()
@@ -136,12 +121,6 @@ class DocumentInterventionViewSet(viewsets.ModelViewSet):
     serializer_class = DocumentInterventionSerializer
 
 
-<<<<<<< Updated upstream
-
-# --------------------------------------------------------------------------
-
-
-=======
 @api_view(['DELETE'])
 def delete_document(request, model_name, pk):
     try:
@@ -199,36 +178,10 @@ class EquipementAvecDernierStatutViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
->>>>>>> Stashed changes
 # Affichage des equipemnts de la page Equipements.vue
 class EquipementDetailViewSet(viewsets.ModelViewSet):
     queryset = Equipement.objects.select_related('lieu', 'modeleEquipement')
     serializer_class = EquipementDetailSerializer
-<<<<<<< Updated upstream
-    lookup_field = 'reference'
-
-    def get_queryset(self):
-        return super().get_queryset().prefetch_related(
-            'createurEquipement',
-            'fournisseur',
-            Prefetch('informationstatut_set', 
-                     queryset=InformationStatut.objects.order_by('-dateChangement'),
-                     to_attr='statuts')
-        )
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
-
-# Affichage de la hiérarchie des lieux (LieuxExplorer)
-@api_view(['GET'])
-def get_lieux_hierarchy(request):
-    top_level_lieux = Lieu.objects.filter(lieuParent__isnull=True).prefetch_related('lieu_set')
-    serializer = LieuHierarchySerializer(top_level_lieux, many=True, context={'request': request})
-    return Response(serializer.data)
-
-=======
     lookup_field = 'reference'
 
     def get_queryset(self):
@@ -370,4 +323,3 @@ class DefaillanceAfficherViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
->>>>>>> Stashed changes
