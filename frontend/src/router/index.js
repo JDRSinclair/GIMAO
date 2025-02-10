@@ -41,9 +41,9 @@ import CreateManufacturer from '@/views/DataManagement/Manufacturers/CreateManuf
 import ManufacturerList from '@/views/DataManagement/Manufacturers/ManufacturerList.vue'
 import ManufacturerDetail from '@/views/DataManagement/Manufacturers/ManufacturerDetail.vue'
 
-import ConsummableList from '@/views/DataManagement/Consummables/ConsummableList.vue'
-import CreateConsummable from '@/views/DataManagement/Consummables/CreateConsummable.vue'
-import ConsummableDetail from '@/views/DataManagement/Consummables/ConsummableDetail.vue'
+import ConsumableList from '@/views/DataManagement/Consumables/ConsumableList.vue'
+import CreateConsumable from '@/views/DataManagement/Consumables/CreateConsumable.vue'
+import ConsumableDetail from '@/views/DataManagement/Consumables/ConsumableDetail.vue'
 
 
 
@@ -90,23 +90,23 @@ const routes = [
   // Consommables ------------------------------------------------------------------
 
   {
-    path: '/ConsummableList',
-    name: 'ConsummableList',
-    component: ConsummableList,
+    path: '/ConsumableList',
+    name: 'ConsumableList',
+    component: ConsumableList,
     meta: { title: 'Consommables' }
   },
   
   {
-    path: '/CreateConsummable',
-    name: 'CreateConsummable',
-    component: CreateConsummable,
+    path: '/CreateConsumable',
+    name: 'CreateConsumable',
+    component: CreateConsumable,
     meta: { title: 'Creer un Consommable' }
   },
 
   {
-    path: '/ConsummableDetail/:id',
+    path: '/ConsumableDetail/:id',
     name: 'ConsummableDetail',
-    component: ConsummableDetail,
+    component: ConsumableDetail,
     props: true,
     meta: { title: 'Détails d\'un consommable' }
   },
