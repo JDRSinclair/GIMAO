@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-row class="mb-4">
-      <!-- Barre de recherche -->
+      <!-- Search bar -->
       <v-col cols="9">
         <v-text-field
-          v-model="searchQuery"
+          v-model="search_query"
           label="Rechercher un fabricant"
           prepend-icon="mdi-magnify"
           clearable
@@ -22,14 +22,14 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col v-for="fabricant in filtered_manufacturer" :key="fabricant.id" cols="12" sm="6" md="4">
-        <v-card @click="go_to_manufacturer_detail(fabricant.id)">
-          <v-card-title>{{ fabricant.nomFabricant }}</v-card-title>
+      <v-col v-for="manufacturer in filtered_manufacturers" :key="manufacturer.id" cols="12" sm="6" md="4">
+        <v-card @click="go_to_manufacturer_detail(manufacturer.id)">
+          <v-card-title>{{ manufacturer.nomFabricant }}</v-card-title>
           <v-card-text>
-            <p>Pays: {{ fabricant.paysFabricant }}</p>
-            <p>Email: {{ fabricant.mailFabricant }}</p>
-            <p>Téléphone: {{ fabricant.numTelephoneFabricant }}</p>
-            <p>Service Après-Vente: {{ fabricant.serviceApresVente ? 'Oui' : 'Non' }}</p>
+            <p>Pays: {{ manufacturer.paysFabricant }}</p>
+            <p>Email: {{ manufacturer.mailFabricant }}</p>
+            <p>Téléphone: {{ manufacturer.numTelephoneFabricant }}</p>
+            <p>Service Après-Vente: {{ manufacturer.serviceApresVente ? 'Oui' : 'Non' }}</p>
           </v-card-text>
         </v-card>
       </v-col>
@@ -44,28 +44,28 @@ export default {
   name: 'ListeFabricants',
   data() {
     return {
-      fabricants: [],
-      searchQuery: ''
+      manufacturers: [],
+      search_query: ''
     };
   },
   computed: {
-    filtered_manufacturer() {
-      if (!this.searchQuery) {
-        return this.fabricants;
+    filtered_manufacturers() {
+      if (!this.search_query) {
+        return this.manufacturers;
       }
-      const searchLower = this.searchQuery.toLowerCase();
-      return this.fabricants.filter(fabricant => 
-        fabricant.nomFabricant.toLowerCase().includes(searchLower) ||
-        fabricant.paysFabricant.toLowerCase().includes(searchLower) ||
-        fabricant.mailFabricant.toLowerCase().includes(searchLower)
+      const search_lower = this.search_query.toLowerCase();
+      return this.manufacturers.filter(manufacturer => 
+        manufacturer.nomFabricant.toLowerCase().includes(search_lower) ||
+        manufacturer.paysFabricant.toLowerCase().includes(search_lower) ||
+        manufacturer.mailFabricant.toLowerCase().includes(search_lower)
       );
     }
   },
   methods: {
-    async fetch_manufacturer() {
+    async fetch_manufacturers() {
       try {
         const response = await api.getFabricants();
-        this.fabricants = response.data;
+        this.manufacturers = response.data;
       } catch (error) {
         console.error('Erreur lors de la récupération des fabricants:', error);
       }
@@ -75,7 +75,7 @@ export default {
     }
   },
   created() {
-    this.fetch_manufacturer();
+    this.fetch_manufacturers();
   }
 }
 </script>

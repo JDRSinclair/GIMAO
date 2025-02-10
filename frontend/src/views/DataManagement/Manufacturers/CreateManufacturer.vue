@@ -5,44 +5,44 @@
         <v-card>
           <v-card-title>Ajouter un nouveau fabricant</v-card-title>
           <v-card-text>
-            <v-alert v-if="errorMessage" type="error">
-              {{ errorMessage }}
+            <v-alert v-if="error_message" type="error">
+              {{ error_message }}
             </v-alert>
             <v-form @submit.prevent="submit_form">
               <v-text-field
-                v-model="fabricant.nomFabricant"
+                v-model="manufacturer.nomFabricant"
                 label="Nom du fabricant"
                 required
               ></v-text-field>
               
               <v-text-field
-                v-model="fabricant.paysFabricant"
+                v-model="manufacturer.paysFabricant "
                 label="Pays"
                 required
               ></v-text-field>
               
               <v-text-field
-                v-model="fabricant.mailFabricant"
+                v-model="manufacturer.mailFabricant "
                 label="Email"
                 type="email"
                 required
               ></v-text-field>
               
               <v-text-field
-                v-model="fabricant.numTelephoneFabricant"
+                v-model="manufacturer.numTelephoneFabricant"
                 label="Numéro de téléphone"
                 required
               ></v-text-field>
               
               <v-switch
-                v-model="fabricant.serviceApresVente"
+                v-model="manufacturer.serviceApresVente"
                 label="Service Après-Vente"
               ></v-switch>
               
               <v-btn color="secondary" class="mt-4 mr-2" @click="go_back">
                 Retour
               </v-btn>
-              <v-btn type="submit" color="primary" class="mt-4" :disabled="!isFormValid">
+              <v-btn type="submit" color="primary" class="mt-4" :disabled="!is_form_valid">
                 Ajouter le fabricant
               </v-btn>
             </v-form>
@@ -61,35 +61,35 @@ import api from '@/services/api';
 export default {
   setup() {
     const router = useRouter();
-    const fabricant = ref({
+    const manufacturer = ref({
       nomFabricant: '',
       paysFabricant: '',
       mailFabricant: '',
       numTelephoneFabricant: '',
       serviceApresVente: false
     });
-    const errorMessage = ref('');
+    const error_message = ref('');
 
-    const isFormValid = computed(() => {
-      return fabricant.value.nomFabricant &&
-             fabricant.value.paysFabricant &&
-             fabricant.value.mailFabricant &&
-             fabricant.value.numTelephoneFabricant;
+    const is_form_valid = computed(() => {
+      return manufacturer.value.nomFabricant &&
+             manufacturer.value.paysFabricant &&
+             manufacturer.value.mailFabricant &&
+             manufacturer.value.numTelephoneFabricant;
     });
 
     const submit_form = async () => {
-      if (!isFormValid.value) {
-        errorMessage.value = 'Veuillez remplir tous les champs requis.';
+      if (!is_form_valid.value) {
+        error_message.value = 'Veuillez remplir tous les champs requis.';
         return;
       }
 
       try {
-        const response = await api.postFabricant(fabricant.value);
+        const response = await api.postFabricant(manufacturer.value);
         console.log('Fabricant créé:', response.data);
         go_back();
       } catch (error) {
         console.error('Error creating fabricant:', error);
-        errorMessage.value = 'Une erreur est survenue lors de la création du fabricant.';
+        error_message.value = 'Une erreur est survenue lors de la création du fabricant.';
       }
     };
 
@@ -98,9 +98,9 @@ export default {
     };
 
     return {
-      fabricant,
-      errorMessage,
-      isFormValid,
+      manufacturer,
+      error_message,
+      is_form_valid,
       submit_form,
       go_back
     };

@@ -3,72 +3,72 @@
     <v-row justify="center">
       <v-col cols="12" md="8">
         <v-card>
-          <v-card-title>Ajouter un nouveau fournisseur</v-card-title>
+          <v-card-title>Add a New Supplier</v-card-title>
           <v-card-text>
-            <v-alert v-if="errorMessage" type="error">
-              {{ errorMessage }}
+            <v-alert v-if="error_message" type="error">
+              {{ error_message }}
             </v-alert>
             <v-form @submit.prevent="submit_form">
               <v-text-field
-                v-model="fournisseur.nomFournisseur"
+                v-model="supplier.nomFournisseur"
                 label="Nom du fournisseur"
                 required
               ></v-text-field>
               
               <v-text-field
-                v-model="fournisseur.numRue"
+                v-model="supplier.numRue "
                 label="Numéro de rue"
                 type="number"
                 required
               ></v-text-field>
               
               <v-text-field
-                v-model="fournisseur.nomRue"
+                v-model="supplier.nomRue "
                 label="Nom de rue"
                 required
               ></v-text-field>
               
               <v-text-field
-                v-model="fournisseur.codePostal"
+                v-model="supplier.codePostal  "
                 label="Code postal"
                 required
               ></v-text-field>
               
               <v-text-field
-                v-model="fournisseur.ville"
+                v-model="supplier.ville "
                 label="Ville"
                 required
               ></v-text-field>
               
               <v-text-field
-                v-model="fournisseur.paysFournisseur"
+                v-model="supplier.paysFournisseur "
                 label="Pays"
                 required
               ></v-text-field>
               
               <v-text-field
-                v-model="fournisseur.mailFournisseur"
+                v-model="supplier.mailFournisseur "
                 label="Email"
                 type="email"
                 required
               ></v-text-field>
               
               <v-text-field
-                v-model="fournisseur.numTelephoneFournisseur"
+                v-model="supplier.numTelephoneFournisseur"
                 label="Numéro de téléphone"
                 required
               ></v-text-field>
               
               <v-switch
-                v-model="fournisseur.serviceApresVente"
-                label="Service Après-Vente"
+                v-model="supplier.after_sales_service"
+                label="Service après vente"
               ></v-switch>
               
               <v-btn color="secondary" class="mt-4 mr-2" @click="go_back">
                 Retour
               </v-btn>
-              <v-btn type="submit" color="primary" class="mt-4" :disabled="!isFormValid">
-                Ajouter le fournisseur
+              <v-btn type="submit" color="primary" class="mt-4" :disabled="!is_form_valid">
+                Ajouter fournisseur
               </v-btn>
             </v-form>
           </v-card-text>
@@ -86,7 +86,7 @@ import api from '@/services/api';
 export default {
   setup() {
     const router = useRouter();
-    const fournisseur = ref({
+    const supplier = ref({
       nomFournisseur: '',
       numRue: '',
       nomRue: '',
@@ -97,31 +97,31 @@ export default {
       numTelephoneFournisseur: '',
       serviceApresVente: false
     });
-    const errorMessage = ref('');
+    const error_message = ref('');
 
-    const isFormValid = computed(() => {
-      return fournisseur.value.nomFournisseur &&
-             fournisseur.value.numRue &&
-             fournisseur.value.nomRue &&
-             fournisseur.value.codePostal &&
-             fournisseur.value.ville &&
-             fournisseur.value.paysFournisseur &&
-             fournisseur.value.mailFournisseur &&
-             fournisseur.value.numTelephoneFournisseur;
+    const is_form_valid = computed(() => {
+      return supplier.value.nomFournisseur  &&
+             supplier.value.numRue  &&
+             supplier.value.nomRue  &&
+             supplier.value.codePostal  &&
+             supplier.value.ville  &&
+             supplier.value.paysFournisseur  &&
+             supplier.value.mailFournisseur  &&
+             supplier.value.numTelephoneFournisseur;
     });
 
     const submit_form = async () => {
-      if (!isFormValid.value) {
-        errorMessage.value = 'Veuillez remplir tous les champs requis.';
+      if (!is_form_valid.value) {
+        error_message.value = 'Please fill in all required fields.';
         return;
       }
 
       try {
-        const response = await api.postFournisseur(fournisseur.value);
-        console.log('Fournisseur créé:', response.data);
+        const response = await api.postFournisseur(supplier.value);
+        console.log('Supplier created:', response.data);
         go_back();
       } catch (error) {
-        console.error('Error creating fournisseur:', error);
+        console.error('Error creating supplier:', error);
       }
     };
 
@@ -130,9 +130,9 @@ export default {
     };
 
     return {
-      fournisseur,
-      errorMessage,
-      isFormValid,
+      supplier,
+      error_message,
+      is_form_valid,
       submit_form,
       go_back
     };
