@@ -4,11 +4,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Dashboard from '@/views/Dashboard/Dashboard.vue'
 import EquipmentList from '@/views/Equipments/EquipmentList.vue'
 import Maintenances from '@/views/Maintenances/Maintenances.vue'
-import Techniciens from '@/views/Techniciens/Techniciens.vue'
+import Technicians from '@/views/Technicians/Technicians.vue'
 import AccountManagement from '@/views/AccountManagement/AccountManagement.vue'
 import Orders from '@/views/Orders/Orders.vue'
 import Stocks from '@/views/Stocks/Stocks.vue'
-import Signalements from '@/views/Failures/Defaillances.vue'
+import FailureList from '@/views/Failures/FailureList.vue'
 
 
 // ---------------------------------------------------------------
@@ -57,9 +57,9 @@ const routes = [
   },
 
   {
-    path: '/techniciens',
-    name: 'Techniciens',
-    component: Techniciens,
+    path: '/Technicians',
+    name: 'Technicians',
+    component: Technicians,
     meta: { title: 'Techniciens' }
   },
   
@@ -209,9 +209,9 @@ const routes = [
   // Signalements ---------------------------------------------------------------
 
   {
-    path: '/signalements',
-    name: 'Signalements',
-    component: Signalements,
+    path: '/FailureList',
+    name: 'FailureList',
+    component: FailureList,
     meta: { title: 'Demandes de bon de travail' }
   },
 
