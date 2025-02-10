@@ -1,11 +1,11 @@
 <template>
   <v-container>
     <v-data-table
-      :headers="headers"
-      :items="defaillances"
+      :headers="table_headers"
+      :items="failures"
       :items-per-page="10"
       class="elevation-1"
-      @click:row="(event, {item}) => ouvrirAfficherDefaillance(item.id)"
+      @click:row="(event, {item}) => open_failure_details(item.id)"
     >
       <template v-slot:item.traite="{ item }">
         <v-chip :color="item.dateTraitementDefaillance ? 'green' : 'red'" dark>
@@ -13,7 +13,7 @@
         </v-chip>
       </template>
       <template v-slot:item.niveau="{ item }">
-        <v-chip :color="getNiveauColor(item.niveau)" dark>
+        <v-chip :color="get_level_color(item.niveau)" dark>
           {{ item.niveau }}
         </v-chip>
       </template>
@@ -27,11 +27,11 @@ import { useRouter } from 'vue-router';
 import api from '@/services/api';
 
 export default {
-  name: 'ListeDefaillances',
+  name: 'FailureList',
   setup() {
     const router = useRouter();
-    const defaillances = ref([]);
-    const headers = [
+    const failures = ref([]);
+    const table_headers = [
       { 
         title: 'Commentaire', 
         align: 'start',  
@@ -58,21 +58,20 @@ export default {
       },
     ];
 
-    const fetchDefaillances = async () => {
+    const fetch_failures = async () => {
       try {
         const response = await api.getDefaillances();
-        defaillances.value = response.data;
+        failures.value = response.data;
       } catch (error) {
-        console.error("Erreur lors de la récupération des défaillances:", error);
+        console.error("Error while fetching failures:", error);
       }
     };
 
-    const ouvrirAfficherDefaillance = (id) => {
+    const open_failure_details = (id) => {
       router.push({ name: 'FailureDetail', params: { id: id } });
     };
 
-
-    const getNiveauColor = (niveau) => {
+    const get_level_color = (niveau) => {
       switch (niveau) {
         case 'Critique':
           return 'red';
@@ -83,13 +82,13 @@ export default {
       }
     };
 
-    onMounted(fetchDefaillances);
+    onMounted(fetch_failures);
 
     return {
-      defaillances,
-      headers,
-      getNiveauColor,
-      ouvrirAfficherDefaillance,
+      failures,
+      table_headers,
+      get_level_color,
+      open_failure_details,
     };
   },
 }

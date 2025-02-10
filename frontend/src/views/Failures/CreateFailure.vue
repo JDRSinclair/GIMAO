@@ -3,27 +3,27 @@
     <v-main>
       <v-container class="py-5">
         <v-card class="pa-4">
-          <v-form ref="formulaire" v-model="formulaireValide">
+          <v-form ref="form" v-model="form_valid">
             <v-row>
               <v-col cols="6">
                 <!-- <v-select
                   v-model="form.equipement"
                   label="Équipement"
-                  :items="equipements"
+                  :items="equipment_list"
                   item-text="label"
                   item-value="reference"
                   outlined
                   dense
-                  :rules="[v => !!v || (validationDeclenchee && 'Équipement requis')]"
-                  :disabled="!!equipementReference"
+                  :rules="[v => !!v || (validation_triggered && 'Équipement requis')]"
+                  :disabled="!!equipment_reference"
                 ></v-select> -->
                 <v-select
                   v-model="form.niveau"
                   label="Niveau"
-                  :items="niveaux"
+                  :items="levels"
                   outlined
                   dense
-                  :rules="[v => !!v || (validationDeclenchee && 'Niveau requis')]"
+                  :rules="[v => !!v || (validation_triggered && 'Niveau requis')]"
                 ></v-select>
               </v-col>
               <v-col cols="6">
@@ -32,18 +32,18 @@
                   label="Commentaires"
                   rows="5"
                   outlined
-                  :rules="[v => !!v || (validationDeclenchee && 'Commentaire requis')]"
+                  :rules="[v => !!v || (validation_triggered && 'Commentaire requis')]"
                 ></v-textarea>
               </v-col>
             </v-row>
             <v-row justify="center" class="mt-4">
-              <v-btn color="primary" class="text-white mx-2" @click="retour">
+              <v-btn color="primary" class="text-white mx-2" @click="go_back">
                 Retour
               </v-btn>
-              <v-btn color="primary" class="text-white mx-2" @click="resetForm">
+              <v-btn color="primary" class="text-white mx-2" @click="reset_form">
                 Effacer
               </v-btn>
-              <v-btn color="success" class="text-white mx-2" @click="validateForm">
+              <v-btn color="success" class="text-white mx-2" @click="validate_form">
                 Valider
               </v-btn>
             </v-row>
@@ -66,17 +66,17 @@ export default {
   },
   data() {
     return {
-      equipements: [],
-      niveaux: ['Mineur', 'Majeur', 'Critique'],
+      equipment_list: [],
+      levels: ['Mineur', 'Majeur', 'Critique'],
       form: {
         equipement: null,
         commentaireDefaillance: "",
         niveau: null,
       },
-      formulaireValide: false,
-      validationDeclenchee: false,
-      equipementReference: null,
-      utilisateurConnecte: {
+      form_valid: false,
+      validation_triggered: false,
+      equipment_reference: null,
+      connected_user: {
         id: 1,
         username: "admin",
         first_name: "admin",
@@ -87,20 +87,20 @@ export default {
   },
 
   async created() {
-    await this.fetchData();
-    this.equipementReference = this.$route.params.equipementReference;
-    if (this.equipementReference) {
-      this.form.equipement = this.equipementReference;
+    await this.fetch_data();
+    this.equipment_reference = this.$route.params.equipementReference;
+    if (this.equipment_reference) {
+      this.form.equipement = this.equipment_reference;
     }
   },
 
   methods: {
-    async fetchData() {
+    async fetch_data() {
       try {
-        const [equipementsResponse] = await Promise.all([
+        const [equipments_response] = await Promise.all([
           api.getEquipements(),
         ]);
-        this.equipements = equipementsResponse.data.map(eq => ({
+        this.equipment_list = equipments_response.data.map(eq => ({
           ...eq,
           label: `${eq.reference} - ${eq.designation}`
         }));
@@ -109,48 +109,44 @@ export default {
       }
     },
 
-    
-
-    resetForm() {
+    reset_form() {
       this.form = {
-        equipement: this.equipementReference || null,
+        equipement: this.equipment_reference || null,
         commentaireDefaillance: "",
         niveau: null,
       };
-      this.validationDeclenchee = false;
-      if (this.$refs.formulaire) {
-        this.$refs.formulaire.resetValidation();
+      this.validation_triggered = false;
+      if (this.$refs.form) {
+        this.$refs.form.resetValidation();
       }
     },
 
-    retour(){
+    go_back(){
       this.router.go(-1); 
     },
 
-    async validateForm() {
-      this.validationDeclenchee = true;
-      const formulaire = this.$refs.formulaire;
+    async validate_form() {
+      this.validation_triggered = true;
+      const form = this.$refs.form;
 
-      if (formulaire) {
-        formulaire.validate();
-        if (this.formulaireValide) {
+      if (form) {
+        form.validate();
+        if (this.form_valid) {
           try {
-            const defaillanceData = {
+            const failure_data = {
               commentaireDefaillance: this.form.commentaireDefaillance,
               niveau: this.form.niveau,
               equipement: this.form.equipement,
-              utilisateur: this.utilisateurConnecte.id,
+              utilisateur: this.connected_user.id,
               dateTraitementDefaillance: null
             };
-            const response = await api.postDefaillance(defaillanceData);
+            const response = await api.postDefaillance(failure_data);
             
-            // Supposons que l'API renvoie l'ID de la défaillance créée
-            const nouvelleDefaillanceId = response.data.id;
+            const new_failure_id = response.data.id;
             
             alert("Défaillance signalée avec succès !");
             
-            // Redirection vers la page de détails de la défaillance
-            this.router.push({ name: 'FailureDetail', params: { id: nouvelleDefaillanceId } });
+            this.router.push({ name: 'FailureDetail', params: { id: new_failure_id } });
           } catch (error) {
             console.error('Erreur lors de la création de la défaillance:', error);
             alert("Une erreur est survenue lors de la création de la défaillance.");

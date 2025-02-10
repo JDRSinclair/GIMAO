@@ -7,13 +7,13 @@
             <!-- Colonne de gauche avec les informations -->
             <v-col cols="6" class="column-offset">
               <v-row>
-                <v-col cols="12" v-for="(value, key) in formatLabelDefaillance" :key="key">
+                <v-col cols="12" v-for="(value, key) in formatted_failure_label" :key="key">
                   <p>
                     <strong>{{ key }} : </strong>
-                    <v-chip v-if="key === 'Niveau'" :color="getNiveauColor(value)" small>
+                    <v-chip v-if="key === 'Niveau'" :color="get_niveau_color(value)" small>
                       {{ value }}
                     </v-chip>
-                    <v-chip v-else-if="key === 'Traitée'" :color="getTypeColor(value)" small>
+                    <v-chip v-else-if="key === 'Traitée'" :color="get_type_color(value)" small>
                       {{ value }}
                     </v-chip>
                     <span v-else>{{ value }}</span>
@@ -23,8 +23,8 @@
               <v-row>
                 <v-col cols="12">
                   <v-select
-                    v-model="selectedStatut"
-                    :items="statutOptions"
+                    v-model="selected_status"
+                    :items="status_options"
                     label="Changer le statut de l'équipement"
                   ></v-select>
                 </v-col>
@@ -41,8 +41,8 @@
                   <v-card
                     class="mt-4 pa-4"
                     elevation="2"
-                    @click="toggleEquipementDetails"
-                    :class="{ 'expanded': showEquipementDetails }"
+                    @click="toggle_equipment_details"
+                    :class="{ 'expanded': show_equipment_details }"
                   >
                     <v-card-title class="text-h6 d-flex align-center">
                       Équipement
@@ -50,21 +50,21 @@
                       <v-btn
                         color="primary"
                         class="ml-2"
-                        @click.stop="ouvrirEquipement"
+                        @click.stop="open_equipment"
                         :disabled="!defaillance.equipement"
                       >
                         Détails
                       </v-btn>
                       <v-icon class="ml-2">
-                        {{ showEquipementDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                        {{ show_equipment_details ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
                       </v-icon>
                     </v-card-title>
                     <v-expand-transition>
-                      <div v-show="showEquipementDetails">
+                      <div v-show="show_equipment_details">
                         <v-divider class="my-2"></v-divider>
                         <v-card-text>
                           <v-row>
-                            <v-col cols="12" v-for="(value, key) in formatLabelEquipement" :key="key">
+                            <v-col cols="12" v-for="(value, key) in formatted_equipment_label" :key="key">
                               <p><strong>{{ key }} :</strong> {{ value }}</p>
                             </v-col>
                           </v-row>
@@ -87,20 +87,20 @@
                         color="primary"
                         small
                         class="mr-2"
-                        @click.stop="ajouterDocument"
+                        @click.stop="add_document"
                       >
                         Ajouter
                       </v-btn>
                       <v-btn
-                        @click.stop="toggleDocumentsDetails"
+                        @click.stop="toggle_documents_details"
                       >
                         <v-icon class="ml-2">
-                          {{ showDocumentsDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                          {{ show_documents_details ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
                         </v-icon>
                       </v-btn>
                     </v-card-title>
                     <v-expand-transition>
-                      <div v-show="showDocumentsDetails">
+                      <div v-show="show_documents_details">
                         <v-divider class="my-2"></v-divider>
                         <v-card-text>
                           <v-data-table
@@ -113,8 +113,8 @@
                             <template v-slot:top>
                               <v-toolbar flat>
                                 <v-spacer></v-spacer>
-                                <v-btn color="primary" small @click="toggleActionMode">
-                                  {{ actionMode === 'download' ? 'Mode suppression' : 'Mode téléchargement' }}
+                                <v-btn color="primary" small @click="toggle_action_mode">
+                                  {{ action_mode === 'download' ? 'Mode suppression' : 'Mode téléchargement' }}
                                 </v-btn>
                               </v-toolbar>
                             </template>
@@ -123,11 +123,11 @@
                               <v-btn
                                 icon
                                 small
-                                :color="actionMode === 'download' ? 'primary' : 'error'"
-                                @click="actionMode === 'download' ? telechargerDocument(item) : supprimerDocument(item)"
+                                :color="action_mode === 'download' ? 'primary' : 'error'"
+                                @click="action_mode === 'download' ? download_document(item) : delete_document(item)"
                               >
                                 <v-icon small>
-                                  {{ actionMode === 'download' ? 'mdi-download' : 'mdi-delete' }}
+                                  {{ action_mode === 'download' ? 'mdi-download' : 'mdi-delete' }}
                                 </v-icon>
                               </v-btn>
                             </template>
@@ -143,19 +143,19 @@
 
           <!-- Boutons -->
           <v-row justify="center" class="mt-4">
-            <v-btn color="primary" class="text-white mx-2" @click="retour">
+            <v-btn color="primary" class="text-white mx-2" @click="go_back">
               Retour
             </v-btn>
 
-            <v-btn color="error" class="text-white mx-2" @click="supprimerDefaillance" :disabled="!canSupprimer">
+            <v-btn color="error" class="text-white mx-2" @click="delete_failure" :disabled="!can_delete">
               Supprimer la demande
             </v-btn>
 
-            <v-btn color="success" class="text-white mx-2" @click="traiterDefaillance" :disabled="!canTraiter">
+            <v-btn color="success" class="text-white mx-2" @click="treat_failure" :disabled="!can_treat">
               Mettre en attente la demande
             </v-btn>
 
-            <v-btn color="success" class="text-white mx-2" @click="CreateIntervention" :disabled="canTraiter">
+            <v-btn color="success" class="text-white mx-2" @click="create_intervention" :disabled="can_treat">
               Transformer en bon de travail
               
             </v-btn>
@@ -177,12 +177,12 @@ export default {
     const router = useRouter();
     const route = useRoute();
     const defaillance = ref(null);
-    const showEquipementDetails = ref(false);
-    const showDocumentsDetails = ref(false);
-    const actionMode = ref('download');
-    const selectedStatut = ref("pas de changement");
+    const show_equipment_details = ref(false);
+    const show_documents_details = ref(false);
+    const action_mode = ref('download');
+    const selected_status = ref("pas de changement");
 
-    const retour = () => {
+    const go_back = () => {
       router.go(-1);
     };
 
@@ -191,11 +191,11 @@ export default {
       { title: 'Actions', value: 'actions', sortable: false }
     ];
 
-    const toggleActionMode = () => {
-      actionMode.value = actionMode.value === 'download' ? 'delete' : 'download';
+    const toggle_action_mode = () => {
+      action_mode.value = action_mode.value === 'download' ? 'delete' : 'download';
     };
 
-    const supprimerDocument = async (item) => {
+    const delete_document = async (item) => {
     if (confirm(`Êtes-vous sûr de vouloir supprimer le document "${item.nomDocumentDefaillance}" ?`)) {
       try {
         console.log('Tentative de suppression du document:', item);
@@ -203,7 +203,7 @@ export default {
         console.log('Document supprimé avec succès');
         
         // Rafraîchir la liste des documents après la suppression
-        await fetchData();
+        await fetch_data();
         
         // Afficher un message de succès
         alert(`Le document "${item.nomDocumentDefaillance}" a été supprimé avec succès.`);
@@ -231,7 +231,7 @@ export default {
     }
   };
 
-  const fetchData = async () => {
+  const fetch_data = async () => {
     try {
       const response = await api.getDefaillanceAffichage(route.params.id);
       const defaillanceData = response.data;
@@ -256,8 +256,8 @@ export default {
     }
   };
 
-    const getNiveauColor = (niveau) => {
-      switch (niveau) {
+    const get_niveau_color = (level) => {
+      switch (level) {
         case 'Critique':
           return 'red';
         case 'Majeur':
@@ -267,16 +267,16 @@ export default {
       }
     };
 
-    const getTypeColor = (couleur) => {
-      switch (couleur) {
+    const get_type_color = (color) => {
+      switch (color) {
         case 'Oui':
           return 'green';
         default:
-          return'red';
+          return 'red';
       }};
 
 
-    const formatDate = (dateString) => {
+    const format_date = (dateString) => {
       if (!dateString) return 'Non spécifié';
       const date = new Date(dateString);
       return date.toLocaleString('fr-FR', {
@@ -288,7 +288,7 @@ export default {
       });
     };
 
-    const formatLabelDefaillance = computed(() => {
+    const formatted_failure_label = computed(() => {
       if (!defaillance.value) return {};
       const label = {
         'Description': defaillance.value.commentaireDefaillance,
@@ -298,41 +298,41 @@ export default {
       };
           
       if (defaillance.value.dateTraitementDefaillance) {
-        label['Date de traitement'] = formatDate(defaillance.value.dateTraitementDefaillance);
+        label['Date de traitement'] = format_date(defaillance.value.dateTraitementDefaillance);
       }
 
       if (defaillance.value.intervention) {
-        label['Intervention créée le '] = formatDate(defaillance.value.intervention.dateAssignation);
+        label['Intervention créée le '] = format_date(defaillance.value.intervention.dateAssignation);
       }
 
       return label;
     });
 
-    const formatLabelEquipement = computed(() => {
+    const formatted_equipment_label = computed(() => {
       if (!defaillance.value || !defaillance.value.equipement) return {};
       const equipement = defaillance.value.equipement;
       return {
         'Référence': equipement.reference || 'Non spécifié',
         'Désignation': equipement.designation || 'Non spécifié',
         'Statut': equipement.dernier_statut?.statutEquipement || 'Non spécifié',
-        'Date de mise en service': equipement.dateMiseEnService ? formatDate(equipement.dateMiseEnService) : 'Non spécifié',
+        'Date de mise en service': equipement.dateMiseEnService ? format_date(equipement.dateMiseEnService) : 'Non spécifié',
         'Prix d\'achat': equipement.prixAchat ? `${equipement.prixAchat} €` : 'Non spécifié',
         'Préventif glissant': equipement.preventifGlissant !== undefined ? (equipement.preventifGlissant ? 'Oui' : 'Non') : 'Non spécifié',
         'Intervalle de maintenance': equipement.joursIntervalleMaintenance ? `${equipement.joursIntervalleMaintenance} jours` : 'Non spécifié',
       };
     });
     
-    const canSupprimer = computed(() => {
+    const can_delete = computed(() => {
       return defaillance.value && !defaillance.value.intervention;
     });
 
-    const canTraiter = computed(() => {
+    const can_treat = computed(() => {
       return defaillance.value && !defaillance.value.dateTraitementDefaillance;
     });
 
 
-    const supprimerDefaillance = async () => {
-      if (!canSupprimer.value) {
+    const delete_failure = async () => {
+      if (!can_delete.value) {
         alert("Impossible de supprimer cette défaillance car une intervention est déjà associée.");
         return;
       }
@@ -362,7 +362,7 @@ export default {
       }
     };
 
-    const traiterDefaillance = async () => {
+    const treat_failure = async () => {
       if (confirm('Êtes-vous sûr de vouloir traiter cette défaillance ?')) {
         try {
           const dateTraitementDefaillance = new Date().toISOString();
@@ -376,9 +376,9 @@ export default {
             equipement: defaillance.value.equipement 
           };
 
-          if (selectedStatut.value !== "pas de changement" || selectedStatut.value == defaillance.value.equipement?.dernier_statut.statutEquipement ) {
+          if (selected_status.value !== "pas de changement" || selected_status.value == defaillance.value.equipement?.dernier_statut.statutEquipement ) {
             const statutData = {
-              statutEquipement: selectedStatut.value,
+              statutEquipement: selected_status.value,
               dateChangement: new Date().toISOString(),
               equipement: defaillance.value.equipement?.reference,
               informationStatutParent: defaillance.value.equipement.dernier_statut.id,
@@ -388,7 +388,7 @@ export default {
             await api.postInformationStatut(statutData);
           }
 
-          await fetchData();
+          await fetch_data();
           
         } catch (error) {
           console.error('Erreur lors du traitement de la défaillance:', error);
@@ -396,7 +396,7 @@ export default {
       }
     };
 
-    const CreateIntervention = () => {
+    const create_intervention = () => {
       if (defaillance.value && defaillance.value.id) {
         router.push({ 
           name: 'CreateIntervention', 
@@ -408,22 +408,22 @@ export default {
       }
     };
 
-    const toggleEquipementDetails = () => {
-      showEquipementDetails.value = !showEquipementDetails.value;
+    const toggle_equipment_details = () => {
+      show_equipment_details.value = !show_equipment_details.value;
     };
 
-    const toggleDocumentsDetails = () => {
-      showDocumentsDetails.value = !showDocumentsDetails.value;
+    const toggle_documents_details = () => {
+      show_documents_details.value = !show_documents_details.value;
     };
 
-    const ajouterDocument = () => {
+    const add_document = () => {
       router.push({ 
         name: 'AddDocumentFailure', 
         params: { id: defaillance.value.id }
       });
     };
 
-    const ouvrirEquipement = () => {
+    const open_equipment = () => {
       if (defaillance.value && defaillance.value.equipement) {
         router.push({ 
           name: 'EquipmentDetail', 
@@ -432,7 +432,7 @@ export default {
       }
     };
 
-    const telechargerDocument = (item) => {
+    const download_document = (item) => {
       const cleanedLink = item.lienDocumentDefaillance.startsWith('/media/') 
         ? item.lienDocumentDefaillance 
         : `/media/${item.lienDocumentDefaillance.split('/media/').pop()}`;
@@ -463,40 +463,40 @@ export default {
 
   
   
-  const statutOptions = [
+  const status_options = [
     "pas de changement",
     "En fonctionnement",
     "Dégradé",
     "A l'arrêt"
   ];
 
-    onMounted(fetchData);
+    onMounted(fetch_data);
 
     return {
       defaillance,
-      formatLabelDefaillance,
-      formatLabelEquipement,
-      canSupprimer,
-      canTraiter,
-      supprimerDefaillance,
-      traiterDefaillance,
-      CreateIntervention,
-      showEquipementDetails,
-      showDocumentsDetails,
-      toggleEquipementDetails,
-      toggleDocumentsDetails,
-      ouvrirEquipement,
+      formatted_failure_label,
+      formatted_equipment_label,
+      can_delete,
+      can_treat,
+      delete_failure,
+      treat_failure,
+      create_intervention,
+      show_equipment_details,
+      show_documents_details,
+      toggle_equipment_details,
+      toggle_documents_details,
+      open_equipment,
       headers,
-      telechargerDocument,
-      ajouterDocument,
-      actionMode,
-      toggleActionMode,
-      supprimerDocument,
-      getNiveauColor,
-      getTypeColor,
-      retour,
-      selectedStatut,
-      statutOptions,
+      download_document,
+      add_document,
+      action_mode,
+      toggle_action_mode,
+      delete_document,
+      get_niveau_color,
+      get_type_color,
+      go_back,
+      selected_status,
+      status_options,
     };
   }
 };
