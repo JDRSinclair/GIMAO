@@ -5,8 +5,8 @@
         <v-form @submit.prevent="submit_form">
   
           <v-text-field
-            v-model="formData.nomLieu"
-            label="Nom du lieu"
+            v-model="form_data.location_name"
+            label="Nom du Lieu"
             required
             outlined
             dense
@@ -14,8 +14,8 @@
           ></v-text-field>
   
           <v-text-field
-            v-model="formData.typeLieu"
-            label="Type de lieu"
+            v-model="form_data.location_type"
+            label="Type du lieu"
             required
             outlined
             dense
@@ -23,7 +23,7 @@
           ></v-text-field>
   
           <div>
-            <p v-if="!places_with_all || places_with_all.length === 0">Aucune donnée disponible.</p>
+            <p v-if="!places_with_all || places_with_all.length === 0">No data available.</p>
             <v-treeview
               v-else
               :items="places_with_all"
@@ -44,7 +44,7 @@
                   {{ open ? 'mdi-triangle-down' : 'mdi-triangle-right' }}
                 </v-icon>
                 <span v-else class="tree-icon-placeholder"></span>
-                <span @click="on_click_location(item)">{{ item.nomLieu }}</span> <!-- OnClick ici -->
+                <span @click="on_click_location(item)">{{ item.nomLieu }}</span>
               </template>
               <template v-slot:label="{ item }">
                 <span class="text-caption ml-2">{{ item.typeLieu }}</span>
@@ -52,13 +52,12 @@
             </v-treeview>
           </div>
           
-
           <v-row justify="end">
-            <v-btn color="secoundary" class="mt-4 rounded" @click="go_back" style="border-radius: 0; margin-right: 35px;" large>
-              Annuler
+            <v-btn color="secondary" class="mt-4 rounded" @click="go_back" style="border-radius: 0; margin-right: 35px;" large>
+              Cancel
             </v-btn>
             <v-btn type="submit" color="primary" class="mt-4 rounded" style="border-radius: 0 ;margin-right: 35px;" large>
-              Ajouter le lieu
+              Add Location
             </v-btn>
           </v-row>
         </v-form>
@@ -81,69 +80,66 @@ export default {
   setup() {
     const router = useRouter();
     const state = reactive({
-      formData: {
-        nomLieu: "",
-        typeLieu: "",
-        lieu: null,
+      form_data: {
+        location_name: "",
+        location_type: "",
+        location: null,
         header: [
-          { title: 'Lieu', value: 'lieu.nomLieu', sortable: true, align: 'center' },
+          { title: 'Location', value: 'location.nomLieu', sortable: true, align: 'center' },
         ],
-        openNodes: new Set(),
+        open_nodes: new Set(),
       },
-      lieux: [],
+      locations: [],
     });
 
     const places_with_all = computed(() => {
-      return [...state.lieux];
+      return [...state.locations];
     });
 
-    
     const on_click_location = (item) => {
-      if (state.formData.lieu && state.formData.lieu.id === item.id) {
-     
-        state.formData.lieu = null;
+      if (state.form_data.location && state.form_data.location.id === item.id) {
+        state.form_data.location = null;
       } else {
-        
-        state.formData.lieu = item; 
+        state.form_data.location = item; 
       }
     };
 
     const toggle_node = (item) => {
-      if (state.openNodes.has(item.id)) {
-        state.openNodes.delete(item.id);
+      if (state.open_nodes.has(item.id)) {
+        state.open_nodes.delete(item.id);
       } else {
-        state.openNodes.add(item.id);
+        state.open_nodes.add(item.id);
       }
     };
 
     const submit_form = async () => {
-      const formData = new FormData();
-      formData.append('nomLieu', state.formData.nomLieu);
-      formData.append('typeLieu', state.formData.typeLieu);
+      const form_data = new FormData();
+      form_data.append('nomLieu', state.form_data.location_name);
+      form_data.append('typeLieu', state.form_data.location_type);
 
-      if (state.formData.lieu) {
-        formData.append('lieuParent', state.formData.lieu.id);
+      if (state.form_data.location) {
+        form_data.append('lieuParent', state.form_data.location.id);
       }
 
       try {
-        const responseLieu = await api.postLieu(formData);
+        const responseLieu = await api.postLieu(form_data);
         if (responseLieu.status === 201) {
-          console.log('Lieu ajouté avec succès !');
+          console.log('Location added successfully!');
           go_back();
         } else {
-          console.log('Erreur lors de l’ajout du lieu.');
+          console.log('Error adding location.');
         }
       } catch (error) {
-        console.error('Erreur lors de la soumission du formulaire:', error);
+        console.error('Error submitting the form:', error);
       }
     };
 
     const fetch_data = async () => {
       try {
-        const [lieuRES] = await Promise.all([api.getLieuxHierarchy()]);
-        state.lieux = lieuRES.data;
+        const [locationRES] = await Promise.all([api.getLieuxHierarchy()]);
+        state.locations = locationRES.data;
       } catch (error) {
-        console.error('Erreur lors du chargement des données :', error);
+        console.error('Error loading data:', error);
       }
     };
 

@@ -35,7 +35,7 @@
 import { VTreeview } from 'vuetify/labs/VTreeview';
 
 export default {
-  name: 'LieuxExplorer',
+  name: 'LocationExplorer',
   components: {
     VTreeview
   },

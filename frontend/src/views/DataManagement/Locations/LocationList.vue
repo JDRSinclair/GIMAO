@@ -3,7 +3,7 @@
     <v-row>
       <v-card elevation="1" class="rounded-lg pa-4 mb-4" style="min-width: 800px; width: 100%; min-height: 400px;">
         <v-card-title class="font-weight-bold text-uppercase text-primary d-flex justify-space-between align-center">
-          <span>Liste des lieux</span>
+          <span>Listes des Lieux</span>
           <v-btn 
             color="primary"
             @click="go_to_add_location_page"
@@ -14,8 +14,8 @@
           </v-btn>
         </v-card-title>
         <v-divider></v-divider>
-        <LieuxExplorer 
-          :lieux="lieux" 
+        <LocationExplorer 
+          :lieux="locations" 
           @select-lieu="on_location_select"
         />
       </v-card>
@@ -27,33 +27,33 @@
 import { ref, onMounted, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/services/api';
-import LieuxExplorer from '@/components/LieuxExplorer.vue';
+import LocationExplorer from '@/components/LocationExplorer.vue';
 
 export default {
-  name: 'Lieux',
+  name: 'Locations',
   components: {
-    LieuxExplorer,
+    LocationExplorer,
   },
   setup() {
     const router = useRouter();
     const state = reactive({
-      lieux: [],
-      selectedLieu: null,
+      locations: [],
+      selected_location: null,
     });
 
     const fetch_data = async () => {
       try {
         const { data } = await api.getLieuxHierarchy();
-        state.lieux = data;
+        state.locations = data;
       } catch (error) {
-        console.error('Erreur lors de la récupération des données:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
     const go_to_add_location_page = () => router.push('/CreateLocation');
 
-    const on_location_select = (lieu) => {
-      state.selectedLieu = lieu;
+    const on_location_select = (location) => {
+      state.selected_location = location;
     };
 
     onMounted(fetch_data);
