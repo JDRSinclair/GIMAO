@@ -426,7 +426,7 @@ export default {
     const ouvrirEquipement = () => {
       if (defaillance.value && defaillance.value.equipement) {
         router.push({ 
-          name: 'AfficherEquipement', 
+          name: 'EquipmentDetail', 
           params: { reference: defaillance.value.equipement.reference }
         });
       }

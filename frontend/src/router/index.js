@@ -12,9 +12,9 @@ import Signalements from '@/views/Failures/Defaillances.vue'
 
 
 // ---------------------------------------------------------------
-import AfficherIntervention from '@/views/Interventions/AfficherIntervention.vue'
+import InterventionDetail from '@/views/Interventions/InterventionDetail.vue'
 import CreateIntervention from '@/views/Interventions/CreateIntervention.vue'
-import AjouterDocumentIntervention from '@/views/Interventions/AjouterDocumentIntervention.vue'
+import AddDocumentIntervention from '@/views/Interventions/AddDocumentIntervention.vue'
 
 // ------------------------------------------------------------------
 import EquipmentDetail from '@/views/Equipments/EquipmentDetail.vue'
@@ -183,8 +183,8 @@ const routes = [
 
   {
     path: '/intervention/:id',
-    name: 'AfficherIntervention',
-    component: AfficherIntervention,
+    name: 'InterventionDetail',
+    component: InterventionDetail,
     props: true, 
     meta: { title: 'Détails de l\'intervention' }
   },
@@ -197,9 +197,9 @@ const routes = [
   },
 
   {
-    path: '/intervention/:id/ajouterDocument',
-    name: 'AjouterDocumentIntervention',
-    component: AjouterDocumentIntervention,
+    path: '/intervention/:id/AddDocumentIntervention',
+    name: 'AddDocumentIntervention',
+    component: AddDocumentIntervention,
     props: true,
     meta: { title: 'Détails de l\'intervention' }
   },

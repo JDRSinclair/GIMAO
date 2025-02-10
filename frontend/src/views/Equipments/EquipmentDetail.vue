@@ -304,7 +304,7 @@ export default {
 
     voirIntervention(intervention) {
       this.router.push({
-        name: 'AfficherIntervention',
+        name: 'InterventionDetail',
         params: { id: intervention.id }
       });
     },

@@ -94,7 +94,7 @@ export default {
     };
 
     const ouvrirAfficherIntervention = (id) => {
-      router.push({ name: 'AfficherIntervention', params: { id: id } });
+      router.push({ name: 'InterventionDetail', params: { id: id } });
     };
 
     return {

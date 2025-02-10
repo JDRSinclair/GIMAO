@@ -50,7 +50,7 @@
   import api from '@/services/api';
   
   export default {
-    name: 'AjouterDocumentIntervention',
+    name: 'AddDocumentIntervention',
     setup() {
       const route = useRoute();
       const router = useRouter();
@@ -103,7 +103,7 @@
   
           if (allSuccess) {
             showSnackbar('Tous les documents ont été enregistrés avec succès');
-            router.push({ name: 'AfficherIntervention', params: { id: interventionId } });
+            router.push({ name: 'InterventionDetail', params: { id: interventionId } });
           } else {
             showSnackbar('Certains documents n\'ont pas pu être enregistrés', 'warning');
           }

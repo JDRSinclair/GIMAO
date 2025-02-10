@@ -147,7 +147,7 @@
   
   
   export default {
-    name: 'AfficherEquipement',
+    name: 'EditEquipment',
     setup() {
       const router = useRouter();
       return { router };
@@ -269,7 +269,7 @@
   
       voirIntervention(intervention) {
         this.router.push({
-          name: 'AfficherIntervention',
+          name: 'InterventionDetail',
           params: { id: intervention.id }
         });
       },

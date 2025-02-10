@@ -260,7 +260,7 @@ export default {
           if (response && response.data) {
             alert("Intervention créée avec succès !");
             // Redirection vers la page d'affichage de l'intervention
-            routeur.push({ name: 'AfficherIntervention', params: { id: response.data.id } });
+            routeur.push({ name: 'InterventionDetail', params: { id: response.data.id } });
           } else {
             throw new Error('Réponse invalide du serveur');
           }

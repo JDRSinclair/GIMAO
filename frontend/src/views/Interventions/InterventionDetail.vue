@@ -157,7 +157,7 @@ import { useRouter, useRoute } from 'vue-router';
 import api , { BASE_URL } from '@/services/api';
 
 export default {
-  name: 'AfficherIntervention',
+  name: 'InterventionDetail',
   setup() {
     const router = useRouter();
     const route = useRoute();
@@ -348,7 +348,7 @@ export default {
     };
 
     const ajouterDocument = () => {
-      router.push({ name: 'AjouterDocumentIntervention', params: { id: intervention.value.id } });
+      router.push({ name: 'AddDocumentIntervention', params: { id: intervention.value.id } });
     };
 
 
