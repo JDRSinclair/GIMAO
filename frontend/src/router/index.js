@@ -253,7 +253,7 @@ const routes = [
     name: 'FailureDetail',
     component: FailureDetail,
     props: true,
-    meta: { title: 'Details de la demande ' }
+    meta: { title: 'Détails de la demande ' }
   },
 
   {
