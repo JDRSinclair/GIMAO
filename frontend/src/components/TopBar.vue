@@ -4,8 +4,8 @@
     <v-col class="d-flex align-center justify-start">
     </v-col>
     <!-- Left-aligned Page Title -->
-    <div class="text-h5 font-weight-bold page-title">
-      {{ pageTitle }}
+    <div class="text-h5 font-weight-bold page_title">
+      {{ page_title }}
     </div>
 
     <v-spacer></v-spacer>
@@ -15,7 +15,7 @@
       color="primary"
       class="mr-4 text-none"
       density="comfortable"
-      @click="exportDatabase"
+      @click="export_database"
     >
       <v-icon start>mdi-database-export</v-icon>
       Exporter la base de données
@@ -33,14 +33,14 @@
 
     <!-- Profile Section -->
     <v-avatar size="40" class="ml-4">
-      <v-img :src="userAvatarUrl" :alt="userName" cover class="border"></v-img>
+      <v-img :src="user_avatar_url" :alt="user_name" cover class="border"></v-img>
     </v-avatar>
     <div class="ml-2 text-left">
-      <div class="font-weight-bold user-name">
-        {{ userName }}
+      <div class="font-weight-bold user_name">
+        {{ user_name }}
       </div>
       <div class="text-caption text-grey-darken-1">
-        {{ userRole }}
+        {{ user_role }}
       </div>
     </div>
   </v-app-bar>
@@ -50,34 +50,34 @@
 export default {
   name: "TopBar",
   props: {
-    pageTitle: {
+    page_title: {
       type: String,
       required: true
     },
-    userName: {
+    user_name: {
       type: String,
       default: "Admin"
     },
-    userRole: {
+    user_role: {
       type: String,
       default: "Administrateur"
     },
-    userAvatarUrl: {
+    user_avatar_url: {
       type: String,
       default: "https://i.imghippo.com/files/SRJI2293jtI.png"
     },
-    logoUrl: {
+    logo_url: {
       type: String,
       default: "https://i.imghippo.com/files/wCa5810fAA.png"
     }
   },
   methods: {
-    exportDatabase() {
-      // Logique pour exporter la base de données
+    export_database() {
+      // Logic for database export
       console.log("Exporting database...");
     },
     logout() {
-      // Logique pour la déconnexion
+      // Logic for logout
       console.log("Logging out...");
     }
   }
@@ -85,11 +85,11 @@ export default {
 </script>
 
 <style scoped>
-.app-title, .page-title, .user-name {
+.app_title, .page_title, .user_name {
   color: #151d48;
 }
 
-.app-title {
+.app_title {
   font-family: 'Montserrat', sans-serif;
 }
 </style>

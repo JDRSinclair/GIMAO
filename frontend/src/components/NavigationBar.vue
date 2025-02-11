@@ -4,12 +4,12 @@
       <v-list-item
         lines="two"
         :prepend-avatar="logo"
-        :class="[$style.logoContainer, 'd-flex justify-center']"
-        @click="goToDashboard"
+        :class="[$style.logo_container, 'd-flex justify-center']"
+        @click="go_to_dashboard"
         style="cursor: pointer;"
       >
-        <v-list-item-title :class="[$style.logoTitle, 'font-weight-bold text-center']">
-          {{ appTitle }}
+        <v-list-item-title :class="[$style.logo_title, 'font-weight-bold text-center']">
+          {{ app_title }}
         </v-list-item-title>
       </v-list-item>
     </template>
@@ -18,16 +18,16 @@
 
     <v-list density="compact" nav class="d-flex flex-column align-center">
       <v-list-item
-        v-for="item in navigationItems"
+        v-for="item in navigation_items"
         :key="item.name"
         :to="!item.disabled ? { name: item.name } : null"
-        :class="[getItemClasses(item.name), $style.itemSize, { 'disabled-item': item.disabled }]"
+        :class="[get_item_classes(item.name), $style.item_size, { 'disabled-item': item.disabled }]"
         @click="item.disabled ? $event.preventDefault() : null"
       >
         <template v-slot:prepend>
           <v-icon
-            :color="isActive(item.name) ? 'white' : 'primary'"
-            :class="[{ 'active-icon': isActive(item.name), 'inner-shadow': true }, $style.icon]"
+            :color="is_active(item.name) ? 'white' : 'primary'"
+            :class="[{ 'active-icon': is_active(item.name), 'inner-shadow': true }, $style.icon]"
           >
             {{ item.icon }}
           </v-icon>
@@ -45,11 +45,11 @@ export default {
       type: String,
       default: () => require('@/assets/images/LogoGIMAO.png'),
     },
-    appTitle: {
+    app_title: {
       type: String,
       default: 'GIMAO',
     },
-    navigationItems: {
+    navigation_items: {
       type: Array,
       default: () => [
         { name: 'Dashboard', icon: 'mdi-view-dashboard', title: 'Tableau de bord' },
@@ -59,23 +59,23 @@ export default {
         { name: 'Technicians', icon: 'mdi-account-hard-hat', title: 'Techniciens', disabled: true },
         { name: 'AccountManagement', icon: 'mdi-account-cog', title: 'Gestion des <br>comptes', disabled: true },
         { name: 'Orders', icon: 'mdi-cart', title: 'Commandes', disabled: true },
-        { name: 'Stocks', icon: 'mdi-package-variant-closed', title: 'Stocks',disabled: true },
+        { name: 'Stocks', icon: 'mdi-package-variant-closed', title: 'Stocks', disabled: true },
         { name: 'DataManagement', icon: 'mdi-database-cog', title: 'Gestion des <br>données' }
       ],
     },
   },
   methods: {
-    isActive(routeName) {
-      return this.$route.name === routeName;
+    is_active(route_name) {
+      return this.$route.name === route_name;
     },
-    getItemClasses(itemName) {
+    get_item_classes(item_name) {
       return {
-        'active-item': this.isActive(itemName),
-        'no-hover': this.isActive(itemName),
+        'active-item': this.is_active(item_name),
+        'no-hover': this.is_active(item_name),
         'inner-shadow': true,
       };
     },
-    goToDashboard() {
+    go_to_dashboard() {
       this.$router.push({ name: 'Dashboard' });
     },
   },
@@ -92,20 +92,20 @@ export default {
   --active-text-color: #fff;
 }
 
-.logoContainer {
+.logo_container {
   height: 100px;
 }
 
-.logoContainer:active {
+.logo_container:active {
   transform: scale(0.95);
   transition: transform 0.2s;
 }
 
-.logoTitle {
+.logo_title {
   font-size: 24px;
 }
 
-.itemSize {
+.item_size {
   width: 80%;
   height: auto;
   padding: 5%;

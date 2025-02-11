@@ -11,12 +11,12 @@
       hoverable
       activatable
       dense
-      @update:active="onSelect"
+      @update:active="on_select"
     >
     <template v-slot:prepend="{ item, open }">
       <v-icon
         v-if="item.children && item.children.length > 0 && item.nomLieu !== 'Tous'"
-        @click.stop="toggleNode(item)"
+        @click.stop="toggle_node(item)"
         :class="{ 'rotate-icon': open }"
       >
         {{ open ? 'mdi-triangle-down' : 'mdi-triangle-right' }}
@@ -47,27 +47,27 @@ export default {
   },
   data() {
     return {
-      openNodes: new Set(),
+      open_nodes: new Set(),
     };
   },
   methods: {
-    onSelect(items) {
+    on_select(items) {
       console.log('Item sélectionné:', items);
       if (items.length > 0) {
-        const selectedItem = this.findItem(this.lieux, items[0]);
-        if (selectedItem) {
-          console.log('Item trouvé:', selectedItem);
-          this.$emit('select-lieu', selectedItem);
+        const selected_item = this.find_item(this.lieux, items[0]);
+        if (selected_item) {
+          console.log('Item trouvé:', selected_item);
+          this.$emit('select-lieu', selected_item);
         }
       }
     },
-    findItem(items, id) {
+    find_item(items, id) {
       for (const item of items) {
         if (item.id === id) {
           return item;
         }
         if (item.children) {
-          const found = this.findItem(item.children, id);
+          const found = this.find_item(item.children, id);
           if (found) {
             return found;
           }
@@ -75,11 +75,11 @@ export default {
       }
       return null;
     },
-    toggleNode(item) {
-      if (this.openNodes.has(item.id)) {
-        this.openNodes.delete(item.id);
+    toggle_node(item) {
+      if (this.open_nodes.has(item.id)) {
+        this.open_nodes.delete(item.id);
       } else {
-        this.openNodes.add(item.id);
+        this.open_nodes.add(item.id);
       }
       this.$forceUpdate();
     },
