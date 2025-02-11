@@ -6,7 +6,7 @@
     
             <v-text-field
               v-model="form_data.location_name"
-              label="Nom du model d'équipement"
+              label="Nom du modéle d'équipement"
               required
               outlined
               dense
@@ -26,10 +26,10 @@
             
             <v-row justify="end">
               <v-btn color="secondary" class="mt-4 rounded" @click="go_back" style="border-radius: 0; margin-right: 35px;" large>
-                Cancel
+                Annuler
               </v-btn>
               <v-btn type="submit" color="primary" class="mt-4 rounded" style="border-radius: 0 ;margin-right: 35px;" large>
-                Add modele d'équipement
+                Ajouter un modele d'équipement
               </v-btn>
             </v-row>
           </v-form>
