@@ -5,7 +5,7 @@
       <v-col cols="9">
         <v-text-field
           v-model="search_query"
-          label="Search for an equipment model"
+          label="Rechercher un modele d'equipement"
           prepend-icon="mdi-magnify"
           clearable
         ></v-text-field>
@@ -17,7 +17,7 @@
           class="ml-2"
           height="50%"
         >
-          Create an Equipment Model
+          Creer un modele d'equipement
         </v-btn>
       </v-col>
     </v-row>
@@ -32,7 +32,7 @@
         <v-card @click="go_to_model_equipment_details(model_equipment.id)">
           <v-card-title>{{ model_equipment.nomModeleEquipement }}</v-card-title>
           <v-card-text>
-            <p>Manufacturer: {{ model_equipment.fabricant }}</p>
+            <p>Fabricant : {{ model_equipment.fabricant }}</p>
           </v-card-text>
         </v-card>
       </v-col>
