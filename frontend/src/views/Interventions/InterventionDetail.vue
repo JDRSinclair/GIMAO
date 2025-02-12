@@ -37,7 +37,7 @@
                       <v-btn
                         color="primary"
                         class="ml-2"
-                        @click="ouvrirDefaillance"
+                        @click="open_failure"
                         :disabled="!defaillance_id"
                       >
                         Ouvrir
@@ -75,7 +75,7 @@
                         color="primary"
                         small
                         class="mr-2"
-                        @click="ajouterDocument"
+                        @click="add_document"
                       >
                         Ajouter
                       </v-btn>
@@ -110,7 +110,7 @@
                                 icon
                                 small
                                 :color="action_mode === 'download' ? 'primary' : 'error'"
-                                @click="action_mode === 'download' ? telechargerDocument(item) : supprimerDocument(item)"
+                                @click="action_mode === 'download' ? download_document(item) : delete_document(item)"
                               >
                                 <v-icon small>
                                   {{ action_mode === 'download' ? 'mdi-download' : 'mdi-delete' }}
@@ -129,19 +129,19 @@
 
           <!-- Buttons -->
           <v-row justify="center" class="mt-4">
-            <v-btn color="primary" class="text-white mx-2" @click="retour">
+            <v-btn color="primary" class="text-white mx-2" @click="back_to_previous_page">
               Retour
             </v-btn>
 
-            <v-btn color="error" class="text-white mx-2" @click="supprimerIntervention" :disabled="!can_supprimer">
+            <v-btn color="error" class="text-white mx-2" @click="delete_intervention" :disabled="!can_supprimer">
               Supprimer l'intervention
             </v-btn>
             
-            <v-btn color="warning" class="text-white mx-2" @click="reouvrirIntervention" :disabled="!can_supprimer">
+            <v-btn color="warning" class="text-white mx-2" @click="reopen_intervention" :disabled="!can_supprimer">
               Rouvrir l'intervention
             </v-btn>
 
-            <v-btn color="success" class="text-white mx-2" @click="cloturerIntervention" :disabled="!can_cloturer">
+            <v-btn color="success" class="text-white mx-2" @click="close_intervention" :disabled="!can_cloturer">
               Clôturer l'intervention
             </v-btn>
           </v-row>
@@ -166,7 +166,7 @@ export default {
     const show_defaillance_details = ref(false);
     const show_documents_details = ref(false);
 
-    const retour = () => {
+    const back_to_previous_page = () => {
       router.go(-1);
     };
 
@@ -179,13 +179,13 @@ export default {
       return intervention.value?.defaillance?.id;
     });
 
-    const ouvrirDefaillance = () => {
+    const open_failure = () => {
       if (defaillance_id.value) {
         router.push({ name: 'FailureDetail', params: { id: defaillance_id.value } });
       }
     };
 
-    const fetchData = async () => {
+    const fetch_data = async () => {
       try {
         const response = await api.getInterventionAffichage(route.params.id);
         intervention.value = response.data;
@@ -194,7 +194,7 @@ export default {
       }
     };
 
-    const formatDate = (dateString) => {
+    const date_format = (dateString) => {
       if (!dateString) return 'Non spécifié';
       const date = new Date(dateString);
       return date.toLocaleString('fr-FR', {
@@ -210,10 +210,10 @@ export default {
       if (!intervention.value) return {};
       return {
         'Nom de l\'intervention': intervention.value.nomIntervention,
-        'Date d\'assignation': formatDate(intervention.value.dateAssignation),
-        'Date de clôture': formatDate(intervention.value.dateCloture),
-        'Date du début de l\'intervention': formatDate(intervention.value.dateDebutIntervention),
-        'Date de fin de l\'intervention': formatDate(intervention.value.dateFinIntervention),
+        'Date d\'assignation': date_format(intervention.value.dateAssignation),
+        'Date de clôture': date_format(intervention.value.dateCloture),
+        'Date du début de l\'intervention': date_format(intervention.value.dateDebutIntervention),
+        'Date de fin de l\'intervention': date_format(intervention.value.dateFinIntervention),
         'Temps estimé': intervention.value.tempsEstime,
         'Intervention curative': intervention.value.interventionCurative ? 'Oui' : 'Non',
       };
@@ -224,7 +224,7 @@ export default {
       const defaillance = intervention.value.defaillance;
       return {
         'Nom de la défaillance': defaillance.commentaireDefaillance,
-        'Date de la défaillance': formatDate(defaillance.dateDefaillance),
+        'Date de la défaillance': date_format(defaillance.dateDefaillance),
         'Commentaire': defaillance.commentaireDefaillance || 'Aucun commentaire'
       };
     });
@@ -241,7 +241,7 @@ export default {
       action_mode.value = action_mode.value === 'download' ? 'delete' : 'download';
     };
 
-    const supprimerIntervention = async () => {
+    const delete_intervention = async () => {
       if (confirm('Êtes-vous sûr de vouloir supprimer cette intervention ?')) {
         try {
           await api.deleteIntervention(intervention.value.id);
@@ -252,18 +252,18 @@ export default {
       }
     };
 
-    const reouvrirIntervention = async () => {
+    const reopen_intervention = async () => {
       if (confirm('Êtes-vous sûr de vouloir rouvrir cette intervention ?')) {
         try {
           await api.reouvrirIntervention(intervention.value.id);
-          fetchData(); // Recharger les données après la réouverture
+          fetch_data(); // Recharger les données après la réouverture
         } catch (error) {
           console.error('Erreur lors de la réouverture de l\'intervention:', error);
         }
       }
     };
 
-    const telechargerDocument = (item) => {
+    const download_document = (item) => {
       const cleanedLink = item.lienDocumentIntervention.startsWith('/media/') 
         ? item.lienDocumentIntervention 
         : `/media/${item.lienDocumentIntervention.split('/media/').pop()}`;
@@ -292,7 +292,7 @@ export default {
         });
     };
 
-    const supprimerDocument = async (item) => {
+    const delete_document = async (item) => {
       if (confirm(`Êtes-vous sûr de vouloir supprimer le document "${item.nomDocumentIntervention}" ?`)) {
         try {
           console.log('Tentative de suppression du document:', item);
@@ -300,7 +300,7 @@ export default {
           console.log('Document supprimé avec succès');
           
           // Refresh the document list after deletion
-          await fetchData();
+          await fetch_data();
           
           // Display success message
           alert(`Le document "${item.nomDocumentIntervention}" a été supprimé avec succès.`);
@@ -328,11 +328,11 @@ export default {
       }
     };
 
-    const cloturerIntervention = async () => {
+    const close_intervention = async () => {
       if (confirm('Êtes-vous sûr de vouloir clôturer cette intervention ?')) {
         try {
           await api.cloturerIntervention(intervention.value.id);
-          fetchData(); // Recharger les données après la clôture
+          fetch_data(); // Recharger les données après la clôture
         } catch (error) {
           console.error('Erreur lors de la clôture de l\'intervention:', error);
         }
@@ -347,11 +347,11 @@ export default {
       show_documents_details.value = !show_documents_details.value;
     };
 
-    const ajouterDocument = () => {
+    const add_document = () => {
       router.push({ name: 'AddDocumentIntervention', params: { id: intervention.value.id } });
     };
 
-    onMounted(fetchData);
+    onMounted(fetch_data);
 
     return {
       intervention,
@@ -359,20 +359,20 @@ export default {
       format_label_defaillance,
       can_supprimer,
       can_cloturer,
-      retour,
-      supprimerIntervention,
-      reouvrirIntervention,
-      cloturerIntervention,
+      back_to_previous_page,
+      delete_intervention,
+      reopen_intervention,
+      close_intervention,
       show_defaillance_details,
       show_documents_details,
       toggle_defaillance_details,
       toggle_documents_details,
-      ouvrirDefaillance,
+      open_failure,
       headers,
-      telechargerDocument,
-      ajouterDocument,
+      download_document,
+      add_document,
       defaillance_id,
-      supprimerDocument,
+      delete_document,
       action_mode,
       toggle_action_mode
     };
