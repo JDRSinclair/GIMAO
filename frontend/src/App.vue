@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <NavigationDrawer :items="menuItems" />
-    <TopNavBar :pageTitle="currentPageTitle" />
+    <NavigationDrawer :items="menu_items" />
+    <TopNavBar :page_title="current_page_title" />
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -21,8 +21,8 @@ export default {
   
   data() {
     return {
-      currentPageTitle: '',
-      menuItems: [
+      current_page_title: '',
+      menu_items: [
         { name: 'Tableau de bord', icon: require('@/assets/images/Graphe.svg'), routeName: 'Dashboard' },
         { name: 'Equipements', icon: require('@/assets/images/Outils.svg'), routeName: 'Equipements' },
         { name: 'Maintenances', icon: require('@/assets/images/Maintenance.svg'), routeName: 'Maintenances' },
@@ -35,7 +35,7 @@ export default {
     $route: {
       immediate: true,
       handler(to) {
-        this.currentPageTitle = to.meta.title || 'GIMAO';
+        this.current_page_title = to.meta.title || 'GIMAO';
       }
     }
   }

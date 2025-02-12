@@ -8,11 +8,11 @@
           </v-col>
         </v-row>
         <v-row justify="center">
-          <v-col v-for="item in items" :key="item.name" cols="12" sm="6" md="4" lg="3">
-            <v-card elevation="2" class="rounded-lg pa-4 mb-4 data-card" @click="navigateTo(item.route)">
+          <v-col v-for="menu_item in menu_items" :key="menu_item.name" cols="12" sm="6" md="4" lg="3">
+            <v-card elevation="2" class="rounded-lg pa-4 mb-4 data_card" @click="navigate_to(menu_item.route)">
               <v-card-text class="text-center">
-                <v-icon :color="item.color" size="64" class="mb-4">{{ item.icon }}</v-icon>
-                <h2 class="text-h5 font-weight-medium">{{ item.name }}</h2>
+                <v-icon :color="menu_item.color" size="64" class="mb-4">{{ menu_item.icon }}</v-icon>
+                <h2 class="text-h5 font-weight-medium">{{ menu_item.name }}</h2>
               </v-card-text>
             </v-card>
           </v-col>
@@ -27,7 +27,7 @@ export default {
   name: 'DataManagement',
   data() {
     return {
-      items: [
+      menu_items: [
         { name: "Lieux", route: "/LocationList", icon: "mdi-map-marker", color: "blue" },
         { name: "Consommables", route: "/ConsumableList", icon: "mdi-package-variant", color: "green" },
         { name: "Fournisseurs", route: "/SupplierList", icon: "mdi-truck", color: "orange" },
@@ -37,7 +37,7 @@ export default {
     };
   },
   methods: {
-    navigateTo(route) {
+    navigate_to(route) {
       this.$router.push(route);
     },
   },
@@ -49,12 +49,12 @@ export default {
   color: #05004E;
 }
 
-.data-card {
+.data_card {
   transition: transform 0.3s, box-shadow 0.3s;
   cursor: pointer;
 }
 
-.data-card:hover {
+.data_card:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
 }
@@ -63,7 +63,7 @@ export default {
   transition: transform 0.3s;
 }
 
-.data-card:hover .v-icon {
+.data_card:hover .v-icon {
   transform: scale(1.1);
 }
 </style>

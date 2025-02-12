@@ -14,25 +14,25 @@
               </v-card-title>
               <v-divider></v-divider>
               <v-data-table
-                :headers="defaillancesHeaders"
-                :items="defaillances"
+                :headers="failures_headers"
+                :items="failures"
                 :items-per-page="5"
-                :page.sync="defaillancesPage"
+                :page.sync="failures_page"
                 item-value="id"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
-                @click:row="(event, {item}) => ouvrirAfficherDefaillance(item.id)"
+                @click:row="(event, {item}) => open_show_failure(item.id)"
               >
                 <template v-slot:item.niveau="{ item }">
-                  <v-chip :color="getNiveauColor(item.niveau)" dark>
+                  <v-chip :color="get_level_color(item.niveau)" dark>
                     {{ item.niveau }}
                   </v-chip>
                 </template>
               </v-data-table>
 
               <v-pagination
-                v-model="defaillancesPage"
-                :length="Math.ceil(defaillances.length / 5)"
+                v-model="failures_page"
+                :length="Math.ceil(failures.length / 5)"
               ></v-pagination>
             </v-card>
           </v-col>
@@ -45,17 +45,17 @@
               </v-card-title>
               <v-divider></v-divider>
               <v-data-table
-                :headers="interventionsHeaders"
+                :headers="interventions_headers"
                 :items="interventions"
                 :items-per-page="5"
-                :page.sync="interventionsPage"
+                :page.sync="interventions_page"
                 item-value="id"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
-                @click:row="(event, {item}) => ouvrirAfficherIntervention(item.id)"
+                @click:row="(event, {item}) => open_show_intervention(item.id)"
               ></v-data-table>
               <v-pagination
-                v-model="interventionsPage"
+                v-model="interventions_page"
                 :length="Math.ceil(interventions.length / 5)"
               ></v-pagination>
             </v-card>
@@ -65,7 +65,7 @@
         <!-- Nombre de demandes d'interventions -->
         <v-row>
           <v-col>
-            <h2 class="text-primary">Nombre de demandes d'interventions : {{ nombreInterventions }}</h2>
+            <h2 class="text-primary">Nombre de demandes d'interventions : {{ intervention_count }}</h2>
           </v-col>
         </v-row>
       </v-container>
@@ -89,67 +89,67 @@ export default {
   setup() {
     const router = useRouter();
 
-    const ouvrirAfficherDefaillance = (id) => {
+    const open_show_failure = (id) => {
       router.push({ name: 'FailureDetail', params: { id: id } });
     };
 
-    const ouvrirAfficherIntervention = (id) => {
+    const open_show_intervention = (id) => {
       router.push({ name: 'InterventionDetail', params: { id: id } });
     };
 
     return {
-      ouvrirAfficherDefaillance,
-      ouvrirAfficherIntervention
+      open_show_failure,
+      open_show_intervention
     };
   },
 
   data() {
     return {
-      menuItems: [
+      menu_items: [
         { name: 'Tableau de bord', icon: require('@/assets/images/Graphe.svg') },
         { name: 'Equipements', icon: require('@/assets/images/Outils.svg') },
         { name: 'Maintenances', icon: require('@/assets/images/Maintenance.svg') },
         { name: 'Techniciens', icon: require('@/assets/images/Techniciens.svg') },
       ],
-      defaillancesHeaders: [
+      failures_headers: [
         { title: 'Commentaire', value: 'commentaireDefaillance' },
         { title: 'Niveau', value: 'niveau' },
         { title: 'Équipement', value: 'equipement' },
       ],
-      defaillances: [],
-      interventionsHeaders: [
+      failures: [],
+      interventions_headers: [
         { title: 'Nom', value: 'nomIntervention' },
         { title: 'Date d\'assignation', value: 'dateAssignation' },
         { title: 'Temps estimé', value: 'tempsEstime' },
       ],
       interventions: [],
-      nombreInterventions: 0,
-      defaillancesPage: 1,
-      interventionsPage: 1,
+      intervention_count: 0,
+      failures_page: 1,
+      interventions_page: 1,
     };
   },
 
   methods: {
-    handleItemSelected(item) {
+    handle_item_selected(item) {
       console.log('Selected item:', item);
     },
 
-    formatDate(dateString) {
+    format_date(dateString) {
       if (!dateString) return '';
       const date = new Date(dateString);
       return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
     },
 
-    async fetchDefaillances() {
+    async fetch_failures() {
       try {
         const response = await api.getDefaillances();
-        this.defaillances = response.data.filter(defaillance => defaillance.dateTraitementDefaillance === null);
+        this.failures = response.data.filter(defaillance => defaillance.dateTraitementDefaillance === null);
       } catch (error) {
         console.error('Erreur lors de la récupération des défaillances:', error);
       }
     },
 
-    getNiveauColor(niveau) {
+    get_level_color(niveau) {
       switch (niveau) {
         case 'Critique':
           return 'red';
@@ -160,16 +160,15 @@ export default {
       }
     },
 
-    async fetchInterventions() {
+    async fetch_interventions() {
       try {
         const response = await api.getInterventions();
         this.interventions = response.data
-          // .filter(intervention => intervention.dateFinIntervention !== null)
           .map(intervention => ({
             ...intervention,
-            dateAssignation: this.formatDate(intervention.dateAssignation)
+            dateAssignation: this.format_date(intervention.dateAssignation)
           }));
-        this.nombreInterventions = this.interventions.length; // Modifié ici
+        this.intervention_count = this.interventions.length;
       } catch (error) {
         console.error('Erreur lors de la récupération des interventions:', error);
       }
@@ -177,8 +176,8 @@ export default {
   },
 
   created() {
-    this.fetchDefaillances();
-    this.fetchInterventions();
+    this.fetch_failures();
+    this.fetch_interventions();
   },
 };
 </script>

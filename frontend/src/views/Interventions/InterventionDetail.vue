@@ -4,16 +4,16 @@
       <v-container class="py-5">
         <v-card class="pa-4">
           <v-row v-if="intervention">
-            <!-- Colonne de gauche avec les informations -->
+            <!-- Left column with information -->
             <v-col cols="6">
               <v-row>
-                <v-col cols="12" v-for="(value, key) in formatLabelIntervention" :key="key">
+                <v-col cols="12" v-for="(value, key) in format_label_intervention" :key="key">
                   <p><strong>{{ key }} :</strong> {{ value }}</p>
                 </v-col>
               </v-row>
             </v-col>
 
-            <!-- Colonne de droite avec les informations supplémentaires -->
+            <!-- Right column with additional information -->
             <v-col cols="6">
               <v-row>
                 <v-col cols="12">
@@ -28,8 +28,8 @@
                   <v-card 
                     class="mt-4 pa-4" 
                     elevation="2" 
-                    @click="toggleDefaillanceDetails"
-                    :class="{ 'expanded': showDefaillanceDetails }"
+                    @click="toggle_defaillance_details"
+                    :class="{ 'expanded': show_defaillance_details }"
                   >
                     <v-card-title class="text-h6 d-flex align-center">
                       Défaillance
@@ -37,22 +37,22 @@
                       <v-btn
                         color="primary"
                         class="ml-2"
-                        @click.stop="ouvrirDefaillance"
-                        :disabled="!defaillanceId"
+                        @click="ouvrirDefaillance"
+                        :disabled="!defaillance_id"
                       >
                         Ouvrir
                       </v-btn> 
                      
                         <v-icon>
-                          {{ showDefaillanceDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                          {{ show_defaillance_details ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
                         </v-icon>
                     </v-card-title>
                     <v-expand-transition>
-                      <div v-show="showDefaillanceDetails">
+                      <div v-show="show_defaillance_details">
                         <v-divider class="my-2"></v-divider>
                         <v-card-text>
                           <v-row>
-                            <v-col cols="12" v-for="(value, key) in formatLabelDefaillance" :key="key">
+                            <v-col cols="12" v-for="(value, key) in format_label_defaillance" :key="key">
                               <p><strong>{{ key }} :</strong> {{ value }}</p>
                             </v-col>
                           </v-row>
@@ -62,7 +62,7 @@
                   </v-card>
                 </v-col>
                 
-                <!-- Section pour les Documents d'intervention -->
+                <!-- Section for intervention documents -->
                 <v-col cols="12">
                   <v-card 
                     class="mt-4 pa-4" 
@@ -79,14 +79,14 @@
                       >
                         Ajouter
                       </v-btn>
-                      <v-btn icon @click="toggleDocumentsDetails">
+                      <v-btn icon @click="toggle_documents_details">
                         <v-icon>
-                          {{ showDocumentsDetails ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                          {{ show_documents_details ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
                         </v-icon>
                       </v-btn>
                     </v-card-title>
                     <v-expand-transition>
-                      <div v-show="showDocumentsDetails">
+                      <div v-show="show_documents_details">
                         <v-divider class="my-2"></v-divider>
                         <v-card-text>
                           <v-data-table
@@ -99,8 +99,8 @@
                             <template v-slot:top>
                               <v-toolbar flat>
                                 <v-spacer></v-spacer>
-                                <v-btn color="primary" small @click="toggleActionMode">
-                                  {{ actionMode === 'download' ? 'Mode suppression' : 'Mode téléchargement' }}
+                                <v-btn color="primary" small @click="toggle_action_mode">
+                                  {{ action_mode === 'download' ? 'Mode suppression' : 'Mode téléchargement' }}
                                 </v-btn>
                               </v-toolbar>
                             </template>
@@ -109,11 +109,11 @@
                               <v-btn
                                 icon
                                 small
-                                :color="actionMode === 'download' ? 'primary' : 'error'"
-                                @click="actionMode === 'download' ? telechargerDocument(item) : supprimerDocument(item)"
+                                :color="action_mode === 'download' ? 'primary' : 'error'"
+                                @click="action_mode === 'download' ? telechargerDocument(item) : supprimerDocument(item)"
                               >
                                 <v-icon small>
-                                  {{ actionMode === 'download' ? 'mdi-download' : 'mdi-delete' }}
+                                  {{ action_mode === 'download' ? 'mdi-download' : 'mdi-delete' }}
                                 </v-icon>
                               </v-btn>
                             </template>
@@ -127,21 +127,21 @@
             </v-col>
           </v-row>
 
-          <!-- Boutons -->
+          <!-- Buttons -->
           <v-row justify="center" class="mt-4">
             <v-btn color="primary" class="text-white mx-2" @click="retour">
               Retour
             </v-btn>
 
-            <v-btn color="error" class="text-white mx-2" @click="supprimerIntervention" :disabled="!canSupprimer">
+            <v-btn color="error" class="text-white mx-2" @click="supprimerIntervention" :disabled="!can_supprimer">
               Supprimer l'intervention
             </v-btn>
             
-            <v-btn color="warning" class="text-white mx-2" @click="reouvrirIntervention" :disabled="!canSupprimer">
+            <v-btn color="warning" class="text-white mx-2" @click="reouvrirIntervention" :disabled="!can_supprimer">
               Rouvrir l'intervention
             </v-btn>
 
-            <v-btn color="success" class="text-white mx-2" @click="CloseIntervention" :disabled="!canCloturer">
+            <v-btn color="success" class="text-white mx-2" @click="cloturerIntervention" :disabled="!can_cloturer">
               Clôturer l'intervention
             </v-btn>
           </v-row>
@@ -154,17 +154,17 @@
 <script>
 import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import api , { BASE_URL } from '@/services/api';
+import api, { BASE_URL } from '@/services/api';
 
 export default {
   name: 'InterventionDetail',
   setup() {
     const router = useRouter();
     const route = useRoute();
-    const actionMode = ref('download');
+    const action_mode = ref('download');
     const intervention = ref(null);
-    const showDefaillanceDetails = ref(false);
-    const showDocumentsDetails = ref(false);
+    const show_defaillance_details = ref(false);
+    const show_documents_details = ref(false);
 
     const retour = () => {
       router.go(-1);
@@ -175,13 +175,13 @@ export default {
       { title: 'Actions', value: 'actions', sortable: false }
     ];
 
-    const defaillanceId = computed(() => {
+    const defaillance_id = computed(() => {
       return intervention.value?.defaillance?.id;
     });
 
     const ouvrirDefaillance = () => {
-      if (defaillanceId.value) {
-        router.push({ name: 'FailureDetail', params: { id: defaillanceId.value } });
+      if (defaillance_id.value) {
+        router.push({ name: 'FailureDetail', params: { id: defaillance_id.value } });
       }
     };
 
@@ -206,7 +206,7 @@ export default {
       });
     };
 
-    const formatLabelIntervention = computed(() => {
+    const format_label_intervention = computed(() => {
       if (!intervention.value) return {};
       return {
         'Nom de l\'intervention': intervention.value.nomIntervention,
@@ -215,11 +215,11 @@ export default {
         'Date du début de l\'intervention': formatDate(intervention.value.dateDebutIntervention),
         'Date de fin de l\'intervention': formatDate(intervention.value.dateFinIntervention),
         'Temps estimé': intervention.value.tempsEstime,
-        'Intervention curative' : intervention.value.interventionCurative ? 'Oui' : 'Non',
+        'Intervention curative': intervention.value.interventionCurative ? 'Oui' : 'Non',
       };
     });
 
-    const formatLabelDefaillance = computed(() => {
+    const format_label_defaillance = computed(() => {
       if (!intervention.value || !intervention.value.defaillance) return {};
       const defaillance = intervention.value.defaillance;
       return {
@@ -229,16 +229,16 @@ export default {
       };
     });
 
-    const canSupprimer = computed(() => {
+    const can_supprimer = computed(() => {
       return intervention.value && !intervention.value.dateCloture;
     });
 
-    const canCloturer = computed(() => {
+    const can_cloturer = computed(() => {
       return intervention.value && !intervention.value.dateCloture;
     });
 
-    const toggleActionMode = () => {
-      actionMode.value = actionMode.value === 'download' ? 'delete' : 'download';
+    const toggle_action_mode = () => {
+      action_mode.value = action_mode.value === 'download' ? 'delete' : 'download';
     };
 
     const supprimerIntervention = async () => {
@@ -292,17 +292,17 @@ export default {
         });
     };
 
-  const supprimerDocument = async (item) => {
+    const supprimerDocument = async (item) => {
       if (confirm(`Êtes-vous sûr de vouloir supprimer le document "${item.nomDocumentIntervention}" ?`)) {
         try {
           console.log('Tentative de suppression du document:', item);
           // await api.deleteInterventionDocument(item.id);
           console.log('Document supprimé avec succès');
           
-          // Rafraîchir la liste des documents après la suppression
+          // Refresh the document list after deletion
           await fetchData();
           
-          // Afficher un message de succès
+          // Display success message
           alert(`Le document "${item.nomDocumentIntervention}" a été supprimé avec succès.`);
         } catch (error) {
           console.error('Erreur détaillée lors de la suppression du document:', error);
@@ -322,7 +322,7 @@ export default {
             console.error('Erreur de configuration de la requête:', error.message);
           }
           
-          // Afficher l'erreur à l'utilisateur
+          // Display the error to the user
           alert(errorMessage);
         }
       }
@@ -339,43 +339,42 @@ export default {
       }
     };
 
-    const toggleDefaillanceDetails = () => {
-      showDefaillanceDetails.value = !showDefaillanceDetails.value;
+    const toggle_defaillance_details = () => {
+      show_defaillance_details.value = !show_defaillance_details.value;
     };
 
-    const toggleDocumentsDetails = () => {
-      showDocumentsDetails.value = !showDocumentsDetails.value;
+    const toggle_documents_details = () => {
+      show_documents_details.value = !show_documents_details.value;
     };
 
     const ajouterDocument = () => {
       router.push({ name: 'AddDocumentIntervention', params: { id: intervention.value.id } });
     };
 
-
     onMounted(fetchData);
 
     return {
       intervention,
-      formatLabelIntervention,
-      formatLabelDefaillance,
-      canSupprimer,
-      canCloturer,
+      format_label_intervention,
+      format_label_defaillance,
+      can_supprimer,
+      can_cloturer,
       retour,
       supprimerIntervention,
       reouvrirIntervention,
       cloturerIntervention,
-      showDefaillanceDetails,
-      showDocumentsDetails,
-      toggleDefaillanceDetails,
-      toggleDocumentsDetails,
+      show_defaillance_details,
+      show_documents_details,
+      toggle_defaillance_details,
+      toggle_documents_details,
       ouvrirDefaillance,
       headers,
       telechargerDocument,
       ajouterDocument,
-      defaillanceId,
+      defaillance_id,
       supprimerDocument,
-      actionMode,
-      toggleActionMode
+      action_mode,
+      toggle_action_mode
     };
   }
 };
