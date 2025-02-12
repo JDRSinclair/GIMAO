@@ -19,6 +19,7 @@ import AddDocumentIntervention from '@/views/Interventions/AddDocumentInterventi
 // ------------------------------------------------------------------
 import EquipmentDetail from '@/views/Equipments/EquipmentDetail.vue'
 import CreateEquipment from '@/views/Equipments/CreateEquipment.vue'
+import EditEquipment from '@/views/Equipments/EditEquipment.vue'
 
 // ------------------------------------------------------------------
 import CreateFailure from '@/views/Failures/CreateFailure.vue'
@@ -241,6 +242,13 @@ const routes = [
     name: 'CreateEquipment',
     component: CreateEquipment,
     meta: { title: 'Ajouter Equipement' }
+  },
+
+  {
+    path: '/EditEquipment/:reference',
+    name: 'EditEquipment',
+    component: EditEquipment,
+    meta: { title: 'Modifier Equipement' }
   },
 
   // Defaillance ---------------------------------------------------------------
