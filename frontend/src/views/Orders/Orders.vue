@@ -1,5 +1,5 @@
 <template>
-    Je sais pas c'est quoi cette page
+    Page à développer...
   </template>
   
   <script>

@@ -146,7 +146,7 @@ export default {
         { title: 'Lieu', value: 'lieu.nomLieu', sortable: true, align: 'center' },
         { title: 'Statut', value: 'statut.statutEquipement', sortable: true, align: 'center',
           sort: (a, b) => {
-            const order = ['Rebuté', 'En fonctionnement', 'Dégradé', 'A l\'arret'];
+            const order = ['Rebuté', 'En fonctionnement', 'Dégradé', 'À l\'arrêt'];
             return order.indexOf(a) - order.indexOf(b);
           }
         },
@@ -177,7 +177,7 @@ export default {
           return 'green';
         case 'Dégradé':
           return 'orange';
-        case 'A l\'arret':
+          case 'À l\'arrêt':
           return 'red';
         default:
           return 'black';

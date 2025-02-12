@@ -1,5 +1,5 @@
 <template>
-  Pas trouvée la maquete
+  Page à développer...
   </template>
   
   <script>
