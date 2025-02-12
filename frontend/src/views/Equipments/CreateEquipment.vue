@@ -138,7 +138,7 @@
                   {{ open ? 'mdi-triangle-down' : 'mdi-triangle-right' }}
                 </v-icon>
                 <span v-else class="tree-icon-placeholder"></span>
-                <span @click="on_click_location(item)">{{ item.nomLieu }}</span>
+                <span @click="on_click_equipment(item)">{{ item.nomLieu }}</span>
               </template>
               <template v-slot:label="{ item }">
                 <span class="text-caption ml-2">{{ item.typeLieu }}</span>
@@ -216,7 +216,7 @@ export default {
       return [...state.locations];
     });
 
-    const on_click_location = (item) => {
+    const on_click_equipment = (item) => {
       if (state.form_data.location && state.form_data.location.id === item.id) {
         state.form_data.location = null;
       } else {
@@ -293,7 +293,7 @@ export default {
       ...toRefs(state),
       submit_form,
       locations_with_all,
-      on_click_location,
+      on_click_equipment,
       toggle_node,
       go_back,
     };

@@ -11,7 +11,7 @@
           <v-divider></v-divider>
           <div>
             <!-- Message if no data is available -->
-            <p v-if="!locations_with_all || locations_with_all.length === 0">No data available.</p>
+            <p v-if="!locations_with_all || locations_with_all.length === 0">Pas de données disponibles.</p>
             <!-- Treeview of locations -->
             <v-treeview
               v-else

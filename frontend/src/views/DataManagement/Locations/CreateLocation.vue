@@ -23,7 +23,7 @@
           ></v-text-field>
   
           <div>
-            <p v-if="!places_with_all || places_with_all.length === 0">No data available.</p>
+            <p v-if="!places_with_all || places_with_all.length === 0">Pas de données disponibles.</p>
             <v-treeview
               v-else
               :items="places_with_all"

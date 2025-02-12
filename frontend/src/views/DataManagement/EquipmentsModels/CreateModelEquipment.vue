@@ -68,7 +68,7 @@
         return [...state.locations];
       });
   
-      const on_click_location = (item) => {
+      const on_click_model_equipment = (item) => {
         if (state.form_data.location && state.form_data.location.id === item.id) {
           state.form_data.location = null;
         } else {
@@ -127,7 +127,7 @@
         ...toRefs(state),
         submit_form,
         places_with_all,
-        on_click_location,
+        on_click_model_equipment,
         toggle_node,
         go_back,
       };
