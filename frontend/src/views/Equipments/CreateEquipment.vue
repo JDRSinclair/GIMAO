@@ -245,7 +245,6 @@ export default {
         // If the equipment does not exist, proceed with creation
         const equipmentResponse = await api.postEquipement(state.form_data);
         if (equipmentResponse.status === 201) {
-          console.log('Equipment added successfully!');
           
           // Associate consumables with the equipment
           for (const consumableId of state.selected_consumables) {
@@ -257,7 +256,7 @@ export default {
           
           go_back();
         } else {
-          console.log('Error adding equipment.');
+          console.error('Error creating equipment:', equipmentResponse);
         }
       } catch (error) {
         console.error('Error submitting the form:', error);

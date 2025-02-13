@@ -198,10 +198,7 @@ export default {
     const delete_document = async (item) => {
     if (confirm(`Êtes-vous sûr de vouloir supprimer le document "${item.nomDocumentDefaillance}" ?`)) {
       try {
-        console.log('Tentative de suppression du document:', item);
-        // await api.deleteDefaillanceDocument(item.id);
-        console.log('Document supprimé avec succès');
-        
+  
         // Rafraîchir la liste des documents après la suppression
         await fetch_data();
         
@@ -250,7 +247,6 @@ export default {
       // Mettre à jour defaillance.value avec les données complètes
       defaillance.value = defaillanceData;
 
-      console.log('Données récupérées avec succès:', defaillance.value);
     } catch (error) {
       console.error('Erreur lors de la récupération des données:', error);
     }
@@ -343,13 +339,11 @@ export default {
           if (defaillance.value.documents && defaillance.value.documents.length > 0) {
             for (const document of defaillance.value.documents) {
               // await api.deleteDefaillanceDocument(document.id);
-              console.log(`Document ${document.nomDocumentDefaillance} supprimé.`);
             }
           }
 
           // Ensuite, supprimer la défaillance
           // await api.deleteDefaillance(defaillance.value.id);
-          console.log('Défaillance supprimée avec succès.');
           
           // Redirection vers la page des signalements
           router.push({ 

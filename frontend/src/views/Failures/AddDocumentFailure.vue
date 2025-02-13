@@ -93,7 +93,6 @@ export default {
 
             try {
               const response = await api.postDefaillanceDocument(formData);
-              console.log('Document enregistré:', response.data);
             } catch (error) {
               console.error("Erreur lors de l'ajout du document:", error);
               allSuccess = false;

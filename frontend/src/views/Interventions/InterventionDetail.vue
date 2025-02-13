@@ -295,9 +295,6 @@ export default {
     const delete_document = async (item) => {
       if (confirm(`Êtes-vous sûr de vouloir supprimer le document "${item.nomDocumentIntervention}" ?`)) {
         try {
-          console.log('Tentative de suppression du document:', item);
-          // await api.deleteInterventionDocument(item.id);
-          console.log('Document supprimé avec succès');
           
           // Refresh the document list after deletion
           await fetch_data();

@@ -124,10 +124,9 @@ export default {
       try {
         const responseLieu = await api.postLieu(form_data);
         if (responseLieu.status === 201) {
-          console.log('Location added successfully!');
           go_back();
         } else {
-          console.log('Error adding location.');
+          console.error('Error creating location:', responseLieu);
         }
       } catch (error) {
         console.error('Error submitting the form:', error);

@@ -52,11 +52,9 @@ export default {
   },
   methods: {
     on_select(items) {
-      console.log('Item sélectionné:', items);
       if (items.length > 0) {
         const selected_item = this.find_item(this.lieux, items[0]);
         if (selected_item) {
-          console.log('Item trouvé:', selected_item);
           this.$emit('select-lieu', selected_item);
         }
       }
