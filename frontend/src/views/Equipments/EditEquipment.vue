@@ -216,6 +216,7 @@ export default {
         const response = await api.getEquipementAffichage(this.$route.params.reference);
         this.equipment = response.data;
         this.is_loading = false;
+        console.log("Equipment data:", this.equipment);
       } catch (error) {
         console.error("Error fetching equipment data:", error);
         this.is_loading = false;

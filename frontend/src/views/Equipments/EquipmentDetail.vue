@@ -310,8 +310,11 @@ export default {
     },
 
     modifierEquipement() {
-      // Implémenter la logique pour modifier l'équipement
-      console.log("Modifier l'équipement");
+      this.router.push({
+        name: 'EditEquipment',
+        params: { equipementReference: this.equipement.reference }
+      });
+  
     },
 
     signalerDefaillance() {
