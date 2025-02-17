@@ -163,9 +163,6 @@
           </div>
 
           <v-row justify="end">
-            <v-btn color="secondary" class="mt-4 rounded" @click="test" style="border-radius: 0; margin-right: 35px;" large>
-              Test
-            </v-btn>
             <v-btn color="secondary" class="mt-4 rounded" @click="go_back" style="border-radius: 0; margin-right: 35px;" large>
               Annuler
             </v-btn>
@@ -245,16 +242,16 @@ export default {
           return;
         }
 
-        // If the equipment does not exist, proceed with creation
-        const equipmentResponse = await api.postEquipement(state.form_data);
-        if (equipmentResponse.status === 201) {
-          
-          // Associate consumables with the equipment
-          for (const consumableId of state.selected_consumables) {
-            await api.postConstituer({
-              equipement: state.form_data.reference,
-              consommable: consumableId
-            });
+        // Création de FormData
+        const formData = new FormData();
+        for (const key in state.form_data) {
+          if (state.form_data[key] !== null && key !== "lienImageEquipement") {
+            if (key == "lieu" ) {
+              formData.append(key, state.form_data.lieu.id.toString());
+            }
+            else {
+              formData.append(key, state.form_data[key]);
+            }
           }
         }
 
@@ -304,7 +301,7 @@ export default {
 
           go_back();
         } else {
-          console.error('Error creating equipment:', equipmentResponse);
+          console.log("Erreur lors de l'ajout de l'équipement.");
         }
       } catch (error) {
         console.error("Erreur lors de la soumission du formulaire:", error);
@@ -341,15 +338,6 @@ export default {
       router.go(-1);
     };
 
-    const test = () => {
-      if (state.form_data.lieu && state.form_data.lieu.id) {
-        console.log("ID du lieu sélectionné :", state.form_data.lieu.id);
-      } else {
-        console.error("Aucun lieu sélectionné !");
-      }
-    };
-
-
     onMounted(() => {
       fetchData();
     });
@@ -361,7 +349,6 @@ export default {
       on_click_equipment,
       toggle_node,
       go_back,
-      test,
       handleFileUpload
     };
   },

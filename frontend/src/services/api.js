@@ -100,17 +100,16 @@ export default {
     return axios.post(`${API_URL}equipements/`, data);
   },
 
-  postConstituer(data){
-    return axios.post(`${API_URL}constituer/`, data);
-  },
-
-
   getEquipementAffichage(reference) {
     return axios.get(`${API_URL}equipement/${reference}/affichage/`);
   },
 
   getEquipementAvecStatut(reference){
     return axios.get(`${API_URL}equipement/${reference}/avec-statut/`);
+  },
+
+  postConstituer(data){
+    return axios.post(`${API_URL}constituer/`, data);
   },
 
   // Model Equipement-----------------------
