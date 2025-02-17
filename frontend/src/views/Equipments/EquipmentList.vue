@@ -96,7 +96,7 @@
           <template v-slot:item="{ item }">
             <!-- Clickable row to show equipment details -->
             <tr @click="open_view_equipment(item.reference)" style="cursor: pointer;">
-              <td>{{ item.modeleEquipement.nomModeleEquipement }}</td>
+              <td>{{ item.designation }}</td>
               <td>{{ item.lieu.nomLieu }}</td>
               <td>
                 <v-chip

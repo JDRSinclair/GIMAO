@@ -60,7 +60,7 @@
           </v-menu>
 
           <v-text-field
-            v-model="form_data.purchase_price"
+            v-model="form_data.prixAchat"
             label="Prix Achat"
             type="number"
             outlined
@@ -69,15 +69,15 @@
           ></v-text-field>
 
           <v-file-input
-            v-model="form_data.equipment_image_link"
             label="Image de l'Equipement"
             outlined
             dense
             class="mb-4"
+            @change="handleFileUpload"
           ></v-file-input>
 
           <v-text-field
-            v-model="form_data.maintenance_interval_days"
+            v-model="form_data.joursIntervalleMaintenance"
             label="Intervalle de la maintenance (jours)"
             type="number"
             outlined
@@ -86,13 +86,13 @@
           ></v-text-field>
 
           <v-switch
-            v-model="form_data.sliding_preventive"
+            v-model="form_data.preventifGlissant"
             label="Intervention Préventive Glissante"
             class="mb-4"
           ></v-switch>
 
           <v-select
-            v-model="form_data.equipment_model"
+            v-model="form_data.modeleEquipement"
             :items="equipment_models"
             item-text="nomModeleEquipement"
             item-title="nomModeleEquipement"
@@ -104,7 +104,7 @@
           ></v-select>
 
           <v-select
-            v-model="form_data.supplier"
+            v-model="form_data.fournisseur"
             :items="suppliers"
             item-text="nomFournisseur"
             item-title="nomFournisseur"
@@ -163,6 +163,9 @@
           </div>
 
           <v-row justify="end">
+            <v-btn color="secondary" class="mt-4 rounded" @click="test" style="border-radius: 0; margin-right: 35px;" large>
+              Test
+            </v-btn>
             <v-btn color="secondary" class="mt-4 rounded" @click="go_back" style="border-radius: 0; margin-right: 35px;" large>
               Annuler
             </v-btn>
@@ -193,15 +196,16 @@ export default {
       form_data: {
         reference: "",
         designation: "",
+        dateCreation: new Date().toISOString(),
         dateMiseEnService: new Date().toISOString().substr(0, 10),
-        purchase_price: null,
-        equipment_image_link: null,
-        sliding_preventive: false,
-        maintenance_interval_days: null,
-        equipment_creator: 1, 
-        location: null,
-        equipment_model: null,
-        supplier: null,
+        prixAchat: null,
+        lienImageEquipement: null,
+        preventifGlissant: false,
+        joursIntervalleMaintenance: null,
+        createurEquipement: 1, 
+        lieu: null,
+        modeleEquipement: null,
+        fournisseur: null,
       },
       locations: [],
       equipment_models: [],
@@ -217,10 +221,10 @@ export default {
     });
 
     const on_click_equipment = (item) => {
-      if (state.form_data.location && state.form_data.location.id === item.id) {
-        state.form_data.location = null;
+      if (state.form_data.lieu && state.form_data.lieu.id === item.id) {
+        state.form_data.lieu = null;
       } else {
-        state.form_data.location = item;
+        state.form_data.lieu = item;
       }
     };
 
@@ -234,33 +238,76 @@ export default {
 
     const submit_form = async () => {
       try {
-        // Check if the equipment already exists
-        const checkResponse = await api.getEquipement(state.form_data.reference);
-        if (checkResponse.status === 200) {
-          console.error('An equipment with this reference already exists.');
-          // Display an error message to the user
+
+        state.form_data.dateCreation = new Date().toISOString();
+
+        if (!state.form_data.reference || !state.form_data.designation) {
           return;
         }
 
-        // If the equipment does not exist, proceed with creation
-        const equipmentResponse = await api.postEquipement(state.form_data);
-        if (equipmentResponse.status === 201) {
-          console.log('Equipment added successfully!');
-          
-          // Associate consumables with the equipment
-          for (const consumableId of state.selected_consumables) {
-            await api.postConstituer({
-              equipement: state.form_data.reference,
-              consommable: consumableId
-            });
+        // Création de FormData
+        const formData = new FormData();
+        for (const key in state.form_data) {
+          if (state.form_data[key] !== null && key !== "lienImageEquipement") {
+            if (key == "lieu" ) {
+              formData.append(key, state.form_data.lieu.id.toString());
+            }
+            else {
+              formData.append(key, state.form_data[key]);
+            }
           }
-          
+        }
+
+        // Vérification et ajout de l'image
+        if (state.form_data.lienImageEquipement instanceof File) {
+          formData.append("lienImageEquipement", state.form_data.lienImageEquipement);
+        } else {
+          console.warn("Aucun fichier valide détecté.");
+        }
+
+       
+        for (let pair of formData.entries()) {
+          console.log(pair[0], pair[1]);
+        }
+
+        // Envoi avec multipart/form-data
+        const response = await api.postEquipement(formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        if (response.status === 201) {
+
+          const equipementId = response.data.reference; // Récupération de l'ID de l'équipement créé
+
+          // Création de l'objet InformationStatut
+          const informationStatutData = {
+            statutEquipement: "En fonctionnement",
+            dateChangement: new Date().toISOString(),
+            equipement: equipementId,
+            informationStatutParent: null, // Ou une valeur par défaut si nécessaire
+            ModificateurStatut: 1, // ID fixe du modificateur
+          };
+
+          // Envoi de l'information de statut
+          const statutResponse = await api.postInformationStatut(informationStatutData, {
+            headers: { "Content-Type": "application/json" },
+          });
+
+          if (statutResponse.status === 201) {
+            for (const consumableId of state.selected_consumables) {
+              await api.postConstituer({
+                equipement: equipementId,
+                consommable: consumableId
+              });
+            }
+          }
+
           go_back();
         } else {
-          console.log('Error adding equipment.');
+          console.log("Erreur lors de l'ajout de l'équipement.");
         }
       } catch (error) {
-        console.error('Error submitting the form:', error);
+        console.error("Erreur lors de la soumission du formulaire:", error);
       }
     };
 
@@ -281,9 +328,27 @@ export default {
       }
     };
 
+    const handleFileUpload = (event) => {
+      const file = event.target.files ? event.target.files[0] : event;
+      if (file) {
+        state.form_data.lienImageEquipement = file;
+      } else {
+        console.error("Aucun fichier sélectionné !");
+      }
+    };
+
     const go_back = () => {
       router.go(-1);
     };
+
+    const test = () => {
+      if (state.form_data.lieu && state.form_data.lieu.id) {
+        console.log("ID du lieu sélectionné :", state.form_data.lieu.id);
+      } else {
+        console.error("Aucun lieu sélectionné !");
+      }
+    };
+
 
     onMounted(() => {
       fetchData();
@@ -296,6 +361,8 @@ export default {
       on_click_equipment,
       toggle_node,
       go_back,
+      test,
+      handleFileUpload
     };
   },
 };
