@@ -42,8 +42,9 @@
   
       const fetch_modelEquipment = async () => {
         try {
-          const response = await api.getLieu(route.params.id);
+          const response = await api.getModeleEquipement(route.params.id);
           modelEquipment.value = response.data;
+          console.log(modelEquipment.value);
         } catch (error) {
           console.error('Error loading the modelEquipment:', error);
         }
