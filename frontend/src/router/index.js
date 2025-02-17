@@ -273,7 +273,7 @@ const routes = [
     name: 'AddDocumentFailure',
     component: AddDocumentFailure,
     props: true,
-    meta: { title: 'Ajouter un document à la défaillance' }
+    meta: { title: 'Ajouter un document à la demande d\'intervention' }
   },
 
   // Lieux ---------------------------------------------------------------
@@ -321,7 +321,7 @@ const routes = [
       path: '/ModelEquipmentDetail/:id',
       name: 'ModelEquipmentDetail',
       component: ModelEquipmentDetail,
-      meta: { title: 'Creer un modele equipement' }
+      meta: { title: 'Detail du modele equipement' }
     },
   
 

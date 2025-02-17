@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-card>
-      <v-card-title>Ajouter des documents à la défaillance</v-card-title>
+      <v-card-title>Ajouter des documents à la demande d'intervention</v-card-title>
       <v-card-text>
         <v-form @submit.prevent="submit_form">
           <v-container>
