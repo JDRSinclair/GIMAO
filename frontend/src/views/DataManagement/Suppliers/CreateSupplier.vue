@@ -118,7 +118,6 @@ export default {
 
       try {
         const response = await api.postFournisseur(supplier.value);
-        console.log('Supplier created:', response.data);
         go_back();
       } catch (error) {
         console.error('Error creating supplier:', error);

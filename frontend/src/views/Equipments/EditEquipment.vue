@@ -295,8 +295,6 @@ export default {
     },
 
     edit_equipment() {
-      // Implement logic to edit the equipment
-      console.log("Edit equipment");
     },
   },
 

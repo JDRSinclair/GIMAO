@@ -54,10 +54,10 @@
           
           <v-row justify="end">
             <v-btn color="secondary" class="mt-4 rounded" @click="go_back" style="border-radius: 0; margin-right: 35px;" large>
-              Cancel
+              Annuler
             </v-btn>
             <v-btn type="submit" color="primary" class="mt-4 rounded" style="border-radius: 0 ;margin-right: 35px;" large>
-              Add Location
+              Ajouter Lieu
             </v-btn>
           </v-row>
         </v-form>
@@ -124,10 +124,9 @@ export default {
       try {
         const responseLieu = await api.postLieu(form_data);
         if (responseLieu.status === 201) {
-          console.log('Location added successfully!');
           go_back();
         } else {
-          console.log('Error adding location.');
+          console.error('Error creating location:', responseLieu);
         }
       } catch (error) {
         console.error('Error submitting the form:', error);

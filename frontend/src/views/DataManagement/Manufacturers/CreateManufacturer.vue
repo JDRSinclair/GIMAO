@@ -85,7 +85,6 @@ export default {
 
       try {
         const response = await api.postFabricant(manufacturer.value);
-        console.log('Fabricant créé:', response.data);
         go_back();
       } catch (error) {
         console.error('Error creating fabricant:', error);

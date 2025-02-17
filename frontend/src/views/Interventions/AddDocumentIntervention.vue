@@ -93,7 +93,6 @@ export default {
 
             try {
               const response = await api.postInterventionDocument(formData);
-              console.log('Document saved:', response.data);
             } catch (error) {
               console.error('Error while adding the document:', error);
               all_success = false;

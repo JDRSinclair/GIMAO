@@ -79,7 +79,6 @@ export default {
       try {
         const response = await api.getFabricants();
         fabricants.value = response.data;
-        console.log('Fabricants récupérés:', JSON.stringify(fabricants.value, null, 2));
       } catch (error) {
         console.error('Error fetching fabricants:', error);
         error_message.value = 'Erreur lors de la récupération des fabricants.';
@@ -103,7 +102,6 @@ export default {
         }
 
         const response = await api.postConsommable(formData);
-        console.log('Consommable créé:', response.data);
         
         go_back();
       } catch (error) {

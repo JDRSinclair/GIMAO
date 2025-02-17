@@ -116,8 +116,6 @@ export default {
         formulaire.validate(); // Déclenche la validation
         if (this.formulaireValide) {
           alert("Formulaire validé !");
-          console.log("Formulaire soumis :", this.form);
-
           // Réinitialiser le formulaire après validation
           this.reinitialiserFormulaire();
         } else {

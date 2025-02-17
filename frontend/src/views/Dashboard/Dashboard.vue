@@ -131,7 +131,6 @@ export default {
 
   methods: {
     handle_item_selected(item) {
-      console.log('Selected item:', item);
     },
 
     format_date(dateString) {

@@ -73,12 +73,8 @@ export default {
   },
   methods: {
     export_database() {
-      // Logic for database export
-      console.log("Exporting database...");
     },
     logout() {
-      // Logic for logout
-      console.log("Logging out...");
     }
   }
 };

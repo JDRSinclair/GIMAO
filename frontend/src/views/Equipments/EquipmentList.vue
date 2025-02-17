@@ -58,7 +58,7 @@
               @click="handle_equipment_type_selected(null)"
               :class="{ 'selected-item': selected_type_equipments.length === 0 }"
             >
-              <v-list-item-title>All</v-list-item-title>
+              <v-list-item-title>Tous</v-list-item-title>
             </v-list-item>
             <!-- Loop to display each type of equipment -->
             <v-list-item

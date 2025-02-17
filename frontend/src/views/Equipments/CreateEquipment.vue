@@ -245,16 +245,16 @@ export default {
           return;
         }
 
-        // Création de FormData
-        const formData = new FormData();
-        for (const key in state.form_data) {
-          if (state.form_data[key] !== null && key !== "lienImageEquipement") {
-            if (key == "lieu" ) {
-              formData.append(key, state.form_data.lieu.id.toString());
-            }
-            else {
-              formData.append(key, state.form_data[key]);
-            }
+        // If the equipment does not exist, proceed with creation
+        const equipmentResponse = await api.postEquipement(state.form_data);
+        if (equipmentResponse.status === 201) {
+          
+          // Associate consumables with the equipment
+          for (const consumableId of state.selected_consumables) {
+            await api.postConstituer({
+              equipement: state.form_data.reference,
+              consommable: consumableId
+            });
           }
         }
 
@@ -304,7 +304,7 @@ export default {
 
           go_back();
         } else {
-          console.log("Erreur lors de l'ajout de l'équipement.");
+          console.error('Error creating equipment:', equipmentResponse);
         }
       } catch (error) {
         console.error("Erreur lors de la soumission du formulaire:", error);

@@ -133,16 +133,16 @@
               Retour
             </v-btn>
 
-            <v-btn color="error" class="text-white mx-2" @click="delete_intervention" :disabled="!can_supprimer">
-              Supprimer l'intervention
-            </v-btn>
+            <!-- <v-btn color="error" class="text-white mx-2" @click="delete_intervention" :disabled="!can_supprimer">
+              Supprimer le bon de travail
+            </v-btn> -->
             
             <v-btn color="warning" class="text-white mx-2" @click="reopen_intervention" :disabled="!can_supprimer">
-              Rouvrir l'intervention
+              Refuser la clôture du bon de travail
             </v-btn>
 
             <v-btn color="success" class="text-white mx-2" @click="close_intervention" :disabled="!can_cloturer">
-              Clôturer l'intervention
+              Clôturer le bon de travail
             </v-btn>
           </v-row>
         </v-card>
@@ -295,9 +295,6 @@ export default {
     const delete_document = async (item) => {
       if (confirm(`Êtes-vous sûr de vouloir supprimer le document "${item.nomDocumentIntervention}" ?`)) {
         try {
-          console.log('Tentative de suppression du document:', item);
-          // await api.deleteInterventionDocument(item.id);
-          console.log('Document supprimé avec succès');
           
           // Refresh the document list after deletion
           await fetch_data();
