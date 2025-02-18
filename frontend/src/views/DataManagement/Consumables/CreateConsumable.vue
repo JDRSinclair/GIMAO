@@ -5,12 +5,16 @@
         <v-card>
           <v-card-title>Ajouter un nouveau consommable</v-card-title>
           <v-card-text>
-            <v-alert v-if="error_message" type="error">
+            <!-- Error Alert -->
+            <v-alert v-if="error_message" type="error" class="mb-4">
               {{ error_message }}
             </v-alert>
-            <v-alert v-if="is_loading" type="info">
+
+            <!-- Loading Alert -->
+            <v-alert v-if="is_loading" type="info" class="mb-4">
               Chargement des fabricants...
             </v-alert>
+
             <v-form @submit.prevent="submit_form">
               <v-text-field
                 v-model="consumable.designation"
@@ -43,7 +47,6 @@
                 Ajouter le consommable
               </v-btn>
             </v-form>
-
           </v-card-text>
         </v-card>
       </v-col>
