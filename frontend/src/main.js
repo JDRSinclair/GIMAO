@@ -19,6 +19,13 @@ const vuetify = createVuetify({
 
 const app = createApp(App);
 
+// Add favicon dynamically
+const link = document.createElement('link');
+link.setAttribute('rel', 'icon');
+link.setAttribute('type', 'image/png');
+link.setAttribute('href', require('@/assets/favicon.png'));
+document.head.appendChild(link);
+
 // Utilisez le store Vuex
 app.use(store); 
 
