@@ -14,56 +14,56 @@
                 label="Nom du fournisseur"
                 required
               ></v-text-field>
-              
+
               <v-text-field
-                v-model="supplier.numRue "
+                v-model="supplier.numRue"
                 label="Numéro de rue"
                 type="number"
                 required
               ></v-text-field>
-              
+
               <v-text-field
-                v-model="supplier.nomRue "
+                v-model="supplier.nomRue"
                 label="Nom de rue"
                 required
               ></v-text-field>
-              
+
               <v-text-field
-                v-model="supplier.codePostal  "
+                v-model="supplier.codePostal"
                 label="Code postal"
                 required
               ></v-text-field>
-              
+
               <v-text-field
-                v-model="supplier.ville "
+                v-model="supplier.ville"
                 label="Ville"
                 required
               ></v-text-field>
-              
+
               <v-text-field
-                v-model="supplier.paysFournisseur "
+                v-model="supplier.paysFournisseur"
                 label="Pays"
                 required
               ></v-text-field>
-              
+
               <v-text-field
-                v-model="supplier.mailFournisseur "
+                v-model="supplier.mailFournisseur"
                 label="Email"
                 type="email"
                 required
               ></v-text-field>
-              
+
               <v-text-field
                 v-model="supplier.numTelephoneFournisseur"
                 label="Numéro de téléphone"
                 required
               ></v-text-field>
-              
+
               <v-switch
-                v-model="supplier.after_sales_service"
+                v-model="supplier.serviceApresVente"
                 label="Service après vente"
               ></v-switch>
-              
+
               <v-btn color="secondary" class="mt-4 mr-2" @click="go_back">
                 Retour
               </v-btn>
@@ -100,19 +100,19 @@ export default {
     const error_message = ref('');
 
     const is_form_valid = computed(() => {
-      return supplier.value.nomFournisseur  &&
-             supplier.value.numRue  &&
-             supplier.value.nomRue  &&
-             supplier.value.codePostal  &&
-             supplier.value.ville  &&
-             supplier.value.paysFournisseur  &&
-             supplier.value.mailFournisseur  &&
+      return supplier.value.nomFournisseur &&
+             supplier.value.numRue &&
+             supplier.value.nomRue &&
+             supplier.value.codePostal &&
+             supplier.value.ville &&
+             supplier.value.paysFournisseur &&
+             supplier.value.mailFournisseur &&
              supplier.value.numTelephoneFournisseur;
     });
 
     const submit_form = async () => {
       if (!is_form_valid.value) {
-        error_message.value = 'Please fill in all required fields.';
+        error_message.value = 'Veuillez remplir tous les champs requis.';
         return;
       }
 
@@ -121,6 +121,7 @@ export default {
         go_back();
       } catch (error) {
         console.error('Error creating supplier:', error);
+        error_message.value = "Une erreur est survenue lors de l'ajout du fournisseur.";
       }
     };
 

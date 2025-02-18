@@ -17,14 +17,14 @@
                 label="Désignation"
                 required
               ></v-text-field>
-              
+
               <v-file-input
                 v-model="consumable.lienImageConsommable"
                 label="Image du consommable"
-                accept="image/*"
+                accept="image/jpeg, image/png"
                 prepend-icon="mdi-camera"
               ></v-file-input>
-              
+
               <v-select
                 v-if="!is_loading && fabricants.length > 0"
                 v-model="consumable.fabricant"
@@ -35,7 +35,7 @@
                 required
                 return-object
               ></v-select>
-              
+
               <v-btn color="secondary" class="mt-4 mr-2" @click="go_back">
                 Retour
               </v-btn>
@@ -43,13 +43,14 @@
                 Ajouter le consommable
               </v-btn>
             </v-form>
-            
+
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
   </v-container>
 </template>
+
 <script>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
@@ -68,8 +69,8 @@ export default {
     const is_loading = ref(false);
 
     const is_form_valid = computed(() => {
-      return consumable.value.designation && 
-             consumable.value.fabricant && 
+      return consumable.value.designation &&
+             consumable.value.fabricant &&
              consumable.value.lienImageConsommable;
     });
 
@@ -101,12 +102,12 @@ export default {
           formData.append('lienImageConsommable', consumable.value.lienImageConsommable);
         }
 
-        const response = await api.postConsommable(formData);
-        
+        await api.postConsommable(formData);
+
         go_back();
       } catch (error) {
         console.error('Error creating consommable:', error);
-
+        error_message.value = "Une erreur est survenue lors de l'ajout du consommable.";
       }
     };
 
