@@ -157,7 +157,6 @@ export default {
       on_click_location,
       toggle_node,
       go_back,
-      test
     };
   },
 };

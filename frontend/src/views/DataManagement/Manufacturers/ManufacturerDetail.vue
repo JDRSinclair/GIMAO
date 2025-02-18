@@ -14,12 +14,6 @@
                 <v-list-item-subtitle>{{ manufacturer.nomFabricant }}</v-list-item-subtitle>
               </v-list-item>
               <v-list-item>
-                <v-list-item-title>Adresse:</v-list-item-title>
-                <v-list-item-subtitle>
-                  {{ manufacturer.numRue }} {{ manufacturer.nomRue }}, {{ manufacturer.codePostal }} {{ manufacturer.ville }}
-                </v-list-item-subtitle>
-              </v-list-item>
-              <v-list-item>
                 <v-list-item-title>Pays:</v-list-item-title>
                 <v-list-item-subtitle>{{ manufacturer.paysFabricant }}</v-list-item-subtitle>
               </v-list-item>

@@ -3,7 +3,7 @@
     <v-row justify="center">
       <v-col cols="12" md="8">
         <v-card>
-          <v-card-title>Add a New Supplier</v-card-title>
+          <v-card-title>Ajouter un nouveau fournisseur</v-card-title>
           <v-card-text>
             <v-alert v-if="error_message" type="error">
               {{ error_message }}

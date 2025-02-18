@@ -32,7 +32,7 @@
         <v-card @click="go_to_model_equipment_details(model_equipment.id)">
           <v-card-title>{{ model_equipment.nomModeleEquipement }}</v-card-title>
           <v-card-text>
-            <p>Fabricant : {{ model_equipment.fabricant }}</p>
+            <p>Fabricant : {{ model_equipment.manufacturer_name }}</p>
           </v-card-text>
         </v-card>
       </v-col>
@@ -48,21 +48,30 @@ export default {
   data() {
     return {
       model_equipments: [],
+      manufacturers: [],
       search_query: ''
     };
   },
   computed: {
+
+    model_equipment_with_manufacturers() {
+      return this.model_equipments.map(model_equipement => {
+        const manufacturer = this.manufacturers.find(f => f.id === model_equipement.fabricant);
+        return {
+          ...model_equipement,
+          manufacturer_name: manufacturer ? manufacturer.nomFabricant : 'Inconnu'
+        };
+      });
+    },
     filtered_model_equipment() {
       if (!this.search_query) {
-        return this.model_equipments;
+        return this.model_equipment_with_manufacturers;
       }
       const searchLower = this.search_query.toLowerCase();
-      return this.model_equipments.filter(model_equipment => 
-        model_equipment.nomModeleEquipement.toLowerCase().includes(searchLower) ||
-        model_equipment.ville.toLowerCase().includes(searchLower) ||
-        model_equipment.paysmodeleEquipement.toLowerCase().includes(searchLower)
+      return this.model_equipment_with_manufacturers.filter(model_equipement => 
+        model_equipement.nomModeleEquipement.toLowerCase().includes(searchLower)
       );
-    }
+    },
   },
   methods: {
     async fetch_model_equipments() {
@@ -73,12 +82,20 @@ export default {
         console.error('Error fetching model equipments:', error);
       }
     },
+    async fetch_manufacturers() {
+      try {
+        const response = await api.getFabricants();
+        this.manufacturers = response.data;
+      } catch (error) {
+        console.error('Error fetching manufacturer:', error);
+      }
+    },
     go_to_model_equipment_details(id) {
       this.$router.push(`/ModelEquipmentDetail/${id}`);
     }
   },
-  created() {
-    this.fetch_model_equipments();
+  async created() {
+    await Promise.all([this.fetch_model_equipments(),this.fetch_manufacturers()]);
   }
 }
 </script>
