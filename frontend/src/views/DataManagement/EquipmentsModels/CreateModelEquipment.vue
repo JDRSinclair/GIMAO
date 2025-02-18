@@ -5,7 +5,7 @@
           <v-form @submit.prevent="submit_form">
     
             <v-text-field
-              v-model="form_data.location_name"
+              v-model="form_data.nomModeleEquipement"
               label="Nom du modéle d'équipement"
               required
               outlined
@@ -13,17 +13,18 @@
               class="mb-4"
             ></v-text-field>
     
-            <v-text-field
-              v-model="form_data.location_type"
+            <v-select
+              v-model="form_data.fabricant"
+              :items="manufacturers"
+              item-text="nomFabricant"
+              item-title="nomFabricant"
+              item-value="id"
               label="Fabricant"
-              required
               outlined
               dense
               class="mb-4"
-            ></v-text-field>
+            ></v-select>
     
-            
-            
             <v-row justify="end">
               <v-btn color="secondary" class="mt-4 rounded" @click="go_back" style="border-radius: 0; margin-right: 35px;" large>
                 Annuler
@@ -42,60 +43,27 @@
   import api from '@/services/api';
   import { ref, computed, reactive, onMounted, toRefs } from 'vue';
   import { useRouter } from 'vue-router';
-  import { VTreeview } from 'vuetify/labs/VTreeview';
   
   export default {
-    name: 'CreateLocation',
-    components: {
-      VTreeview,
-    },
+    name: 'CreateModelEquipment',
     setup() {
       const router = useRouter();
       const state = reactive({
         form_data: {
-          location_name: "",
-          location_type: "",
-          location: null,
-          header: [
-            { title: 'Location', value: 'location.nomLieu', sortable: true, align: 'center' },
-          ],
-          open_nodes: new Set(),
+          nomModeleEquipement: "",
+          fabricant: null,
         },
-        locations: [],
+        manufacturers: [],
       });
-  
-      const places_with_all = computed(() => {
-        return [...state.locations];
-      });
-  
-      const on_click_model_equipment = (item) => {
-        if (state.form_data.location && state.form_data.location.id === item.id) {
-          state.form_data.location = null;
-        } else {
-          state.form_data.location = item; 
-        }
-      };
-  
-      const toggle_node = (item) => {
-        if (state.open_nodes.has(item.id)) {
-          state.open_nodes.delete(item.id);
-        } else {
-          state.open_nodes.add(item.id);
-        }
-      };
   
       const submit_form = async () => {
         const form_data = new FormData();
-        form_data.append('nomModeleEquipement', state.form_data.location_name);
-        form_data.append('fabricant', state.form_data.location_type);
-  
-        if (state.form_data.location) {
-          form_data.append('lieuParent', state.form_data.location.id);
-        }
+        form_data.append('nomModeleEquipement', state.form_data.nomModeleEquipement);
+        form_data.append('fabricant', state.form_data.fabricant);
   
         try {
-          const responseLieu = await api.postLieu(form_data);
-          if (responseLieu.status === 201) {
+          const response = await api.postModeleEquipement(form_data);
+          if (response.status === 201) {
             go_back();
           } else {
             console.error('Error creating location:', responseLieu);
@@ -107,12 +75,14 @@
   
       const fetch_data = async () => {
         try {
-          const [locationRES] = await Promise.all([api.getLieuxHierarchy()]);
-          state.locations = locationRES.data;
+          const [manufacturers_res] = await Promise.all([api.getFabricants()]);
+          console.log("Fabricants récupérés:", manufacturers_res.data); // Ajoute ce log
+          state.manufacturers = manufacturers_res.data;
         } catch (error) {
           console.error('Error loading data:', error);
         }
       };
+
   
       const go_back = () => {
         router.go(-1);
@@ -125,9 +95,6 @@
       return {
         ...toRefs(state),
         submit_form,
-        places_with_all,
-        on_click_model_equipment,
-        toggle_node,
         go_back,
       };
     },

@@ -73,7 +73,7 @@
             outlined
             dense
             class="mb-4"
-            @change="handleFileUpload"
+            @change="handle_file_upload"
           ></v-file-input>
 
           <v-text-field
@@ -242,59 +242,59 @@ export default {
           return;
         }
 
-        // Création de FormData
-        const formData = new FormData();
+        // Création de form_data
+        const form_data = new FormData();
         for (const key in state.form_data) {
           if (state.form_data[key] !== null && key !== "lienImageEquipement") {
             if (key == "lieu" ) {
-              formData.append(key, state.form_data.lieu.id.toString());
+              form_data.append(key, state.form_data.lieu.id.toString());
             }
             else {
-              formData.append(key, state.form_data[key]);
+              form_data.append(key, state.form_data[key]);
             }
           }
         }
 
         // Vérification et ajout de l'image
         if (state.form_data.lienImageEquipement instanceof File) {
-          formData.append("lienImageEquipement", state.form_data.lienImageEquipement);
+          form_data.append("lienImageEquipement", state.form_data.lienImageEquipement);
         } else {
           console.warn("Aucun fichier valide détecté.");
         }
 
        
-        for (let pair of formData.entries()) {
+        for (let pair of form_data.entries()) {
           console.log(pair[0], pair[1]);
         }
 
         // Envoi avec multipart/form-data
-        const response = await api.postEquipement(formData, {
+        const response = await api.postEquipement(form_data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
         if (response.status === 201) {
 
-          const equipementId = response.data.reference; // Récupération de l'ID de l'équipement créé
+          const equipement_id = response.data.reference; // Récupération de l'ID de l'équipement créé
 
           // Création de l'objet InformationStatut
-          const informationStatutData = {
+          const information_statut_data = {
             statutEquipement: "En fonctionnement",
             dateChangement: new Date().toISOString(),
-            equipement: equipementId,
+            equipement: equipement_id,
             informationStatutParent: null, // Ou une valeur par défaut si nécessaire
             ModificateurStatut: 1, // ID fixe du modificateur
           };
 
           // Envoi de l'information de statut
-          const statutResponse = await api.postInformationStatut(informationStatutData, {
+          const statut_response = await api.postInformationStatut(information_statut_data, {
             headers: { "Content-Type": "application/json" },
           });
 
-          if (statutResponse.status === 201) {
-            for (const consumableId of state.selected_consumables) {
+          if (statut_response.status === 201) {
+            for (const consumable_id of state.selected_consumables) {
               await api.postConstituer({
-                equipement: equipementId,
-                consommable: consumableId
+                equipement: equipement_id,
+                consommable: consumable_id
               });
             }
           }
@@ -310,22 +310,22 @@ export default {
 
     const fetchData = async () => {
       try {
-        const [locationsRes, modelsRes, suppliersRes, consumablesRes] = await Promise.all([
+        const [locations_res, models_res, suppliers_res, consumables_res] = await Promise.all([
           api.getLieuxHierarchy(),
           api.getModeleEquipements(),
           api.getFournisseurs(),
           api.getConsommables()
         ]);
-        state.locations = locationsRes.data;
-        state.equipment_models = modelsRes.data;
-        state.suppliers = suppliersRes.data;
-        state.consumables = consumablesRes.data;
+        state.locations = locations_res.data;
+        state.equipment_models = models_res.data;
+        state.suppliers = suppliers_res.data;
+        state.consumables = consumables_res.data;
       } catch (error) {
         console.error('Error loading data:', error);
       }
     };
 
-    const handleFileUpload = (event) => {
+    const handle_file_upload = (event) => {
       const file = event.target.files ? event.target.files[0] : event;
       if (file) {
         state.form_data.lienImageEquipement = file;
@@ -349,7 +349,7 @@ export default {
       on_click_equipment,
       toggle_node,
       go_back,
-      handleFileUpload
+      handle_file_upload
     };
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <v-container v-if="!isLoading">
+      <v-container v-if="!is_loading">
         <v-row>
           <!-- Section gauche : Détails de l'équipement -->
           <v-col cols="6">
@@ -9,14 +9,14 @@
               <v-card-title class="font-weight-bold text-uppercase text-primary">Description de l'équipement</v-card-title>
 
               <v-row class="pa-2">
-                <v-col cols="12" v-for="(value, key) in equipementDetails" :key="key">
+                <v-col cols="12" v-for="(value, key) in equipment_details" :key="key">
                   <p v-if="key !== 'statut'">
-                    <strong>{{ formatLabel(key) }} :</strong> {{ formatValue(value) }}
+                    <strong>{{ format_label(key) }} :</strong> {{ format_value(value) }}
                   </p>
                   <p v-else>
-                    <strong>{{ formatLabel(key) }} :</strong>
+                    <strong>{{ format_label(key) }} :</strong>
                     <v-chip
-                      :color="getStatusColor(value)"
+                      :color="get_status_color(value)"
                       text-color="white"
                       small
                     >
@@ -33,7 +33,7 @@
                   <!-- Documents techniques -->
                   <v-card-subtitle class="pt-4">Documents techniques</v-card-subtitle>
                   <v-data-table
-                    :headers="documentTechniquesHeaders"
+                    :headers="technical_documents_headers"
                     :items="equipement.liste_documents_techniques"
                     item-value="nomDocumentTechnique"
                     class="elevation-1 rounded-lg mb-4"
@@ -48,7 +48,7 @@
                             small
                             color="primary"
                             center="center"
-                            @click="telechargerDocument(item.lienDocumentTechnique, item.nomDocumentTechnique)"
+                            @click="download_document(item.lienDocumentTechnique, item.nomDocumentTechnique)"
                           >
                             <v-icon size="small">mdi-download</v-icon>
                           </v-btn>
@@ -60,8 +60,8 @@
                   <!-- Autres documents -->
                   <v-card-subtitle class="pt-4">Autres documents</v-card-subtitle>
                   <v-data-table
-                    :headers="autresDocumentsHeaders"
-                    :items="autresDocuments"
+                    :headers="others_documents_headers"
+                    :items="others_documents"
                     class="elevation-1 rounded-lg"
                     hide-default-footer
                   >
@@ -74,7 +74,7 @@
                             icon
                             small
                             color="primary"
-                            @click="telechargerDocument(item.lienDocument, item.nomDocument)"
+                            @click="download_document(item.lienDocument, item.nomDocument)"
                           >
                             <v-icon size="small">mdi-download</v-icon>
                           </v-btn>
@@ -119,7 +119,7 @@
               </v-card-title>
               <v-data-table
                 :items="equipement.liste_consommables"
-                :headers="consommablesHeaders"
+                :headers="consumable_headers"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
               ></v-data-table>
@@ -132,15 +132,15 @@
               </v-card-title>
               <v-data-table
                 :items="equipement.liste_interventions"
-                :headers="interventionsHeaders"
+                :headers="interventions_headers"
                 class="elevation-1 rounded-lg"
                 hide-default-footer
               >
               <template v-slot:item.dateAssignation="{ item }">
-                {{ formatDate(item.dateAssignation) }}
+                {{ format_date(item.dateAssignation) }}
               </template>
               <template v-slot:item.action="{ item }">
-                <v-btn icon @click="voirIntervention(item)">
+                <v-btn icon @click="view_intervention(item)">
                   <v-icon size="small">mdi-eye</v-icon>
                 </v-btn>
               </template>
@@ -173,22 +173,22 @@ export default {
   data() {
     
     return {
-      isLoading: true,
+      is_loading: true,
       equipement: {},
-      documentTechniquesHeaders: [
+      technical_documents_headers: [
         { title: "Document technique", value: "nomDocumentTechnique", align: "start" },
         { title: "Télécharger", value: "action", align: "start", sortable: false }
       ],
-      autresDocumentsHeaders: [
+      others_documents_headers: [
         { title: "Type", value: "type", align: "start" },
         { title: "Document", value: "nomDocument", align: "start" },
         { title: "Télécharger", value: "action", align: "start", sortable: false }
       ],
-      consommablesHeaders: [
+      consumable_headers: [
         { title: "Désignation", value: "designation" },
         { title: "Fabricant", value: "fabricant.nomFabricant" }
       ],
-      interventionsHeaders: [
+      interventions_headers: [
         { title: "Nom", value: "nomIntervention" },
         { title: "Date d'assignation", value: "dateAssignation" },
         { title: "Visualiser", value: "action", align: "start" }
@@ -199,7 +199,7 @@ export default {
   computed: {
 
 
-    equipementDetails() {
+    equipment_details() {
       if (!this.equipement) return {};
       const { 
         reference, designation, dateMiseEnService, prixAchat, 
@@ -219,18 +219,18 @@ export default {
     },
 
 
-    autresDocuments() {
-      const documentsDefaillance = (this.equipement.liste_documents_defaillance || []).map(doc => ({
+    others_documents() {
+      const documents_failure = (this.equipement.liste_documents_defaillance || []).map(doc => ({
         type: 'Demande de BT',
         nomDocument: doc.nomDocumentDefaillance,
         lienDocument: doc.lienDocumentDefaillance
       }));
-      const documentsIntervention = (this.equipement.liste_documents_intervention || []).map(doc => ({
+      const documents_intervention = (this.equipement.liste_documents_intervention || []).map(doc => ({
         type: 'Intervention',
         nomDocument: doc.nomDocumentIntervention,
         lienDocument: doc.lienDocumentIntervention
       }));
-      return [...documentsDefaillance, ...documentsIntervention];
+      return [...documents_failure, ...documents_intervention];
     }
   },
 
@@ -239,14 +239,14 @@ export default {
       try {
         const response = await api.getEquipementAffichage(this.$route.params.reference);
         this.equipement = response.data;
-        this.isLoading = false;
+        this.is_loading = false;
       } catch (error) {
         console.error("Erreur lors de la récupération des données de l'équipement:", error);
-        this.isLoading = false;
+        this.is_loading = false;
       }
     },
 
-    getStatusColor(status) {
+    get_status_color(status) {
       switch (status) {
         case 'En fonctionnement':
           return 'green';
@@ -262,7 +262,7 @@ export default {
     },
 
 
-    formatDate(dateString) {
+    format_date(dateString) {
       if (!dateString) return '';
       const date = new Date(dateString);
       return date.toLocaleString('fr-FR', {
@@ -275,7 +275,7 @@ export default {
       }).replace(',', '');
     },
     
-    formatLabel(key) {
+    format_label(key) {
       const labels = {
         reference: 'Référence',
         designation: 'Désignation',
@@ -292,7 +292,7 @@ export default {
       return labels[key] || key;
     },
 
-    formatValue(value) {
+    format_value(value) {
       if (typeof value === 'boolean') {
         return value ? 'Oui' : 'Non';
       }
@@ -302,7 +302,7 @@ export default {
       return value;
     },
 
-    voirIntervention(intervention) {
+    view_intervention(intervention) {
       this.router.push({
         name: 'InterventionDetail',
         params: { id: intervention.id }
@@ -324,7 +324,7 @@ export default {
       });
     },
 
-    telechargerDocument(lien, nomFichier) {
+    download_document(lien, nomFichier) {
         const cleanedLink = lien.startsWith('/media/') ? lien : `/media/${lien.split('/media/').pop()}`;
         const fullUrl = `${BASE_URL}${cleanedLink}`;
 
