@@ -102,10 +102,10 @@
             <!-- Bouton d'action -->
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-actions class="justify-center">
-                <v-btn color="primary" @click="modifierEquipement">
+                <!-- <v-btn color="primary" @click="edit_equipment">
                   Modifier l'équipement
-                </v-btn>
-                <v-btn color="warning" @click="signalerDefaillance">
+                </v-btn> -->
+                <v-btn color="warning" @click="signal_failure">
                   Signaler une défaillance
                 </v-btn>
               </v-card-actions>
@@ -235,7 +235,7 @@ export default {
   },
 
   methods: {
-    async fetchEquipementData() {
+    async fetch_equipment_data() {
       try {
         const response = await api.getEquipementAffichage(this.$route.params.reference);
         this.equipement = response.data;
@@ -309,15 +309,15 @@ export default {
       });
     },
 
-    modifierEquipement() {
-      this.router.push({
-        name: 'EditEquipment',
-        params: { equipementReference: this.equipement.reference }
-      });
+    // edit_equipment() {
+    //   this.router.push({
+    //     name: 'EditEquipment',
+    //     params: { equipementReference: this.equipement.reference }
+    //   });
   
-    },
+    // },
 
-    signalerDefaillance() {
+    signal_failure() {
       this.router.push({
         name: 'CreateFailure',
         params: { equipementReference: this.equipement.reference }
@@ -325,10 +325,10 @@ export default {
     },
 
     download_document(lien, nomFichier) {
-        const cleanedLink = lien.startsWith('/media/') ? lien : `/media/${lien.split('/media/').pop()}`;
-        const fullUrl = `${BASE_URL}${cleanedLink}`;
+        const cleaned_link = lien.startsWith('/media/') ? lien : `/media/${lien.split('/media/').pop()}`;
+        const full_url = `${BASE_URL}${cleaned_link}`;
 
-        fetch(fullUrl)
+        fetch(full_url)
           .then(response => {
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
@@ -353,7 +353,7 @@ export default {
   },
 
   created() {
-    this.fetchEquipementData();
+    this.fetch_equipment_data();
   }
 };
 
