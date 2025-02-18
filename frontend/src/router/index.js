@@ -307,7 +307,7 @@ const routes = [
       path: '/ModelEquipmentList',
       name: 'ModelEquipmentList',
       component: ModelEquipmentList,
-      meta: { title: 'Modele' }
+      meta: { title: 'Modèle' }
     },
 
     {

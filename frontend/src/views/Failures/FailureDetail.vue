@@ -461,7 +461,7 @@ export default {
     "pas de changement",
     "En fonctionnement",
     "Dégradé",
-    "A l'arrêt"
+    "À l'arrêt"
   ];
 
     onMounted(fetch_data);
