@@ -4,19 +4,19 @@
       <v-container class="py-5">
         <v-card class="pa-4">
           <v-form ref="form" v-model="form_valid">
+
+            <!-- Success Alert -->
+            <v-alert v-if="success_message" type="success" class="mb-4">
+              {{ success_message }}
+            </v-alert>
+
+            <!-- Error Alert -->
+            <v-alert v-if="error_message" type="error" class="mb-4">
+              {{ error_message }}
+            </v-alert>
+
             <v-row>
               <v-col cols="6">
-                <!-- <v-select
-                  v-model="form.equipement"
-                  label="Équipement"
-                  :items="equipment_list"
-                  item-text="label"
-                  item-value="reference"
-                  outlined
-                  dense
-                  :rules="[v => !!v || (validation_triggered && 'Équipement requis')]"
-                  :disabled="!!equipment_reference"
-                ></v-select> -->
                 <v-select
                   v-model="form.niveau"
                   label="Niveau"
@@ -32,7 +32,11 @@
                   label="Commentaires"
                   rows="5"
                   outlined
-                  :rules="[v => !!v || (validation_triggered && 'Commentaire requis')]"
+                  counter="300"
+                  :rules="[
+                    v => !!v || (validation_triggered && 'Commentaire requis'),
+                    v => (v && v.length <= 300) || 'Le commentaire ne doit pas dépasser 300 caractères.'
+                  ]"
                 ></v-textarea>
               </v-col>
             </v-row>
@@ -53,6 +57,7 @@
     </v-main>
   </v-app>
 </template>
+
 
 <script>
 import { useRouter } from 'vue-router';
@@ -83,6 +88,8 @@ export default {
         last_name: "admin",
         email: "admin@a.com",
       },
+      success_message: "", // Add success message
+      error_message: "", // Add error message
     };
   },
 
@@ -116,13 +123,15 @@ export default {
         niveau: null,
       };
       this.validation_triggered = false;
+      this.success_message = ""; // Clear success message
+      this.error_message = ""; // Clear error message
       if (this.$refs.form) {
         this.$refs.form.resetValidation();
       }
     },
 
     go_back(){
-      this.router.go(-1); 
+      this.router.go(-1);
     },
 
     async validate_form() {
@@ -141,18 +150,24 @@ export default {
               dateTraitementDefaillance: null
             };
             const response = await api.postDefaillance(failure_data);
-            
+
             const new_failure_id = response.data.id;
-            
-            alert("Défaillance signalée avec succès !");
-            
-            this.router.push({ name: 'FailureDetail', params: { id: new_failure_id } });
+
+            this.success_message = "Défaillance signalée avec succès !";
+            this.error_message = ""; // Clear any previous error messages
+
+            setTimeout(() => {
+              this.router.push({ name: 'FailureDetail', params: { id: new_failure_id } });
+            }, 2000); // Redirect after 2 seconds
+
           } catch (error) {
             console.error('Erreur lors de la création de la défaillance:', error);
-            alert("Une erreur est survenue lors de la création de la défaillance.");
+            this.error_message = "Une erreur est survenue lors de la création de la défaillance.";
+            this.success_message = ""; // Clear any previous success messages
           }
         } else {
-          alert("Veuillez remplir tous les champs obligatoires.");
+          this.error_message = "Veuillez remplir tous les champs obligatoires.";
+          this.success_message = ""; // Clear any previous success messages
         }
       }
     },

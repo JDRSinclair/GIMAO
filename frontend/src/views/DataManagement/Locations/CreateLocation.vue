@@ -3,7 +3,12 @@
     <v-main>
       <v-container>
         <v-form @submit.prevent="submit_form">
-  
+
+          <!-- Error Message with v-alert at the top -->
+          <v-alert v-if="error_message" type="error" class="mt-4">
+            {{ error_message }}
+          </v-alert>
+
           <v-text-field
             v-model="form_data.location_name"
             label="Nom du Lieu"
@@ -12,7 +17,7 @@
             dense
             class="mb-4"
           ></v-text-field>
-  
+
           <v-text-field
             v-model="form_data.location_type"
             label="Type du lieu"
@@ -21,7 +26,7 @@
             dense
             class="mb-4"
           ></v-text-field>
-  
+
           <div>
             <p v-if="!places_with_all || places_with_all.length === 0">Pas de données disponibles.</p>
             <v-treeview
@@ -51,20 +56,22 @@
               </template>
             </v-treeview>
           </div>
-          
+
           <v-row justify="end">
             <v-btn color="secondary" class="mt-4 rounded" @click="go_back" style="border-radius: 0; margin-right: 35px;" large>
               Annuler
             </v-btn>
-            <v-btn type="submit" color="primary" class="mt-4 rounded" style="border-radius: 0 ;margin-right: 35px;" large>
+            <v-btn type="submit" color="primary" class="mt-4 rounded" :disabled="!is_form_valid" style="border-radius: 0 ;margin-right: 35px;" large>
               Ajouter Lieu
             </v-btn>
           </v-row>
+
         </v-form>
       </v-container>
     </v-main>
   </v-app>
 </template>
+
 
 <script>
 import api from '@/services/api';
@@ -90,6 +97,7 @@ export default {
         open_nodes: new Set(),
       },
       locations: [],
+      error_message: "" // Add error message state
     });
 
     const places_with_all = computed(() => {
@@ -100,7 +108,7 @@ export default {
       if (state.form_data.location && state.form_data.location.id === item.id) {
         state.form_data.location = null;
       } else {
-        state.form_data.location = item; 
+        state.form_data.location = item;
       }
     };
 
@@ -112,7 +120,19 @@ export default {
       }
     };
 
+    const is_form_valid = computed(() => {
+      return state.form_data.location_name &&
+             state.form_data.location_type;
+    });
+
     const submit_form = async () => {
+      if (!is_form_valid.value) {
+        state.error_message = 'Veuillez remplir tous les champs requis.';
+        return;
+      }
+
+      state.error_message = ""; // Clear error message if form is valid
+
       const form_data = new FormData();
       form_data.append('nomLieu', state.form_data.location_name);
       form_data.append('typeLieu', state.form_data.location_type);
@@ -126,10 +146,11 @@ export default {
         if (responseLieu.status === 201) {
           go_back();
         } else {
-          console.error('Error creating location:', responseLieu);
+          state.error_message = 'Une erreur est survenue lors de la création du lieu.';
         }
       } catch (error) {
-        console.error('Error submitting the form:', error);
+        console.error('Error creating lieu:', error);
+        state.error_message = 'Une erreur est survenue lors de la création du lieu.';
       }
     };
 
@@ -157,6 +178,7 @@ export default {
       on_click_location,
       toggle_node,
       go_back,
+      is_form_valid
     };
   },
 };

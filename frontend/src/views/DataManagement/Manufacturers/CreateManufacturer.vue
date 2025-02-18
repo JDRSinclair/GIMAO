@@ -14,31 +14,31 @@
                 label="Nom du fabricant"
                 required
               ></v-text-field>
-              
+
               <v-text-field
-                v-model="manufacturer.paysFabricant "
+                v-model="manufacturer.paysFabricant"
                 label="Pays"
                 required
               ></v-text-field>
-              
+
               <v-text-field
-                v-model="manufacturer.mailFabricant "
+                v-model="manufacturer.mailFabricant"
                 label="Email"
                 type="email"
                 required
               ></v-text-field>
-              
+
               <v-text-field
                 v-model="manufacturer.numTelephoneFabricant"
                 label="Numéro de téléphone"
                 required
               ></v-text-field>
-              
+
               <v-switch
                 v-model="manufacturer.serviceApresVente"
                 label="Service Après-Vente"
               ></v-switch>
-              
+
               <v-btn color="secondary" class="mt-4 mr-2" @click="go_back">
                 Retour
               </v-btn>
@@ -52,6 +52,7 @@
     </v-row>
   </v-container>
 </template>
+
 
 <script>
 import { ref, computed } from 'vue';
@@ -74,8 +75,14 @@ export default {
       return manufacturer.value.nomFabricant &&
              manufacturer.value.paysFabricant &&
              manufacturer.value.mailFabricant &&
-             manufacturer.value.numTelephoneFabricant;
+             manufacturer.value.numTelephoneFabricant &&
+             validateEmail(manufacturer.value.mailFabricant);
     });
+
+    const validateEmail = (email) => {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    };
 
     const submit_form = async () => {
       if (!is_form_valid.value) {
@@ -83,9 +90,15 @@ export default {
         return;
       }
 
+      error_message.value = ''; // Clear any previous error messages
+
       try {
         const response = await api.postFabricant(manufacturer.value);
-        go_back();
+        if (response.status === 201) {
+          go_back();
+        } else {
+          error_message.value = 'Une erreur est survenue lors de la création du fabricant.';
+        }
       } catch (error) {
         console.error('Error creating fabricant:', error);
         error_message.value = 'Une erreur est survenue lors de la création du fabricant.';
