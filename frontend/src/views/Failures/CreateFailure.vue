@@ -34,8 +34,9 @@
                   outlined
                   counter="300"
                   :rules="[
-                    v => !!v || (validation_triggered && 'Commentaire requis'),
-                    v => (v && v.length <= 300) || 'Le commentaire ne doit pas dépasser 300 caractères.'
+                    v => !!v.trim() || (validation_triggered && 'Commentaire requis'),
+                    v => (v && v.length <= 300) || 'Le commentaire ne doit pas dépasser 300 caractères.',
+                    v => (v && v.trim().length > 0) || 'Le commentaire ne doit pas être vide ou contenir uniquement des espaces.'
                   ]"
                 ></v-textarea>
               </v-col>
