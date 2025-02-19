@@ -188,7 +188,7 @@ class InformationStatut(models.Model):
         ('Rebuté', 'Rebuté'),
         ('En fonctionnement', 'En fonctionnement'),
         ('Dégradé', 'Dégradé'),
-        ('A l\'arrêt', 'A l\'arrêt'),
+        ('À l\'arrêt', 'À l\'arrêt'),
     ]
     statutEquipement = models.CharField(
             max_length=50,

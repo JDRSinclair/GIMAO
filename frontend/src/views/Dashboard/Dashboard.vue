@@ -163,6 +163,7 @@ export default {
       try {
         const response = await api.getInterventions();
         this.interventions = response.data
+          .filter(intervention => intervention.dateCloture === null) // Filtre les interventions non clôturées
           .map(intervention => ({
             ...intervention,
             dateAssignation: this.format_date(intervention.dateAssignation)
@@ -171,7 +172,7 @@ export default {
       } catch (error) {
         console.error('Erreur lors de la récupération des interventions:', error);
       }
-    },
+    }
   },
 
   created() {

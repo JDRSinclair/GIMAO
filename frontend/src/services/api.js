@@ -133,7 +133,7 @@ export default {
   postIntervention(data) {
     return axios.post(`${API_URL}interventions/`, data);
   },
-
+  
   postInterventionDocument(data) {
     return axios.post(`${API_URL}document-interventions/`, data, {
       headers: {
@@ -185,6 +185,10 @@ export default {
         'Content-Type': 'multipart/form-data'
       }
     });
+  },
+
+  cloturerIntervention(id) {
+    return axios.patch(`${API_URL}interventions/${id}/`, { dateCloture: new Date().toISOString() });
   },
 
 };

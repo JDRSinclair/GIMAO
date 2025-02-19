@@ -156,7 +156,7 @@ export default {
 
     const get_level_color = (niveau) => {
       switch (niveau) {
-        case 'Critique':
+        case 'À l\'arrêt':
           return 'red';
         case 'Majeur':
           return 'orange';
