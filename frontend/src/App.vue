@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <NavigationDrawer :items="menuItems" />
-    <TopNavBar :pageTitle="currentPageTitle" />
+    <TopNavBar :pageTitle="GIMAO" />
     <v-main>
       <router-view />
     </v-main>
@@ -65,4 +65,5 @@ h1 {
 }
 </style>
 
+<title>GIMAO</title>
 <link rel="shortcut icon" href="<%= BASE_URL %>favicon.ico">
