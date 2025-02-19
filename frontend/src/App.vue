@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <NavigationDrawer :items="menu_items" />
-    <TopNavBar :page_title="current_page_title" />
+    <NavigationDrawer :items="menuItems" />
+    <TopNavBar :pageTitle="currentPageTitle" />
     <v-main>
-      <router-view></router-view>
+      <router-view />
     </v-main>
   </v-app>
 </template>
@@ -21,8 +21,8 @@ export default {
   
   data() {
     return {
-      current_page_title: '',
-      menu_items: [
+      currentPageTitle: '',
+      menuItems: [
         { name: 'Tableau de bord', icon: require('@/assets/images/Graphe.svg'), routeName: 'Dashboard' },
         { name: 'Equipements', icon: require('@/assets/images/Outils.svg'), routeName: 'Equipements' },
         { name: 'Maintenances', icon: require('@/assets/images/Maintenance.svg'), routeName: 'Maintenances' },
@@ -35,7 +35,7 @@ export default {
     $route: {
       immediate: true,
       handler(to) {
-        this.current_page_title = to.meta.title || 'GIMAO';
+        this.currentPageTitle = to.meta.title || 'GIMAO';
       }
     }
   }
@@ -64,3 +64,5 @@ h1 {
   color: #05004E;
 }
 </style>
+
+<link rel="shortcut icon" href="<%= BASE_URL %>favicon.ico">

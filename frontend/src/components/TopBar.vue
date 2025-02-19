@@ -1,6 +1,7 @@
 <template>
   <v-app-bar app color="white" elevation="2" density="comfortable" class="px-6">
     <!-- Logo and Title -->
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <v-col class="d-flex align-center justify-start">
     </v-col>
     <!-- Left-aligned Page Title -->
