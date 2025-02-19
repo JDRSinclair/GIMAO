@@ -5,11 +5,6 @@
         <v-card class="pa-4">
           <v-form ref="form" v-model="form_valid">
 
-            <!-- Success Alert -->
-            <v-alert v-if="success_message" type="success" class="mb-4">
-              {{ success_message }}
-            </v-alert>
-
             <!-- Error Alert -->
             <v-alert v-if="error_message" type="error" class="mb-4">
               {{ error_message }}
@@ -59,7 +54,6 @@
   </v-app>
 </template>
 
-
 <script>
 import { useRouter } from 'vue-router';
 import '@/assets/css/global.css';
@@ -89,8 +83,7 @@ export default {
         last_name: "admin",
         email: "admin@a.com",
       },
-      success_message: "", // Add success message
-      error_message: "", // Add error message
+      error_message: "", // Keep error message
     };
   },
 
@@ -124,7 +117,6 @@ export default {
         niveau: null,
       };
       this.validation_triggered = false;
-      this.success_message = ""; // Clear success message
       this.error_message = ""; // Clear error message
       if (this.$refs.form) {
         this.$refs.form.resetValidation();
@@ -154,24 +146,19 @@ export default {
 
             const new_failure_id = response.data.id;
 
-            this.success_message = "Défaillance signalée avec succès !";
-            this.error_message = ""; // Clear any previous error messages
-
-            setTimeout(() => {
-              this.router.push({ name: 'FailureDetail', params: { id: new_failure_id } });
-            }, 2000); // Redirect after 2 seconds
+            // Navigate immediately after successful form submission
+            this.router.push({ name: 'FailureDetail', params: { id: new_failure_id } });
 
           } catch (error) {
             console.error('Erreur lors de la création de la défaillance:', error);
             this.error_message = "Une erreur est survenue lors de la création de la défaillance.";
-            this.success_message = ""; // Clear any previous success messages
           }
         } else {
           this.error_message = "Veuillez remplir tous les champs obligatoires.";
-          this.success_message = ""; // Clear any previous success messages
         }
       }
     },
   },
 };
 </script>
+
