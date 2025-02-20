@@ -108,7 +108,7 @@ export default {
       menu_items: [
         { name: 'Tableau de bord', icon: require('@/assets/images/Graphe.svg') },
         { name: 'Equipements', icon: require('@/assets/images/Outils.svg') },
-        { name: 'Maintenances', icon: require('@/assets/images/Maintenance.svg') },
+        { name: 'InterventionList', icon: require('@/assets/images/Maintenance.svg') },
         { name: 'Techniciens', icon: require('@/assets/images/Techniciens.svg') },
       ],
       failures_headers: [

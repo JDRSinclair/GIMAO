@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 // ---------------------------------------------------------------
 import Dashboard from '@/views/Dashboard/Dashboard.vue'
 import EquipmentList from '@/views/Equipments/EquipmentList.vue'
-import Maintenances from '@/views/Maintenances/Maintenances.vue'
+import InterventionList from '@/views/Interventions/InterventionList.vue'
 import Technicians from '@/views/Technicians/Technicians.vue'
 import AccountManagement from '@/views/AccountManagement/AccountManagement.vue'
 import Orders from '@/views/Orders/Orders.vue'
@@ -180,9 +180,9 @@ const routes = [
   // Interventions ---------------------------------------------------------------
 
   {
-    path: '/maintenances',
-    name: 'Maintenances',
-    component: Maintenances,
+    path: '/InterventionList',
+    name: 'InterventionList',
+    component: InterventionList,
     meta: { title: 'Bon de travail' }
   },
 
