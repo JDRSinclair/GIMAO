@@ -61,27 +61,43 @@
         </v-row>
 
         <!-- Statistiques -->
-        <v-row>
-          <v-col cols="4">
-            <v-card elevation="1" class="pa-4 text-center">
-              <h3>Nombre de demandes d'interventions</h3>
-              <p class="display-2">{{ total_failures }}</p>
+        <v-row class="mt-4">
+        <v-col cols="4">
+            <v-card elevation="2">
+                <v-card-title class="font-weight-bold text-uppercase text-center">
+                    Nombre de demandes <br>d'interventions
+                </v-card-title>
+                <v-card-text class="d-flex align-center justify-center" style="font-size: 2rem;">
+                    <p class="display-3 font-weight-bold text-primary count-animation">
+                        {{ total_failures }}
+                    </p>
+                </v-card-text>
             </v-card>
-          </v-col>
-          <v-col cols="4">
-            <v-card elevation="1" class="pa-4 text-center">
-              <h3>Nombre de bons de travail en cours</h3>
-              <p class="display-2">{{ intervention_count }}</p>
+        </v-col>
+        <v-col cols="4">
+            <v-card elevation="2">
+                <v-card-title class="font-weight-bold text-uppercase text-center">
+                    Nombre de bons de travail <br> en cours
+                </v-card-title>
+                <v-card-text class="d-flex align-center justify-center">
+                    <p class="display-3 font-weight-bold text-primary count-animation" style="font-size: 2rem;">
+                        {{ intervention_count }}
+                    </p>
+                </v-card-text>
             </v-card>
-          </v-col>
-          <v-col cols="4">
-            <v-card elevation="1" class="pa-4 text-center">
-              <h3>Répartition des Niveaux</h3>
+        </v-col>
+        <v-col cols="4">
+          <v-card elevation="2" class="pa-4 text-center rounded-lg stat-card fill-height ">
+            <v-card-title class="font-weight-bold text-uppercase">
+              Répartition des Niveaux
+            </v-card-title>
+            <v-card-text>
               <canvas id="levelChart" width="200" height="200"></canvas>
               <div id="chartLegend" class="d-flex justify-space-around mt-4"></div>
-            </v-card>
-          </v-col>
-        </v-row>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
       </v-container>
     </v-main>
   </v-app>
