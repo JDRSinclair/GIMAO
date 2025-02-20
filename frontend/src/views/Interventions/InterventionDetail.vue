@@ -329,7 +329,7 @@ export default {
       if (confirm('Êtes-vous sûr de vouloir clôturer cette intervention ?')) {
         try {
           await api.cloturerIntervention(intervention.value.id);
-          fetch_data(); // Recharger les données après la clôture
+          router.go(-1);
         } catch (error) {
           console.error('Erreur lors de la clôture de l\'intervention:', error);
         }
