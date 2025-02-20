@@ -163,6 +163,7 @@ export default {
     const route = useRoute();
     const action_mode = ref('download');
     const intervention = ref(null);
+    const equipement = ref(null);
     const show_defaillance_details = ref(false);
     const show_documents_details = ref(false);
 
@@ -185,12 +186,29 @@ export default {
       }
     };
 
+    // const fetch_data = async () => {
+    //   try {
+    //     const response = await api.getInterventionAffichage(route.params.id);
+    //     intervention.value = response.data;
+    //   } catch (error) {
+    //     console.error('Erreur lors de la récupération des données:', error);
+    //   }
+    // };
+
     const fetch_data = async () => {
       try {
         const response = await api.getInterventionAffichage(route.params.id);
         intervention.value = response.data;
+        fetch_equipement();
       } catch (error) {
         console.error('Erreur lors de la récupération des données:', error);
+      }
+    };
+
+    const fetch_equipement = async () => {
+      if (intervention.value?.defaillance?.equipement) {
+          const response = await api.getEquipement(intervention.value.defaillance.equipement);
+          equipement.value = response.data;
       }
     };
 
@@ -327,11 +345,28 @@ export default {
 
     const close_intervention = async () => {
       if (confirm('Êtes-vous sûr de vouloir clôturer cette intervention ?')) {
-        try {
+        try { 
+          // Clôturer l'intervention
           await api.cloturerIntervention(intervention.value.id);
+
+
+          const information_statut_data = {
+            statutEquipement: "En fonctionnement",
+            dateChangement: new Date().toISOString(),
+            equipement: equipement.value.reference,
+            informationStatutParent: null, // Ou une valeur par défaut si nécessaire
+            ModificateurStatut: 1, // ID fixe du modificateur
+          };
+
+          // Envoi de l'information de statut
+          await api.postInformationStatut(information_statut_data, {
+            headers: { "Content-Type": "application/json" },
+          });
+
+          // Revenir à la page précédente
           router.go(-1);
         } catch (error) {
-          console.error('Erreur lors de la clôture de l\'intervention:', error);
+          console.error('Erreur lors de la clôture de l\'intervention ou de la mise à jour du statut de l\'équipement:', error);
         }
       }
     };
