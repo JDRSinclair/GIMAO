@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <!-- Contenu principal -->
     <v-main>
       <v-container>
         <!-- Filtres et tableau -->
@@ -9,7 +8,7 @@
           <v-col cols="6">
             <v-card elevation="1" class="rounded-lg pa-2 mb-4">
               <v-card-title class="font-weight-bold text-uppercase text-primary">
-                Liste des demandes de bons de travail
+                Liste des demandes d'interventions
                 <v-spacer></v-spacer>
               </v-card-title>
               <v-divider></v-divider>
@@ -29,7 +28,6 @@
                   </v-chip>
                 </template>
               </v-data-table>
-
               <v-pagination
                 v-model="failures_page"
                 :length="Math.ceil(failures.length / 5)"
@@ -62,10 +60,26 @@
           </v-col>
         </v-row>
 
-        <!-- Nombre de demandes d'interventions -->
+        <!-- Statistiques -->
         <v-row>
-          <v-col>
-            <h2 class="text-primary">Nombre de demandes d'interventions : {{ intervention_count }}</h2>
+          <v-col cols="4">
+            <v-card elevation="1" class="pa-4 text-center">
+              <h3>Nombre de demandes d'interventions</h3>
+              <p class="display-2">{{ total_failures }}</p>
+            </v-card>
+          </v-col>
+          <v-col cols="4">
+            <v-card elevation="1" class="pa-4 text-center">
+              <h3>Nombre de bons de travail en cours</h3>
+              <p class="display-2">{{ intervention_count }}</p>
+            </v-card>
+          </v-col>
+          <v-col cols="4">
+            <v-card elevation="1" class="pa-4 text-center">
+              <h3>Répartition des Niveaux</h3>
+              <canvas id="levelChart" width="200" height="200"></canvas>
+              <div id="chartLegend" class="d-flex justify-space-around mt-4"></div>
+            </v-card>
           </v-col>
         </v-row>
       </v-container>
@@ -126,6 +140,8 @@ export default {
       intervention_count: 0,
       failures_page: 1,
       interventions_page: 1,
+      total_failures: 0,
+      levelDistribution: [],
     };
   },
 
@@ -143,6 +159,18 @@ export default {
       try {
         const response = await api.getDefaillances();
         this.failures = response.data.filter(defaillance => defaillance.dateTraitementDefaillance === null);
+        this.total_failures = this.failures.length;
+
+        // Calculate level distribution
+        const levels = this.failures.map(f => f.niveau);
+        this.levelDistribution = [
+          levels.filter(level => level === 'Critique').length,
+          levels.filter(level => level === 'Majeur').length,
+          levels.filter(level => level === 'Mineur').length,
+        ];
+
+        // Draw the chart
+        this.drawLevelChart();
       } catch (error) {
         console.error('Erreur lors de la récupération des défaillances:', error);
       }
@@ -172,6 +200,49 @@ export default {
       } catch (error) {
         console.error('Erreur lors de la récupération des interventions:', error);
       }
+    },
+
+    drawLevelChart() {
+      const ctx = document.getElementById('levelChart').getContext('2d');
+      const total = this.levelDistribution.reduce((a, b) => a + b, 0);
+
+      const colors = ['#ff0505', '#ff9808', '#16ad09'];
+      const labels = ['Critique', 'Majeur', 'Mineur'];
+      let startAngle = 0;
+
+      this.levelDistribution.forEach((count, index) => {
+        const sliceAngle = (count / total) * 2 * Math.PI;
+        ctx.fillStyle = colors[index];
+        ctx.beginPath();
+        ctx.moveTo(100, 100);
+        ctx.arc(100, 100, 100, startAngle, startAngle + sliceAngle);
+        ctx.closePath();
+        ctx.fill();
+        startAngle += sliceAngle;
+      });
+
+      // Draw the legend
+      const legendContainer = document.getElementById('chartLegend');
+      legendContainer.innerHTML = '';
+      labels.forEach((label, index) => {
+        const legendItem = document.createElement('div');
+        legendItem.style.display = 'flex';
+        legendItem.style.alignItems = 'center';
+        legendItem.style.marginRight = '20px';
+
+        const colorBox = document.createElement('div');
+        colorBox.style.width = '20px';
+        colorBox.style.height = '20px';
+        colorBox.style.backgroundColor = colors[index];
+        colorBox.style.marginRight = '10px';
+
+        const labelText = document.createElement('span');
+        labelText.textContent = label;
+
+        legendItem.appendChild(colorBox);
+        legendItem.appendChild(labelText);
+        legendContainer.appendChild(legendItem);
+      });
     }
   },
 
@@ -181,26 +252,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.text-primary {
-  color: #05004E;
-}
-
-.text-dark {
-  color: #3C3C3C;
-}
-
-.v-card {
-  background-color: #FFFFFF;
-}
-
-.v-btn {
-  background-color: #F1F5FF;
-  border-radius: 50%;
-}
-
-h1 {
-  color: #05004E;
-}
-</style>
