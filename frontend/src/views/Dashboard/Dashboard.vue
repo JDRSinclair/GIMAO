@@ -202,48 +202,85 @@ export default {
       }
     },
 
-    drawLevelChart() {
-      const ctx = document.getElementById('levelChart').getContext('2d');
-      const total = this.levelDistribution.reduce((a, b) => a + b, 0);
+  drawLevelChart() {
+  const canvas = document.getElementById('levelChart');
+  const ctx = canvas.getContext('2d');
+  const total = this.levelDistribution.reduce((a, b) => a + b, 0);
 
-      const colors = ['#ff0505', '#ff9808', '#16ad09'];
-      const labels = ['Critique', 'Majeur', 'Mineur'];
-      let startAngle = 0;
+  if (total === 0) return;
 
-      this.levelDistribution.forEach((count, index) => {
-        const sliceAngle = (count / total) * 2 * Math.PI;
-        ctx.fillStyle = colors[index];
-        ctx.beginPath();
-        ctx.moveTo(100, 100);
-        ctx.arc(100, 100, 100, startAngle, startAngle + sliceAngle);
-        ctx.closePath();
-        ctx.fill();
-        startAngle += sliceAngle;
-      });
+  const colors = ['#f56958', '#fcab4e', '#80ae55'];
+  const labels = ['Critique', 'Majeur', 'Mineur'];
+  let startAngle = 0;
+  let animationProgress = 0; 
 
-      // Draw the legend
-      const legendContainer = document.getElementById('chartLegend');
-      legendContainer.innerHTML = '';
-      labels.forEach((label, index) => {
-        const legendItem = document.createElement('div');
-        legendItem.style.display = 'flex';
-        legendItem.style.alignItems = 'center';
-        legendItem.style.marginRight = '20px';
+  const drawSlice = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let currentStartAngle = startAngle;
 
-        const colorBox = document.createElement('div');
-        colorBox.style.width = '20px';
-        colorBox.style.height = '20px';
-        colorBox.style.backgroundColor = colors[index];
-        colorBox.style.marginRight = '10px';
+    this.levelDistribution.forEach((count, index) => {
+      if (count === 0) return;
 
-        const labelText = document.createElement('span');
-        labelText.textContent = label;
+      const fullSliceAngle = (count / total) * 2 * Math.PI;
+      const sliceAngle = fullSliceAngle * animationProgress; 
+      const midAngle = currentStartAngle + sliceAngle / 2;
 
-        legendItem.appendChild(colorBox);
-        legendItem.appendChild(labelText);
-        legendContainer.appendChild(legendItem);
-      });
+      // Dessiner la tranche progressivement
+      ctx.fillStyle = colors[index];
+      ctx.beginPath();
+      ctx.moveTo(100, 100);
+      ctx.arc(100, 100, 100, currentStartAngle, currentStartAngle + sliceAngle);
+      ctx.closePath();
+      ctx.fill();
+
+      // Affichage du nombre au centre de la tranche
+      if (animationProgress >= 1) {
+        const textX = 100 + Math.cos(midAngle) * 60;
+        const textY = 100 + Math.sin(midAngle) * 60;
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 14px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(count, textX, textY);
+      }
+
+      currentStartAngle += fullSliceAngle;
+    });
+
+    // Animation progressive de la révélation des tranches
+    if (animationProgress < 1) {
+      animationProgress += 0.04; 
+      requestAnimationFrame(drawSlice);
     }
+  };
+
+  drawSlice(); // Lancer l’animation
+
+  // Dessiner la légende
+  const legendContainer = document.getElementById('chartLegend');
+  legendContainer.innerHTML = '';
+  labels.forEach((label, index) => {
+    const legendItem = document.createElement('div');
+    legendItem.style.display = 'flex';
+    legendItem.style.alignItems = 'center';
+    legendItem.style.marginRight = '20px';
+
+    const colorBox = document.createElement('div');
+    colorBox.style.width = '20px';
+    colorBox.style.height = '20px';
+    colorBox.style.backgroundColor = colors[index];
+    colorBox.style.marginRight = '10px';
+
+    const labelText = document.createElement('span');
+    labelText.textContent = `${label} `;
+
+    legendItem.appendChild(colorBox);
+    legendItem.appendChild(labelText);
+    legendContainer.appendChild(legendItem);
+  });
+}
+
   },
 
   created() {
