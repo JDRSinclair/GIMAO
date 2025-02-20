@@ -39,25 +39,25 @@ export default {
     const interventions = ref([]);
     const table_headers = [
       {
-        title: 'Nom Intervention',
+        title: 'Nom de l\' intervention',
         align: 'start',
         sortable: true,
         value: 'nomIntervention'
       },
       {
-        title: 'Date Assignation',
+        title: 'Date d\'assignation',
         align: 'center',
         sortable: true,
         value: 'dateAssignation'
       },
       {
-        title: 'Date Cloture',
+        title: 'Date de clôture',
         align: 'center',
         sortable: true,
         value: 'dateCloture'
       },
       {
-        title: 'Temps Estimé',
+        title: 'Temps estimé',
         align: 'center',
         sortable: true,
         value: 'tempsEstime'

@@ -17,7 +17,7 @@
             <v-col cols="6">
               <v-row>
                 <v-col cols="12">
-                  <p><strong>Commentaire d'intervention :</strong></p>
+                  <p><strong>Commentaire de l'intervention :</strong></p>
                   <p>{{ intervention.commentaireIntervention || 'Aucun commentaire' }}</p>
                 </v-col>
                 <v-col cols="12" v-if="intervention.commentaireRefusCloture">

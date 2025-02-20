@@ -47,7 +47,7 @@
         <!-- Card: Types of Equipment -->
         <v-card elevation="1" class="rounded-lg pa-2">
           <v-card-title class="font-weight-bold text-uppercase text-primary">
-            Types des Equipements
+            Types des équipements
           </v-card-title>
           <v-divider></v-divider>
           <!-- List of equipment types -->
@@ -78,7 +78,7 @@
       <v-col cols="8">
         <!-- Button to redirect to the equipment addition page -->
         <v-btn color="primary" @click="open_add_equipment_page" class="mb-4">
-          Ajouter un Equipement
+          Ajouter un équipement
         </v-btn>
 
         <!-- Equipment Table -->
